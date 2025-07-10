@@ -31,7 +31,7 @@ const SortableCardRow = ({ card, authors, handleView, handleEdit, handleDelete }
             <td className="drag-handle" {...listeners}><FontAwesomeIcon icon={faGripVertical} /></td>
             <td data-label="ID">{card.id}</td>
             <td data-label="Nosaukums">{card.title}</td>
-            <td data-label="Autors">{authors.find(a => a.id === card.authorId)?.name || 'N/A'}</td>
+            <td data-label="Autors">{card.authorName}</td>
             <td data-label="Izveidots">{formatDateTimeToDDMMYYYYHHMM(card.created_at)}</td>
             <td data-label="Darbības" className="admin-table-actions">
                 <button onClick={() => handleView('kartīti', card.id)} className="admin-table-button view-button"><FontAwesomeIcon icon={faEye} /></button>
@@ -41,7 +41,6 @@ const SortableCardRow = ({ card, authors, handleView, handleEdit, handleDelete }
         </tr>
     );
 };
-
 
 const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setThemesData, setCards, setArticles, setVideos }) => {
   const [openAccordionId, setOpenAccordionId] = useState(null);
@@ -102,19 +101,10 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
   const handleShowModal = (modal) => setModalsState(prev => ({...prev, [modal]: true}));
   const handleCloseModal = (modal) => setModalsState(prev => ({...prev, [modal]: false}));
 
+  // Vienkāršota funkcija, kas izmanto jau sagatavotus datus
   const findItem = (type, id) => {
     const dataMap = { 'kartīti': cards, 'rakstu': articles, 'video': videos, 'autoru': authors, 'tēmu': themes };
-    let foundItem = dataMap[type]?.find(item => item.id === id);
-    if (foundItem && type === 'kartīti') {
-        const author = authors.find(a => a.id === foundItem.authorId);
-        const theme = themes.find(t => t.id === foundItem.theme);
-        foundItem = {
-            ...foundItem,
-            authorName: author ? author.name : 'Nezināms',
-            themeName: theme ? theme.name : 'Nezināma'
-        };
-    }
-    return foundItem;
+    return dataMap[type]?.find(item => item.id === id);
   };
 
   const handleView = (type, id) => {
@@ -132,8 +122,6 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
         setSelectedItem(item);
         setSelectedItemType(type);
         setIsEditModalOpen(true);
-    } else {
-        alert(`Rediģēšanas forma vēl nav ieviesta priekš: ${type}`);
     }
   };
 
@@ -163,30 +151,11 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
       alert('Autors veiksmīgi atjaunināts!');
   };
 
-  const addAuthor = async (newAuthorData) => {
-    try {
-      const response = await fetch(`${config.API_BASE_URL}/authors`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(newAuthorData) });
-      const responseData = await response.json();
-      if (!response.ok) throw new Error(responseData.messages?.error || 'Neizdevās pievienot autoru.');
-      setAuthors(prev => [...prev, responseData.data]);
-      handleCloseModal('author');
-      alert("Autors veiksmīgi pievienots!");
-    } catch (error) {
-      alert(`Kļūda: ${error.message}`);
-    }
-  };
-
-  const addTheme = (newThemeData) => {
-    const mainNavThemeIds = { "Sākums": 1, "Visas": 2, "Biedrība": 104, "Tirdzniecība": 105, "Stāsti": 106, "Izdrukām": 107 };
-    const newId = mainNavThemeIds[newThemeData.name] || Date.now();
-    setThemesData(prev => [...prev, { ...newThemeData, id: newId, created_at: new Date().toISOString() }]);
-    handleCloseModal('theme');
-    alert("Tēma pievienota (simulācija)!");
-  };
-
-  const addCard = (newCardData) => { console.log("Pievieno kartīti (simulācija)", newCardData); handleCloseModal('card'); alert('Kartīte pievienota (simulācija)!'); };
-  const addArticle = (newArticleData) => { console.log("Pievieno rakstu (simulācija)", newArticleData); handleCloseModal('article'); alert('Raksts pievienots (simulācija)!'); };
-  const addVideo = (newVideoData) => { console.log("Pievieno video (simulācija)", newVideoData); handleCloseModal('video'); alert('Video pievienots (simulācija)!'); };
+  const addAuthor = (newAuthorData) => { setAuthors(prev => [...prev, {id: Date.now(), ...newAuthorData}]); handleCloseModal('author'); };
+  const addTheme = (newThemeData) => { setThemesData(prev => [...prev, {id: Date.now(), ...newThemeData}]); handleCloseModal('theme'); };
+  const addCard = (newCardData) => { setCards(prev => [...prev, {id: Date.now(), ...newCardData}]); handleCloseModal('card'); };
+  const addArticle = (newArticleData) => { setArticles(prev => [...prev, {id: Date.now(), ...newArticleData}]); handleCloseModal('article'); };
+  const addVideo = (newVideoData) => { setVideos(prev => [...prev, {id: Date.now(), ...newVideoData}]); handleCloseModal('video'); };
   
   const authorColumns = [ { label: 'ID', width: '60px' }, { label: 'Vārds', width: 'auto' }, { label: 'Izveidots', width: '180px' }, { label: 'Darbības', width: '120px' }];
   const themeColumns = [ { label: 'ID', width: '60px' }, { label: 'Nosaukums', width: '150px' }, { label: 'Kopsavilkums', width: 'auto' }, { label: 'Izveidots', width: '180px' }, { label: 'Darbības', width: '120px' }];
@@ -200,7 +169,7 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
 
       <AdminModals 
         modalsState={modalsState}
-        handlers={{ add: { onAddAuthor: addAuthor, onAddTheme: addTheme, onAddCard: addCard, onAddArticle: addArticle, onAddVideo: addVideo }, onClose: handleCloseModal }}
+        handlers={{ add: { onAddAuthor, onAddTheme, onAddCard, onAddArticle, onAddVideo }, onClose: handleCloseModal }}
         data={{ themes, authors }}
       />
       
@@ -264,7 +233,7 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
             title="Raksti" isOpen={openAccordionId === 'articles'} onToggle={() => handleToggleAccordion('articles')} data={paginatedArticles} columns={articleColumns}
             renderRow={(article) => (
                  <tr key={article.id}>
-                    <td data-label="ID">{article.id}</td><td data-label="Datums">{formatDateToDDMMYYYY(article.date)}</td><td data-label="Nosaukums">{article.title}</td><td data-label="Autors">{authors.find(a => a.id === article.authorId)?.name || 'N/A'}</td><td data-label="Izveidots">{formatDateTimeToDDMMYYYYHHMM(article.created_at)}</td><td data-label="Darbības" className="admin-table-actions">
+                    <td data-label="ID">{article.id}</td><td data-label="Datums">{formatDateToDDMMYYYY(article.date)}</td><td data-label="Nosaukums">{article.title}</td><td data-label="Autors">{article.authorName}</td><td data-label="Izveidots">{formatDateTimeToDDMMYYYYHHMM(article.created_at)}</td><td data-label="Darbības" className="admin-table-actions">
                         <button onClick={() => handleView('rakstu', article.id)} className="admin-table-button view-button"><FontAwesomeIcon icon={faEye} /></button>
                         <button onClick={() => handleEdit('rakstu', article.id)} className="admin-table-button edit-button"><FontAwesomeIcon icon={faEdit} /></button>
                         <button onClick={() => handleDelete('rakstu', article.id)} className="admin-table-button delete-button"><FontAwesomeIcon icon={faTrashAlt} /></button>
@@ -279,7 +248,7 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
             title="Video" isOpen={openAccordionId === 'videos'} onToggle={() => handleToggleAccordion('videos')} data={paginatedVideos} columns={articleColumns}
             renderRow={(video) => (
                 <tr key={video.id}>
-                    <td data-label="ID">{video.id}</td><td data-label="Datums">{formatDateToDDMMYYYY(video.date)}</td><td data-label="Nosaukums">{video.title}</td><td data-label="Autors">{authors.find(a => a.id === video.authorId)?.name || 'N/A'}</td><td data-label="Izveidots">{formatDateTimeToDDMMYYYYHHMM(video.created_at)}</td><td data-label="Darbības" className="admin-table-actions">
+                    <td data-label="ID">{video.id}</td><td data-label="Datums">{formatDateToDDMMYYYY(video.date)}</td><td data-label="Nosaukums">{video.title}</td><td data-label="Autors">{video.authorName}</td><td data-label="Izveidots">{formatDateTimeToDDMMYYYYHHMM(video.created_at)}</td><td data-label="Darbības" className="admin-table-actions">
                         <button onClick={() => handleView('video', video.id)} className="admin-table-button view-button"><FontAwesomeIcon icon={faEye} /></button>
                         <button onClick={() => handleEdit('video', video.id)} className="admin-table-button edit-button"><FontAwesomeIcon icon={faEdit} /></button>
                         <button onClick={() => handleDelete('video', video.id)} className="admin-table-button delete-button"><FontAwesomeIcon icon={faTrashAlt} /></button>

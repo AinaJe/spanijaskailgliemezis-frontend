@@ -35,11 +35,9 @@ function App() {
     resetFilters,
   } = useFilters(activeTheme);
   
+  // Loģika kļūst daudz vienkāršāka, jo dati jau ir papildināti
   const filteredCardsBase = useMemo(() => {
-    const safeCards = Array.isArray(cards) ? cards : [];
-    const safeAuthors = Array.isArray(authors) ? authors : [];
-    const safeThemes = Array.isArray(themesData) ? themesData : [];
-    return safeCards.filter(card => {
+    return cards.filter(card => {
       let themeId;
       switch (activeSection) {
         case 'home': themeId = 1; break;
@@ -55,18 +53,8 @@ function App() {
       const matchesAuthors = filterAuthors.length === 0 || filterAuthors.includes(card.authorId);
       
       return matchesTheme && matchesAuthors;
-    })
-    .map(card => {
-      const cardAuthor = safeAuthors.find(a => a.id === card.authorId);
-      const cardThemeData = safeThemes.find(t => t.id === card.theme);
-      return {
-        ...card,
-        authorName: cardAuthor ? cardAuthor.name : 'Nezināms autors',
-        themeSummary: cardThemeData ? cardThemeData.summary : 'Nav kopsavilkuma',
-        themeName: cardThemeData ? cardThemeData.name : 'Nezināma tēma',
-      };
     });
-  }, [cards, activeSection, filterTheme, filterAuthors, authors, themesData]);
+  }, [cards, activeSection, filterTheme, filterAuthors]);
 
   const finalFilteredCards = useMemo(() => {
     if (selectedFilteredCardIds.length > 0) {
@@ -83,24 +71,35 @@ function App() {
     resetCardsPagination();
     resetArticlesPagination();
     resetVideosPagination();
-    resetFilters(activeTheme);
-  }, [activeSection, resetFilters, resetCardsPagination, resetArticlesPagination, resetVideosPagination, activeTheme]);
+    
+    let newTheme;
+    switch (activeSection) {
+      case 'home': newTheme = 1; break;
+      case 'recommendations': newTheme = 'all'; break;
+      case 'association': newTheme = 104; break;
+      case 'trade': newTheme = 105; break;
+      case 'stories': newTheme = 106; break;
+      case 'prints': newTheme = 107; break;
+      case 'articles': newTheme = 108; break;
+      case 'videos': newTheme = 109; break;
+      default: newTheme = ''; break;
+    }
+    setActiveTheme(newTheme);
+    resetFilters(newTheme);
+  }, [activeSection, resetFilters, resetCardsPagination, resetArticlesPagination, resetVideosPagination]);
 
   useEffect(() => {
-    if (activeTheme !== filterTheme) {
+    if (activeSection === 'recommendations' && activeTheme !== filterTheme) {
         setFilterTheme(activeTheme);
+        setFilterAuthors([]);
+        handleClearCardSelections();
     }
-  }, [activeTheme, filterTheme, setFilterTheme]);
+  }, [activeSection, activeTheme, filterTheme, setFilterTheme, setFilterAuthors, handleClearCardSelections]);
 
   const handleReadMore = useCallback((card) => {
-    const safeAuthors = Array.isArray(authors) ? authors : [];
-    const cardAuthor = safeAuthors.find(a => a.id === card.authorId);
-    const updatedImages = card.images.map(img => {
-        const imgAuthor = safeAuthors.find(a => a.id === img.authorId);
-        return { ...img, authorName: imgAuthor ? imgAuthor.name : 'Nezināms autors' };
-    });
-    setSelectedCard({ ...card, authorName: cardAuthor ? cardAuthor.name : 'Nezināms autors', images: updatedImages, allAuthors: safeAuthors });
-  }, [authors]);
+    // Vairs nav nepieciešams papildināt datus šeit, tie jau nāk gatavi
+    setSelectedCard(card);
+  }, []);
 
   const handleCloseModal = useCallback(() => setSelectedCard(null), []);
 
