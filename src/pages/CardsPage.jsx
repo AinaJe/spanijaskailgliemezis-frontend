@@ -1,15 +1,11 @@
 // src/pages/CardsPage.jsx
-import React from 'react';
-import CardFilter from '../components/cards/CardFilter/CardFilter';
-import ActiveFiltersDisplay from '../components/cards/ActiveFiltersDisplay/ActiveFiltersDisplay';
-import ThemeDetailDisplay from '../components/common/ThemeDetailDisplay/ThemeDetailDisplay';
-import CardList from '../components/cards/CardList/CardList';
-import Pagination from '../components/common/Pagination/Pagination';
-import Modal from '../components/common/Modals/Modal';
-
-// Varētu importēt no useAppData, ja 'all' ir eksportēts kā konstante.
-// Piemēram: import { ALL_THEMES_ID } from '../hooks/useAppData';
-const ALL_THEMES_ID = 'all'; // Pārliecinieties, ka šis ID atbilst tam, kas definēts useAppData.js
+import React from 'react'; // Importējam React
+import CardFilter from '../components/cards/CardFilter/CardFilter'; // Importējam CardFilter komponenti
+import ActiveFiltersDisplay from '../components/cards/ActiveFiltersDisplay/ActiveFiltersDisplay'; // Importējam ActiveFiltersDisplay komponenti
+import ThemeDetailDisplay from '../components/common/ThemeDetailDisplay/ThemeDetailDisplay'; // Importējam ThemeDetailDisplay komponenti
+import CardList from '../components/cards/CardList/CardList'; // Importējam CardList komponenti
+import Pagination from '../components/common/Pagination/Pagination'; // Importējam Pagination komponenti
+import Modal from '../components/common/Modals/Modal'; // Importējam Modal komponenti
 
 /**
  * Kartīšu lapas komponente ("Ieteikumi", "Biedrība", "Tirdzniecība", "Stāsti", "Izdrukām").
@@ -38,74 +34,79 @@ const ALL_THEMES_ID = 'all'; // Pārliecinieties, ka šis ID atbilst tam, kas de
  * @param {object} props.currentThemeDetail - Pašreizējās tēmas detaļu objekts priekš ThemeDetailDisplay.
  */
 const CardsPage = ({
-    cards,
-    authors,
-    onReadMore,
-    filterTheme,
-    setFilterTheme,
-    filterAuthors,
-    setFilterAuthors,
-    selectedFilteredCardIds,
-    onToggleCardSelectionInFilter,
-    onClearCardSelections,
-    currentThemeSummary,
-    allThemesData,
-    isFilterModalOpen,
-    setIsFilterModalOpen,
-    activeFiltersList,
-    handleRemoveFilter,
-    handleClearAllActiveFilters,
-    paginationProps,
-    currentThemeDetail
+  cards, // Satur rawCards un paginatedCards
+  authors,
+  onReadMore,
+  filterTheme,
+  setFilterTheme,
+  filterAuthors,
+  setFilterAuthors,
+  selectedFilteredCardIds,
+  onToggleCardSelectionInFilter,
+  onClearCardSelections,
+  currentThemeSummary,
+  allThemesData, // Jau filtrēts App.jsx, lai atbilstu CardsPage akordeona prasībām
+  isFilterModalOpen,
+  setIsFilterModalOpen,
+  activeFiltersList,
+  handleRemoveFilter,
+  handleClearAllActiveFilters,
+  paginationProps,
+  currentThemeDetail
 }) => {
 
-    return (
-        <>
-            <button
-                type="button"
-                onClick={() => setIsFilterModalOpen(true)}
-                className="toggle-filters-button"
-                aria-label="Rādīt filtru opcijas"
-            >
-                Rādīt filtrus
-            </button>
+  return (
+    <>
+      {/* Poga filtru modālā loga atvēršanai (tiek attēlota virs filtru displeja) */}
+      <button
+        type="button"
+        onClick={() => setIsFilterModalOpen(true)}
+        className="toggle-filters-button"
+        aria-label="Rādīt filtru opcijas"
+      >
+        Rādīt filtrus
+      </button>
 
-            <Modal isOpen={isFilterModalOpen} onClose={() => setIsFilterModalOpen(false)} title="Kartīšu filtri">
-                <CardFilter
-                    filterTheme={filterTheme}
-                    setFilterTheme={setFilterTheme}
-                    authors={authors}
-                    filterAuthors={filterAuthors}
-                    setFilterAuthors={setFilterAuthors}
-                    allCards={cards.rawCards}
-                    selectedCardIds={selectedFilteredCardIds}
-                    onToggleCardSelection={onToggleCardSelectionInFilter}
-                    onClearAllSelections={onClearCardSelections}
-                    currentThemeSummary={currentThemeSummary}
-                    allThemesData={allThemesData}
-                    onApplyFilters={() => setIsFilterModalOpen(false)}
-                    activePageTheme={filterTheme}
-                />
-            </Modal>
+      {/* Modālais logs filtriem. Atveras, noklikšķinot uz "Rādīt filtrus" pogas. */}
+      <Modal isOpen={isFilterModalOpen} onClose={() => setIsFilterModalOpen(false)} title="Kartīšu filtri">
+        <CardFilter
+          filterTheme={filterTheme}
+          setFilterTheme={setFilterTheme}
+          authors={authors}
+          filterAuthors={filterAuthors}
+          setFilterAuthors={setFilterAuthors}
+          allCards={cards.rawCards} // CardFilteram tiek padotas visas NE-lapotās kartītes
+          selectedCardIds={selectedFilteredCardIds}
+          onToggleCardSelection={onToggleCardSelectionInFilter}
+          onClearAllSelections={onClearCardSelections}
+          currentThemeSummary={currentThemeSummary}
+          allThemesData={allThemesData} // Šis prop jau ir filtrēts no App.jsx puses, lai saturētu tikai relevantās tēmas akordeonam
+          onApplyFilters={() => setIsFilterModalOpen(false)} // Aizver modāli, kad filtri ir pielietoti
+          activePageTheme={filterTheme} // Informē CardFilter, kura tēma ir aktīva lapā, lai tas zinātu, vai rādīt akordeonu
+        />
+      </Modal>
 
-            <ActiveFiltersDisplay
-                filters={activeFiltersList}
-                onRemoveFilter={handleRemoveFilter}
-                onClearAllFilters={handleClearAllActiveFilters}
-            />
+      {/* Aktīvo filtru saraksts. Parādās tikai tad, ja ir aktīvi filtri. */}
+      <ActiveFiltersDisplay
+        filters={activeFiltersList}
+        onRemoveFilter={handleRemoveFilter}
+        onClearAllFilters={handleClearAllActiveFilters}
+      />
 
-            {/* Tagad izmantojam definēto konstanti ALL_THEMES_ID */}
-            {filterTheme !== ALL_THEMES_ID && currentThemeDetail && <ThemeDetailDisplay theme={currentThemeDetail} />}
+      {/* Tēmas detaļu displejs. Parādās, ja ir izvēlēta specifiska tēma (nav "Visas"). */}
+      {filterTheme !== 2 && currentThemeDetail && <ThemeDetailDisplay theme={currentThemeDetail} />} {/* ID 2 ir "Visas" tēma */}
+      
+      {/* Kartīšu saraksts (attēlo lapotās kartītes) */}
+      <CardList
+        cards={cards.paginated} // Padodam jau lapotās kartītes
+        onReadMore={onReadMore}
+        availableAuthors={authors}
+      />
 
-            <CardList
-                cards={cards.paginated}
-                onReadMore={onReadMore}
-                availableAuthors={authors}
-            />
-
-            <Pagination {...paginationProps} />
-        </>
-    );
+      {/* Lapošanas kontroles */}
+      <Pagination {...paginationProps} />
+    </>
+  );
 };
 
-export default CardsPage;
+export default CardsPage; // Eksportējam komponenti

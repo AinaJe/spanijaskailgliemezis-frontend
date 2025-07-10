@@ -2,7 +2,7 @@
 import React from 'react';
 import ArticleList from '../components/lists/ArticleList/ArticleList';
 import Pagination from '../components/common/Pagination/Pagination';
-import ThemeDetailDisplay from '../components/common/ThemeDetailDisplay/ThemeDetailDisplay'; // JAUNS: Importējam ThemeDetailDisplay
+import ThemeDetailDisplay from '../components/common/ThemeDetailDisplay/ThemeDetailDisplay';
 
 /**
  * Rakstu lapas komponente.
