@@ -1,7 +1,7 @@
 // src/components/cards/CardFilter/CardFilter.jsx
-import React, { useState, useCallback, useMemo } from 'react'; // Importējam React un React hookus
-import './CardFilter.css'; // Importējam šīs komponentes stilus
-import Accordion from '../../common/Accordion/Accordion'; // Importējam Accordion komponenti
+import React, { useState, useCallback, useMemo } from 'react';
+import './CardFilter.css';
+import Accordion from '../../common/Accordion/Accordion';
 
 /**
  * Kartīšu filtru komponente.
@@ -48,18 +48,26 @@ const CardFilter = ({
   // Funkcija, kas atgriež kartītes, kuras ir attēlojamas atlases filtrā
   // Izmanto useCallback, lai optimizētu un novērstu nevajadzīgu renderēšanu
   const getDisplayableCardsForSelection = useCallback((themeId = null) => {
-    return allCards.filter(card => {
+    // Nodrošinām, ka allCards ir masīvs
+    const safeAllCards = Array.isArray(allCards) ? allCards : [];
+
+    return safeAllCards.filter(card => {
+      // Pārbaudām, vai karte ir derīgs objekts ar ID
+      if (!card || typeof card !== 'object' || !('id' in card) || !('theme' in card) || !('authorId' in card)) {
+        return false; // Ignorējam nederīgas kartes
+      }
+
       // Nosaka, vai karte atbilst tēmai (vai nu aktīvajai lapas tēmai, vai konkrētajai akordeona tēmai)
       const matchesTheme = (themeId === null)
-        ? (activePageTheme === 2 || card.theme === activePageTheme) // Ja nav akordeona, pārbauda pret "Visas" (ID 2) vai aktīvo lapas tēmu
+        ? (activePageTheme === 'all' || card.theme === activePageTheme) // Ja nav akordeona, pārbauda pret "Visas" (ID 'all') vai aktīvo lapas tēmu
         : (card.theme === themeId); // Ja ir akordeons, pārbauda pret konkrēto tēmu ID
 
       // Izslēdz "Sākums" tēmas kartītes (ID 1) no filtra, ja vien pati lapa nav "Sākums"
       const excludeHomePageCards = card.theme === 1 && activePageTheme !== 1; // ID 1 ir "Sākums" tēma
-
+      
       // Nosaka, vai karte atbilst atlasītajiem autoriem
       const matchesAuthors = filterAuthors.length === 0 || filterAuthors.includes(card.authorId);
-
+      
       return matchesTheme && matchesAuthors && !excludeHomePageCards;
     });
   }, [allCards, activePageTheme, filterAuthors]);
@@ -68,14 +76,16 @@ const CardFilter = ({
   // Izmanto useMemo, lai optimizētu un pārrēķinātu tikai tad, kad mainās atkarības
   const groupedCardsByTheme = useMemo(() => {
     const groups = {};
-    // Akordeona grupēšana notiek tikai, ja aktīvā lapas tēma ir "Visas" (ID 2)
-    if (activePageTheme === 2) {
-      // Filtrējam tēmas, lai akordeonā nerādītu "Sākums" (ID 1), "Visas" (ID 2), "Biedrība" (ID 104), "Tirdzniecība" (ID 105), "Stāsti" (ID 106), "Izdrukām" (ID 107)
-      const themesForAccordion = allThemesData.filter(t => ![1, 2, 104, 105, 106, 107].includes(t.id));
-
-      if (themesForAccordion && Array.isArray(themesForAccordion)) {
+    // Akordeona grupēšana notiek tikai, ja aktīvā lapas tēma ir "Visas" (ID 'all')
+    if (activePageTheme === 'all') {
+      // Filtrējam tēmas, lai akordeonā nerādītu "Sākums" (ID 1), "Visas" (ID 'all'),
+      // un galvenās navigācijas tēmas (Biedrība, Tirdzniecība, Stāsti, Izdrukām, Raksti, Video)
+      const themesForAccordion = Array.isArray(allThemesData)
+        ? allThemesData.filter(t => t && typeof t === 'object' && 'id' in t && !['all', 1, 104, 105, 106, 107, 108, 109].includes(t.id))
+        : [];
+      
+      if (themesForAccordion.length > 0) {
           themesForAccordion.forEach(theme => {
-            // Iegūst kartītes, kas pieder šai tēmai un atbilst citiem filtriem
             const cardsInTheme = getDisplayableCardsForSelection(theme.id);
             if (cardsInTheme.length > 0) {
               groups[theme.id] = {
@@ -89,9 +99,10 @@ const CardFilter = ({
     return groups;
   }, [activePageTheme, getDisplayableCardsForSelection, allThemesData]);
 
+
   // Funkcija akordeona atvēršanas/aizvēršanas pārvaldībai
   const handleAccordionToggle = (id) => {
-    setOpenAccordionId(prevId => (prevId === id ? null : id)); // Atver/aizver izvēlēto akordeonu
+    setOpenAccordionId(prevId => (prevId === id ? null : id));
   };
 
   // Funkcija filtru pielietošanai un modālā loga aizvēršanai
@@ -105,17 +116,20 @@ const CardFilter = ({
       <div className="filter-group">
         <label className="filter-label">Filtrēt pēc autora:</label>
         <div className="author-checkbox-group">
-          {authors.map(author => (
-            <label key={author.id} className="author-checkbox-label">
-              <input
-                type="checkbox"
-                value={author.id}
-                checked={filterAuthors.includes(author.id)}
-                onChange={() => handleAuthorCheckboxChange(author.id)}
-                className="author-checkbox"
-              />
-              {author.name}
-            </label>
+          {Array.isArray(authors) && authors.map(author => (
+            // Pārbaudām, vai autors ir derīgs objekts ar ID
+            author && typeof author === 'object' && 'id' in author && (
+              <label key={author.id} className="author-checkbox-label">
+                <input
+                  type="checkbox"
+                  value={author.id}
+                  checked={filterAuthors.includes(author.id)}
+                  onChange={() => handleAuthorCheckboxChange(author.id)}
+                  className="author-checkbox"
+                />
+                {author.name}
+              </label>
+            )
           ))}
         </div>
       </div>
@@ -123,7 +137,7 @@ const CardFilter = ({
       {/* Filtra grupa kartīšu atlasei */}
       <div className="filter-group">
         {/* Etiķete mainās atkarībā no aktīvās lapas tēmas */}
-        {activePageTheme === 2 ? ( // Ja aktīvā lapas tēma ir "Visas"
+        {activePageTheme === 'all' ? ( // Ja aktīvā lapas tēma ir "Visas"
           <label className="filter-label">Atlasīt kartītes pēc nosaukuma:</label>
         ) : ( // Citādi, rāda tēmas kopsavilkumu vai vispārīgu atlases etiķeti
           <label className="filter-label">
@@ -132,33 +146,32 @@ const CardFilter = ({
         )}
 
         {/* Akordeona grupēšana tikai, ja activePageTheme ir "Visas" */}
-        {activePageTheme === 2 ? (
+        {activePageTheme === 'all' ? (
           <div className="accordion-filter-wrapper">
             {Object.values(groupedCardsByTheme).length === 0 ? (
               <p className="no-cards-message-filter">Nav atbilstošu kartīšu.</p>
             ) : (
               Object.values(groupedCardsByTheme).map(group => (
                 <Accordion
-                  key={group.theme.id} // Akordeona atslēga ir tēmas ID
-                  title={group.theme.name} // Akordeona virsraksts ir tēmas nosaukums
-                  isOpen={openAccordionId === group.theme.id} // Kontrolē, vai akordeons ir atvērts
-                  onToggle={() => handleAccordionToggle(group.theme.id)} // Atvēršanas/aizvēršanas funkcija
+                  key={group.theme.id}
+                  title={group.theme.name} 
+                  isOpen={openAccordionId === group.theme.id}
+                  onToggle={() => handleAccordionToggle(group.theme.id)}
                   content={
-                    // Akordeona saturs: kartīšu atlases saraksts
                     <div className="card-selection-list nested">
-                      {group.cards.map(card => (
-                        <label key={card.id} className="card-selection-label">
-                          <input
-                            type="checkbox"
-                            value={card.id}
-                            checked={selectedCardIds.includes(card.id)}
-                            onChange={() => onToggleCardSelection(card.id)}
-                            className="card-selection-checkbox"
-                          />
-                          <span className="card-selection-title">{card.title}</span>
-                          {/* Varētu attēlot kopsavilkumu, ja vēlējāties */}
-                          {/* <span className="card-selection-theme-summary">{card.summary}</span> */}
-                        </label>
+                      {Array.isArray(group.cards) && group.cards.map(card => (
+                        card && typeof card === 'object' && 'id' in card && ( // Papildu drošības pārbaude
+                          <label key={card.id} className="card-selection-label">
+                            <input
+                              type="checkbox"
+                              value={card.id}
+                              checked={selectedCardIds.includes(card.id)}
+                              onChange={() => onToggleCardSelection(card.id)}
+                              className="card-selection-checkbox"
+                            />
+                            <span className="card-selection-title">{card.title}</span>
+                          </label>
+                        )
                       ))}
                     </div>
                   }
@@ -172,17 +185,19 @@ const CardFilter = ({
             {getDisplayableCardsForSelection().length === 0 ? (
               <p className="no-cards-message-filter">Nav atbilstošu kartīšu.</p>
             ) : (
-              getDisplayableCardsForSelection().map(card => (
-                <label key={card.id} className="card-selection-label">
-                  <input
-                    type="checkbox"
-                    value={card.id}
-                    checked={selectedCardIds.includes(card.id)}
-                    onChange={() => onToggleCardSelection(card.id)}
-                    className="card-selection-checkbox"
-                  />
-                  <span className="card-selection-title">{card.title}</span>
-                </label>
+              Array.isArray(getDisplayableCardsForSelection()) && getDisplayableCardsForSelection().map(card => (
+                card && typeof card === 'object' && 'id' in card && ( // Papildu drošības pārbaude
+                  <label key={card.id} className="card-selection-label">
+                    <input
+                      type="checkbox"
+                      value={card.id}
+                      checked={selectedCardIds.includes(card.id)}
+                      onChange={() => onToggleCardSelection(card.id)}
+                      className="card-selection-checkbox"
+                    />
+                    <span className="card-selection-title">{card.title}</span>
+                  </label>
+                )
               ))
             )}
           </div>
@@ -204,4 +219,4 @@ const CardFilter = ({
   );
 };
 
-export default CardFilter; // Eksportējam komponenti
+export default CardFilter;

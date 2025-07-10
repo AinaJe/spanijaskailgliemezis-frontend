@@ -1,5 +1,5 @@
 // src/App.jsx
-import React, { useState, useMemo, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useMemo, useEffect, lazy, Suspense, useCallback } from 'react';
 import './App.css';
 
 // Importējam lapu komponentes
@@ -135,10 +135,11 @@ function App() {
 
 
   // handleReadMore funkcija
-  const handleReadMore = (card) => {
-    const cardAuthor = authors.find(a => a.id === card.authorId);
+  const handleReadMore = useCallback((card) => {
+    const safeAuthors = Array.isArray(authors) ? authors : [];
+    const cardAuthor = safeAuthors.find(a => a.id === card.authorId);
     const updatedImages = card.images.map(img => {
-        const imgAuthor = authors.find(a => a.id === img.authorId);
+        const imgAuthor = safeAuthors.find(a => a.id === img.authorId);
         return {
           ...img,
           authorName: imgAuthor ? imgAuthor.name : 'Nezināms autors'
@@ -149,50 +150,51 @@ function App() {
       ...card,
       authorName: cardAuthor ? cardAuthor.name : 'Nezināms autors',
       images: updatedImages,
-      allAuthors: authors
+      allAuthors: safeAuthors
     });
-  };
+  }, [authors]);
 
   // handleCloseModal funkcija
-  const handleCloseModal = () => {
+  const handleCloseModal = useCallback(() => {
     setSelectedCard(null);
-  };
+  }, []);
 
   // handleToggleCardSelectionInFilter funkcija
-  const handleToggleCardSelectionInFilter = (cardId) => {
+  const handleToggleCardSelectionInFilter = useCallback((cardId) => {
     setSelectedFilteredCardIds(prevSelected =>
       prevSelected.includes(cardId)
         ? prevSelected.filter(id => id !== cardId)
         : [...prevSelected, cardId]
     );
-  };
+  }, []);
 
   // currentThemeDetail useMemo
   const currentThemeDetail = useMemo(() => {
+    const safeThemes = Array.isArray(themesData) ? themesData : [];
     switch (activeSection) {
       case 'home': {
-        return themesData.find(t => t.id === 1);
+        return safeThemes.find(t => t.id === 1);
       }
       case 'recommendations': {
-        return filterTheme !== 'all' ? themesData.find(theme => theme.id === filterTheme) : null;
+        return filterTheme !== 'all' ? safeThemes.find(theme => theme.id === filterTheme) : null;
       }
       case 'association': {
-        return themesData.find(t => t.id === 104);
+        return safeThemes.find(t => t.id === 104);
       }
       case 'trade': {
-        return themesData.find(t => t.id === 105);
+        return safeThemes.find(t => t.id === 105);
       }
       case 'stories': {
-        return themesData.find(t => t.id === 106);
+        return safeThemes.find(t => t.id === 106);
       }
       case 'prints': {
-        return themesData.find(t => t.id === 107);
+        return safeThemes.find(t => t.id === 107);
       }
       case 'articles': {
-        return themesData.find(t => t.id === 108);
+        return safeThemes.find(t => t.id === 108);
       }
       case 'videos': {
-        return themesData.find(t => t.id === 109);
+        return safeThemes.find(t => t.id === 109);
       }
       default: {
         return null;
@@ -202,7 +204,10 @@ function App() {
 
   // filteredCardsBase useMemo
   const filteredCardsBase = useMemo(() => {
-    return cards.filter(card => {
+    const safeCards = Array.isArray(cards) ? cards : [];
+    const safeAuthors = Array.isArray(authors) ? authors : [];
+    const safeThemes = Array.isArray(themesData) ? themesData : [];
+    return safeCards.filter(card => {
       switch (activeSection) {
         case 'home': {
           return card.theme === 1;
@@ -235,8 +240,8 @@ function App() {
       }
     })
     .map(card => {
-      const cardAuthor = authors.find(a => a.id === card.authorId);
-      const cardThemeData = themesData.find(t => t.id === card.theme);
+      const cardAuthor = safeAuthors.find(a => a.id === card.authorId);
+      const cardThemeData = safeThemes.find(t => t.id === card.theme);
       return {
         ...card,
         authorName: cardAuthor ? cardAuthor.name : 'Nezināms autors',
@@ -264,31 +269,35 @@ function App() {
 
   // Lapošanas loģika rakstiem
   const paginatedArticles = useMemo(() => {
-    if (articlesItemsPerPage === Infinity) return articles;
+    const safeArticles = Array.isArray(articles) ? articles : [];
+    if (articlesItemsPerPage === Infinity) return safeArticles;
     const startIndex = (articlesCurrentPage - 1) * articlesItemsPerPage;
     const endIndex = startIndex + articlesItemsPerPage;
-    return articles.slice(startIndex, endIndex);
+    return safeArticles.slice(startIndex, endIndex);
   }, [articles, articlesCurrentPage, articlesItemsPerPage]);
 
   // Lapošanas loģika video
   const paginatedVideos = useMemo(() => {
-    if (videosItemsPerPage === Infinity) return videos;
+    const safeVideos = Array.isArray(videos) ? videos : [];
+    if (videosItemsPerPage === Infinity) return safeVideos;
     const startIndex = (videosCurrentPage - 1) * videosItemsPerPage;
     const endIndex = startIndex + videosItemsPerPage;
-    return videos.slice(startIndex, endIndex);
+    return safeVideos.slice(startIndex, endIndex);
   }, [videos, videosCurrentPage, videosItemsPerPage]);
 
 
   // activeFiltersList useMemo
   const activeFiltersList = useMemo(() => {
     const filters = [];
+    const safeThemes = Array.isArray(themesData) ? themesData : [];
+    const safeAuthors = Array.isArray(authors) ? authors : [];
     if (activeSection === 'recommendations') {
       if (filterTheme !== 'all') {
-        const themeName = themesData.find(t => t.id === filterTheme)?.name || filterTheme;
+        const themeName = safeThemes.find(t => t.id === filterTheme)?.name || filterTheme;
         filters.push({ type: 'theme', value: themeName, id: filterTheme });
       }
       filterAuthors.forEach(authorId => {
-          const authorName = authors.find(a => a.id === authorId)?.name || authorId;
+          const authorName = safeAuthors.find(a => a.id === authorId)?.name || authorId;
           filters.push({ type: 'author', value: authorName, id: authorId });
       });
       if (selectedFilteredCardIds.length > 0) {
@@ -299,7 +308,7 @@ function App() {
   }, [filterTheme, filterAuthors, selectedFilteredCardIds, themesData, authors, activeSection]);
 
   // handleRemoveFilter funkcija
-  const handleRemoveFilter = (filter) => {
+  const handleRemoveFilter = useCallback((filter) => {
     if (filter.type === 'theme') {
       setFilterTheme('all');
       setActiveTheme('all');
@@ -308,15 +317,15 @@ function App() {
     } else if (filter.type === 'selectedCards') {
         setSelectedFilteredCardIds([]);
     }
-  };
+  }, []);
 
   // handleClearAllActiveFilters funkcija
-  const handleClearAllActiveFilters = () => {
+  const handleClearAllActiveFilters = useCallback(() => {
     setFilterTheme('all');
     setFilterAuthors([]);
     setSelectedFilteredCardIds([]);
     setActiveTheme('all');
-  };
+  }, []);
 
   return (
     <div className="App">
