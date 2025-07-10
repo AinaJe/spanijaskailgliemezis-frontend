@@ -1,13 +1,21 @@
 // src/components/common/Modals/ConfirmDeleteModal.jsx
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import Modal from './Modal';
 import './CardDetailModal/CardDetailModal.css';
+
+const CardDetailModalContent = lazy(() => import('./CardDetailModalContent'));
 
 const ConfirmDeleteModal = ({ item, itemType, onClose, onConfirm }) => {
   if (!item) return null;
 
   const renderItemDetails = () => {
     switch (itemType) {
+      case 'kartīti':
+        return (
+          <Suspense fallback={<div>Ielādē...</div>}>
+            <CardDetailModalContent card={item} />
+          </Suspense>
+        );
       case 'autoru':
         return <p><strong>Vārds:</strong> {item.name}</p>;
       case 'tēmu':
@@ -29,13 +37,6 @@ const ConfirmDeleteModal = ({ item, itemType, onClose, onConfirm }) => {
             <>
                 <p><strong>Nosaukums:</strong> {item.title}</p>
                 {item.videoLink && <p><strong>Saite:</strong> <a href={item.videoLink} target="_blank" rel="noopener noreferrer">{item.videoLink}</a></p>}
-            </>
-        );
-      case 'kartīti':
-        return (
-            <>
-                <p><strong>Nosaukums:</strong> {item.title}</p>
-                <p><strong>Autors:</strong> {item.authorName}</p>
             </>
         );
       default:

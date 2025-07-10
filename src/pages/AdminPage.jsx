@@ -10,21 +10,19 @@ import EditAuthorForm from '../components/forms/EditAuthorForm';
 import EditThemeForm from '../components/forms/EditThemeForm';
 import EditArticleForm from '../components/forms/EditArticleForm';
 import EditVideoForm from '../components/forms/EditVideoForm';
+import EditCardForm from '../components/forms/EditCardForm';
 import InfoModal from '../components/common/Modals/InfoModal';
 import ConfirmDeleteModal from '../components/common/Modals/ConfirmDeleteModal';
-const CardDetailModal = lazy(() => import('../components/common/Modals/CardDetailModal/CardDetailModal'));
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt, faEye, faGripVertical } from '@fortawesome/free-solid-svg-icons';
 import { formatDateTimeToDDMMYYYYHHMM, formatDateToDDMMYYYY } from '../utils/dateUtils';
-
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
 const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20, 50, 100, Infinity];
 
-const SortableCardRow = ({ card, handleView, handleEdit, handleDelete }) => {
+const SortableCardRowForOrdering = ({ card }) => {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: card.id });
     const style = { transform: CSS.Transform.toString(transform), transition };
 
@@ -34,21 +32,15 @@ const SortableCardRow = ({ card, handleView, handleEdit, handleDelete }) => {
             <td data-label="ID">{card.id}</td>
             <td data-label="Nosaukums">{card.title}</td>
             <td data-label="Autors">{card.authorName}</td>
-            <td data-label="Izveidots">{formatDateTimeToDDMMYYYYHHMM(card.created_at)}</td>
-            <td data-label="Darbības" className="admin-table-actions">
-                <button onClick={() => handleView('kartīti', card)} className="admin-table-button view-button"><FontAwesomeIcon icon={faEye} /></button>
-                <button onClick={() => handleEdit('kartīti', card)} className="admin-table-button edit-button"><FontAwesomeIcon icon={faEdit} /></button>
-                <button onClick={() => handleDelete('kartīti', card)} className="admin-table-button delete-button"><FontAwesomeIcon icon={faTrashAlt} /></button>
-            </td>
         </tr>
     );
 };
 
-const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setThemesData, setCards, setArticles, setVideos }) => {
+const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setThemesData, setCards, setArticles, setVideos, handleReadMore }) => {
   const [openAccordionId, setOpenAccordionId] = useState(null);
   const [openCardThemeAccordionId, setOpenCardThemeAccordionId] = useState(null);
-
-  const [modalsState, setModalsState] = useState({ add: null, view: null, edit: null, delete: null });
+  
+  const [modalsState, setModalsState] = useState({ add: null, edit: null, delete: null });
   const [selectedItem, setSelectedItem] = useState(null);
   
   const [authorsCurrentPage, setAuthorsCurrentPage] = useState(1);
@@ -62,7 +54,13 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
 
   const [videosCurrentPage, setVideosCurrentPage] = useState(1);
   const [videosItemsPerPage, setVideosItemsPerPage] = useState(ITEMS_PER_PAGE_OPTIONS[0]);
+
+  const [cardsCurrentPage, setCardsCurrentPage] = useState(1);
+  const [cardsItemsPerPage, setCardsItemsPerPage] = useState(ITEMS_PER_PAGE_OPTIONS[0]);
   
+  const [adminCardAuthorFilter, setAdminCardAuthorFilter] = useState('');
+  const [adminCardThemeFilter, setAdminCardThemeFilter] = useState('');
+
   const [sortedCards, setSortedCards] = useState(cards);
 
   useEffect(() => { setSortedCards(cards); }, [cards]);
@@ -78,13 +76,25 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
     }
   };
 
-  const paginatedAuthors = Array.isArray(authors) ? authors.slice((authorsCurrentPage - 1) * authorsItemsPerPage, (authorsCurrentPage - 1) * authorsItemsPerPage + authorsItemsPerPage) : [];
-  const actualThemes = Array.isArray(themes) ? themes.filter(t => t.id !== 1 && t.id !== 2) : [];
-  const paginatedThemes = [...actualThemes].sort((a, b) => a.name.localeCompare(b.name)).slice((themesCurrentPage - 1) * themesItemsPerPage, (themesCurrentPage - 1) * themesItemsPerPage + themesItemsPerPage);
-  const paginatedArticles = Array.isArray(articles) ? [...articles].sort((a, b) => new Date(b.date) - new Date(a.date)).slice((articlesCurrentPage - 1) * articlesItemsPerPage, (articlesCurrentPage - 1) * articlesItemsPerPage + articlesItemsPerPage) : [];
-  const paginatedVideos = Array.isArray(videos) ? [...videos].sort((a, b) => new Date(b.date) - new Date(a.date)).slice((videosCurrentPage - 1) * videosItemsPerPage, (videosCurrentPage - 1) * videosItemsPerPage + videosItemsPerPage) : [];
+  const paginatedAuthors = Array.isArray(authors) ? authors.slice((authorsCurrentPage - 1) * authorsItemsPerPage, authorsCurrentPage * authorsItemsPerPage) : [];
+  const actualThemes = Array.isArray(themes) ? themes.filter(t => t.id !== 1 && t.id !== 'all') : [];
+  const paginatedThemes = [...actualThemes].sort((a, b) => a.name.localeCompare(b.name)).slice((themesCurrentPage - 1) * themesItemsPerPage, themesCurrentPage * themesItemsPerPage);
+  const paginatedArticles = Array.isArray(articles) ? [...articles].sort((a, b) => new Date(b.date) - new Date(a.date)).slice((articlesCurrentPage - 1) * articlesItemsPerPage, articlesCurrentPage * articlesItemsPerPage) : [];
+  const paginatedVideos = Array.isArray(videos) ? [...videos].sort((a, b) => new Date(b.date) - new Date(a.date)).slice((videosCurrentPage - 1) * videosItemsPerPage, videosCurrentPage * videosItemsPerPage) : [];
+  
+  const filteredAdminCards = useMemo(() => {
+    return cards
+      .filter(card => {
+        const authorMatch = !adminCardAuthorFilter || card.authorId === parseInt(adminCardAuthorFilter, 10);
+        const themeMatch = !adminCardThemeFilter || card.theme === parseInt(adminCardThemeFilter, 10);
+        return authorMatch && themeMatch;
+      })
+      .sort((a, b) => b.id - a.id);
+  }, [cards, adminCardAuthorFilter, adminCardThemeFilter]);
 
-  const groupedCardsByTheme = useMemo(() => {
+  const paginatedAdminCards = filteredAdminCards.slice((cardsCurrentPage - 1) * cardsItemsPerPage, cardsCurrentPage * cardsItemsPerPage);
+
+  const groupedCardsByThemeForSorting = useMemo(() => {
     return sortedCards.reduce((acc, card) => {
       const themeId = card.theme;
       if (!acc[themeId]) acc[themeId] = [];
@@ -102,7 +112,7 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
   };
   
   const closeModal = () => {
-    setModalsState({ add: null, view: null, edit: null, delete: null });
+    setModalsState({ add: null, edit: null, delete: null });
     setSelectedItem(null);
   };
   
@@ -134,7 +144,8 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
   const authorColumns = [ { label: 'ID', width: '60px' }, { label: 'Vārds', width: 'auto' }, { label: 'Izveidots', width: '180px' }, { label: 'Darbības', width: '120px' }];
   const themeColumns = [ { label: 'ID', width: '60px' }, { label: 'Nosaukums', width: '150px' }, { label: 'Kopsavilkums', width: 'auto' }, { label: 'Izveidots', width: '180px' }, { label: 'Darbības', width: '120px' }];
   const articleColumns = [ { label: 'ID', width: '60px' }, { label: 'Datums', width: '120px' }, { label: 'Nosaukums', width: 'auto' }, { label: 'Autors', width: '195px' }, { label: 'Izveidots', width: '180px' }, { label: 'Darbības', width: '120px' }];
-  
+  const cardColumns = [ { label: 'ID', width: '60px' }, { label: 'Nosaukums', width: 'auto' }, { label: 'Tēma', width: '220px' }, { label: 'Autors', width: '195px' }, { label: 'Izveidots', width: '180px' }, { label: 'Darbības', width: '120px' }];
+
   return (
     <div className="admin-page-container">
       <h2 className="admin-page-title">Ierakstu pārvaldība</h2>
@@ -147,16 +158,6 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
         data={{ themes, authors }}
       />
       
-      {modalsState.view && (
-        modalsState.view === 'kartīti' ? (
-          <Suspense fallback={<div>Ielādē...</div>}>
-            <CardDetailModal card={selectedItem} onClose={closeModal} />
-          </Suspense>
-        ) : (
-          <InfoModal item={selectedItem} type={modalsState.view} onClose={closeModal} />
-        )
-      )}
-
       {modalsState.delete && (
         <ConfirmDeleteModal 
             item={selectedItem}
@@ -172,7 +173,7 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
               {modalsState.edit === 'tēmu' && <EditThemeForm theme={selectedItem} onUpdateTheme={(id, data) => handleUpdate('tēmu', id, data)} onClose={closeModal} />}
               {modalsState.edit === 'rakstu' && <EditArticleForm item={selectedItem} availableAuthors={authors} onUpdate={handleUpdate} onClose={closeModal} />}
               {modalsState.edit === 'video' && <EditVideoForm item={selectedItem} availableAuthors={authors} onUpdate={handleUpdate} onClose={closeModal} />}
-              {modalsState.edit === 'kartīti' && <p>Kartīšu rediģēšanas forma vēl nav ieviesta.</p>}
+              {modalsState.edit === 'kartīti' && <EditCardForm card={selectedItem} onUpdateCard={(id, data) => handleUpdate('kartīti', id, data)} availableThemes={themes} availableAuthors={authors} onClose={closeModal} />}
           </Modal>
       )}
       
@@ -212,7 +213,7 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
             renderRow={(article) => (
                  <tr key={article.id}>
                     <td data-label="ID">{article.id}</td><td data-label="Datums">{formatDateToDDMMYYYY(article.date)}</td><td data-label="Nosaukums">{article.title}</td><td data-label="Autors">{article.authorName}</td><td data-label="Izveidots">{formatDateTimeToDDMMYYYYHHMM(article.created_at)}</td><td data-label="Darbības" className="admin-table-actions">
-                        <button onClick={() => openModal('view', 'rakstu', article)} className="admin-table-button view-button"><FontAwesomeIcon icon={faEye} /></button>
+                        <button onClick={() => handleReadMore(article)} className="admin-table-button view-button"><FontAwesomeIcon icon={faEye} /></button>
                         <button onClick={() => openModal('edit', 'rakstu', article)} className="admin-table-button edit-button"><FontAwesomeIcon icon={faEdit} /></button>
                         <button onClick={() => openModal('delete', 'rakstu', article)} className="admin-table-button delete-button"><FontAwesomeIcon icon={faTrashAlt} /></button>
                     </td>
@@ -227,7 +228,7 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
             renderRow={(video) => (
                 <tr key={video.id}>
                     <td data-label="ID">{video.id}</td><td data-label="Datums">{formatDateToDDMMYYYY(video.date)}</td><td data-label="Nosaukums">{video.title}</td><td data-label="Autors">{video.authorName}</td><td data-label="Izveidots">{formatDateTimeToDDMMYYYYHHMM(video.created_at)}</td><td data-label="Darbības" className="admin-table-actions">
-                        <button onClick={() => openModal('view', 'video', video)} className="admin-table-button view-button"><FontAwesomeIcon icon={faEye} /></button>
+                        <button onClick={() => handleReadMore(video)} className="admin-table-button view-button"><FontAwesomeIcon icon={faEye} /></button>
                         <button onClick={() => openModal('edit', 'video', video)} className="admin-table-button edit-button"><FontAwesomeIcon icon={faEdit} /></button>
                         <button onClick={() => openModal('delete', 'video', video)} className="admin-table-button delete-button"><FontAwesomeIcon icon={faTrashAlt} /></button>
                     </td>
@@ -236,35 +237,87 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
             paginationProps={{ totalItems: videos.length, itemsPerPage: videosItemsPerPage, currentPage: videosCurrentPage, onPageChange: setVideosCurrentPage, onItemsPerPageChange: setVideosItemsPerPage }}
             itemsPerPageOptions={ITEMS_PER_PAGE_OPTIONS}
         />
-
+        
+        <AdminSection
+          title="Ieteikumi"
+          isOpen={openAccordionId === 'cardsAdmin'}
+          onToggle={() => handleToggleAccordion('cardsAdmin')}
+          data={paginatedAdminCards}
+          columns={cardColumns}
+          renderRow={(card) => (
+              <tr key={card.id}>
+                  <td data-label="ID">{card.id}</td>
+                  <td data-label="Nosaukums">{card.title}</td>
+                  <td data-label="Tēma">{card.themeName}</td>
+                  <td data-label="Autors">{card.authorName}</td>
+                  <td data-label="Izveidots">{formatDateTimeToDDMMYYYYHHMM(card.created_at)}</td>
+                  <td data-label="Darbības" className="admin-table-actions">
+                      <button onClick={() => handleReadMore(card)} className="admin-table-button view-button"><FontAwesomeIcon icon={faEye} /></button>
+                      <button onClick={() => openModal('edit', 'kartīti', card)} className="admin-table-button edit-button"><FontAwesomeIcon icon={faEdit} /></button>
+                      <button onClick={() => openModal('delete', 'kartīti', card)} className="admin-table-button delete-button"><FontAwesomeIcon icon={faTrashAlt} /></button>
+                  </td>
+              </tr>
+          )}
+          paginationProps={{
+            totalItems: filteredAdminCards.length,
+            itemsPerPage: cardsItemsPerPage,
+            currentPage: cardsCurrentPage,
+            onPageChange: setCardsCurrentPage,
+            onItemsPerPageChange: setCardsItemsPerPage
+          }}
+          itemsPerPageOptions={ITEMS_PER_PAGE_OPTIONS}
+        >
+          <div className="admin-table-filters" style={{ display: 'flex', gap: '15px', marginBottom: '15px', padding: '10px', backgroundColor: '#f9f9f9', borderRadius: '4px' }}>
+            <select value={adminCardAuthorFilter} onChange={(e) => setAdminCardAuthorFilter(e.target.value)} style={{ padding: '8px' }}>
+              <option value="">Filtrēt pēc autora</option>
+              {authors.map(author => <option key={author.id} value={author.id}>{author.name}</option>)}
+            </select>
+            <select value={adminCardThemeFilter} onChange={(e) => setAdminCardThemeFilter(e.target.value)} style={{ padding: '8px' }}>
+              <option value="">Filtrēt pēc tēmas</option>
+              {themes.filter(t => t.id !== 'all').map(theme => <option key={theme.id} value={theme.id}>{theme.name}</option>)}
+            </select>
+          </div>
+        </AdminSection>
+        
         <Accordion
-          title="Ieteikumi (Kartītes)" isOpen={openAccordionId === 'cards'} onToggle={() => handleToggleAccordion('cards')}
+          title="Ieteikumu secība"
+          isOpen={openAccordionId === 'cardsOrdering'}
+          onToggle={() => handleToggleAccordion('cardsOrdering')}
           content={
             <>
-              {Object.keys(groupedCardsByTheme).length === 0 ? <p>Nav nevienas kartītes.</p> : 
-                Object.keys(groupedCardsByTheme).map(themeId => {
-                  const themeCards = groupedCardsByTheme[themeId];
+              {Object.keys(groupedCardsByThemeForSorting).length === 0 ? <p>Nav nevienas kartītes.</p> : 
+                Object.keys(groupedCardsByThemeForSorting).map(themeId => {
+                  const themeCards = groupedCardsByThemeForSorting[themeId];
                   const theme = themes.find(t => t.id === parseInt(themeId, 10));
                   return (
                     <Accordion
-                      key={themeId} title={`${theme ? theme.name : 'Nezināma tēma'} (${themeCards.length})`} isOpen={openCardThemeAccordionId === themeId} onToggle={() => handleToggleCardThemeAccordion(themeId)}
+                      key={themeId}
+                      title={`${theme ? theme.name : 'Nezināma tēma'} (${themeCards.length})`}
+                      isOpen={openCardThemeAccordionId === themeId}
+                      onToggle={() => handleToggleCardThemeAccordion(themeId)}
                       content={
                         <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                           <div className="admin-table-wrapper">
                             <table className="admin-data-table">
-                                <colgroup>
-                                  <col style={{ width: '40px' }} /><col style={{ width: '60px' }} /><col style={{ width: 'auto' }} /><col style={{ width: '195px' }} /><col style={{ width: '180px' }} /><col style={{ width: '120px' }} />
-                                </colgroup>
-                                <thead>
-                                  <tr>
-                                    <th /><th data-label="ID">ID</th><th data-label="Nosaukums">Nosaukums</th><th data-label="Autors">Autors</th><th data-label="Izveidots">Izveidots</th><th data-label="Darbības">Darbības</th>
-                                  </tr>
-                                </thead>
-                                <SortableContext items={themeCards.map(c => c.id)} strategy={verticalListSortingStrategy}>
-                                    <tbody>
-                                      {themeCards.map((card) => <SortableCardRow key={card.id} card={card} handleView={openModal} handleEdit={openModal} handleDelete={openModal} />)}
-                                    </tbody>
-                                </SortableContext>
+                              <colgroup>
+                                <col style={{ width: '40px' }} />
+                                <col style={{ width: '60px' }} />
+                                <col style={{ width: 'auto' }} />
+                                <col style={{ width: '195px' }} />
+                              </colgroup>
+                              <thead>
+                                <tr>
+                                  <th />
+                                  <th data-label="ID">ID</th>
+                                  <th data-label="Nosaukums">Nosaukums</th>
+                                  <th data-label="Autors">Autors</th>
+                                </tr>
+                              </thead>
+                              <SortableContext items={themeCards.map(c => c.id)} strategy={verticalListSortingStrategy}>
+                                <tbody>
+                                  {themeCards.map((card) => <SortableCardRowForOrdering key={card.id} card={card} />)}
+                                </tbody>
+                              </SortableContext>
                             </table>
                           </div>
                         </DndContext>

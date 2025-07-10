@@ -4,7 +4,7 @@ import RichTextEditor from '../../common/RichTextEditor/RichTextEditor';
 import CardFormImageSection from './CardFormImageSection';
 import './CardForm.css';
 
-const CardForm = ({ onAddCard, availableThemes, availableAuthors, allowHomepageTheme = false }) => {
+const CardForm = ({ onAddCard, availableThemes, availableAuthors }) => {
   const [activeTab, setActiveTab] = useState('theme');
   const [theme, setTheme] = useState('');
   const [newThemeInput, setNewThemeInput] = useState('');
@@ -209,9 +209,8 @@ const CardForm = ({ onAddCard, availableThemes, availableAuthors, allowHomepageT
                 <label htmlFor="theme-select" className="card-form-label">Tēma:</label>
                 <select id="theme-select" value={isNewThemeSelected ? 'new-theme-option' : theme} onChange={handleThemeChange} className="card-form-select">
                   <option value="">-- Izvēlēties tēmu --</option>
-                  {/* LABOJUMS: Nodrošinām unikālas atslēgas */}
-                  {availableThemes.map((t, index) => <option key={`${t}-${index}`} value={t}>{t}</option>)}
-                  {allowHomepageTheme && <option key="sākums" value="Sākums">Sākums</option>}
+                  {/* LABOJUMS: Izmantojam theme.id kā key un theme.name kā value */}
+                  {availableThemes.map((theme) => <option key={theme.id} value={theme.name}>{theme.name}</option>)}
                   <option key="new-theme" value="new-theme-option">Cita tēma / Jauna tēma</option>
                 </select>
                 {isNewThemeSelected && (

@@ -1,9 +1,8 @@
 // src/components/common/Modals/CardDetailModalContent.jsx
 import React, { lazy, Suspense } from 'react';
-// LABOJUMS: Pareizais ceļš uz CSS failu
 import './CardDetailModal/CardDetailModal.css';
 
-// LABOJUMS: Pareizie ceļi uz citām komponentēm
+// LABOJUMS: Pareizi ceļi uz citām komponentēm
 const ImageCarousel = lazy(() => import('../../cards/ImageCarousel/ImageCarousel'));
 import RichTextEditor from '../RichTextEditor/RichTextEditor';
 

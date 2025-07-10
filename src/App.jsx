@@ -10,7 +10,7 @@ import { useData } from './hooks/useData';
 import { useFilters } from './hooks/useFilters';
 import { usePagination } from './hooks/usePagination';
 
-const LazyCardDetailModal = lazy(() => import('/src/components/common/Modals/CardDetailModal/CardDetailModal'));
+const LazyCardDetailModal = lazy(() => import('./components/common/Modals/CardDetailModal/CardDetailModal'));
 
 function App() {
   const { authors, setAuthors, themesData, setThemesData, cards, setCards, articles, setArticles, videos, setVideos } = useData();
@@ -35,7 +35,6 @@ function App() {
     resetFilters,
   } = useFilters(activeTheme);
   
-  // Loģika kļūst daudz vienkāršāka, jo dati jau ir papildināti
   const filteredCardsBase = useMemo(() => {
     return cards.filter(card => {
       let themeId;
@@ -46,13 +45,13 @@ function App() {
         case 'trade': themeId = 105; break;
         case 'stories': themeId = 106; break;
         case 'prints': themeId = 107; break;
-        default: return false;
+        default: return true; // Admin sadaļai rādām visas
       }
       
       const matchesTheme = (themeId === 'all') ? [100, 101, 102, 103].includes(card.theme) : card.theme === themeId;
       const matchesAuthors = filterAuthors.length === 0 || filterAuthors.includes(card.authorId);
       
-      return matchesTheme && matchesAuthors;
+      return activeSection === 'admin' || (matchesTheme && matchesAuthors);
     });
   }, [cards, activeSection, filterTheme, filterAuthors]);
 
@@ -97,7 +96,6 @@ function App() {
   }, [activeSection, activeTheme, filterTheme, setFilterTheme, setFilterAuthors, handleClearCardSelections]);
 
   const handleReadMore = useCallback((card) => {
-    // Vairs nav nepieciešams papildināt datus šeit, tie jau nāk gatavi
     setSelectedCard(card);
   }, []);
 
@@ -146,7 +144,7 @@ function App() {
     },
     articles: { articles: paginatedArticles, availableAuthors: authors, paginationProps: articlesPaginationProps, pageThemeDetail: currentThemeDetail },
     videos: { videos: paginatedVideos, availableAuthors: authors, paginationProps: videosPaginationProps, pageThemeDetail: currentThemeDetail },
-    admin: { authors, themes: themesData, cards, articles, videos, setAuthors, setThemesData, setCards, setArticles, setVideos }
+    admin: { authors, themes: themesData, cards, articles, videos, setAuthors, setThemesData, setCards, setArticles, setVideos, handleReadMore }
   };
 
   return (

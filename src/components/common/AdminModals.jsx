@@ -12,6 +12,9 @@ const AdminModals = ({ modalsState, handlers, data }) => {
   const { onAddAuthor, onAddTheme, onAddCard, onAddArticle, onAddVideo } = handlers.add;
   const { onClose } = handlers;
 
+  // Tēmas, kuras var piešķirt jaunai kartītei (izslēdzam tikai 'Visi')
+  const cardAssignableThemes = themes.filter(t => t.id !== 'all');
+
   return (
     <>
       <Modal isOpen={modalsState.author} onClose={() => onClose('author')} title="Pievienot autoru">
@@ -25,9 +28,9 @@ const AdminModals = ({ modalsState, handlers, data }) => {
       <Modal isOpen={modalsState.card} onClose={() => onClose('card')} title="Pievienot kartīti">
         <CardForm
           onAddCard={onAddCard}
-          availableThemes={themes.filter(t => ![1, 2, 104, 105, 106, 107].includes(t.id)).map(t => t.name)}
+          availableThemes={cardAssignableThemes} // Padodam objektu masīvu
           availableAuthors={authors}
-          allowHomepageTheme={true}
+          allowHomepageTheme={false} // Vairs nav nepieciešams, jo Sākums jau ir sarakstā
         />
       </Modal>
 

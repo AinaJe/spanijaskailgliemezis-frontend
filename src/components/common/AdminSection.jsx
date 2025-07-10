@@ -1,6 +1,5 @@
 // src/components/common/AdminSection.jsx
 import React from 'react';
-// LABOJUMS: Pievienojam pareizos ceļus uz komponentēm, kas atrodas apakšmapēs
 import Accordion from './Accordion/Accordion';
 import Pagination from './Pagination/Pagination';
 
@@ -13,6 +12,7 @@ const AdminSection = ({
   renderRow,
   paginationProps,
   itemsPerPageOptions,
+  children, // Pievienojam 'children' prop
 }) => {
   return (
     <Accordion
@@ -21,6 +21,7 @@ const AdminSection = ({
       onToggle={onToggle}
       content={
         <>
+          {children} {/* Attēlojam bērnu elementus (filtrus) */}
           {data.length === 0 ? (
             <p>Nav neviena ieraksta.</p>
           ) : (
@@ -44,14 +45,16 @@ const AdminSection = ({
               </table>
             </div>
           )}
-          <Pagination
-            totalItems={paginationProps.totalItems}
-            itemsPerPage={paginationProps.itemsPerPage}
-            currentPage={paginationProps.currentPage}
-            onPageChange={paginationProps.onPageChange}
-            onItemsPerPageChange={paginationProps.onItemsPerPageChange}
-            itemsPerPageOptions={itemsPerPageOptions}
-          />
+          {paginationProps && (
+            <Pagination
+              totalItems={paginationProps.totalItems}
+              itemsPerPage={paginationProps.itemsPerPage}
+              currentPage={paginationProps.currentPage}
+              onPageChange={paginationProps.onPageChange}
+              onItemsPerPageChange={paginationProps.onItemsPerPageChange}
+              itemsPerPageOptions={itemsPerPageOptions}
+            />
+          )}
         </>
       }
     />

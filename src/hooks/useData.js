@@ -15,12 +15,16 @@ export const useData = () => {
 
   useEffect(() => {
     setAuthors(simulatedAuthors);
+    
+    // Centrālā tēmu definīcija, lai izvairītos no dublikātiem
     const initialThemes = [
         { id: 1, name: 'Sākums', summary: 'Laipni lūdzam mūsu mājaslapā! Šeit atradīsiet jaunāko un aktuālāko informāciju.', description: '<p>Esiet sveicināti mūsu digitālajā centrā! Mēs esam priecīgi dalīties ar jums jaunākajām <b>kartītēm</b>, <b>rakstiem</b> un <b>video</b>, kas aptver dažādas aizraujošas tēmas. Izpētiet mūsu saturu un atklājiet jaunas zināšanas!</p>' },
-        { id: 'all', name: 'Visas', summary: 'Visas kartītes kopā, neatkarīgi no tēmas.', description: '<p>Šeit ir redzami visi mūsu pieejamie kartīšu ieraksti, neatkarīgi no tēmas.</p>' },
-        ...(Array.isArray(simulatedThemesData) ? simulatedThemesData : [])
+        { id: 'all', name: 'Visi', summary: 'Visi ieteikumi kopā, neatkarīgi no tēmas.', description: '<p>Šeit ir redzami visi mūsu pieejamie ieteikumi, neatkarīgi no tēmas.</p>' },
+        // Pārējās tēmas tiek ielādētas no simulētajiem datiem
+        ...(Array.isArray(simulatedThemesData) ? simulatedThemesData.filter(t => t.id !== 1 && t.id !== 'all') : [])
     ];
     setThemes(initialThemes);
+
     setRawCards(simulatedCards);
     setRawArticles(simulatedArticles);
     setRawVideos(simulatedVideos);

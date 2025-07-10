@@ -1,22 +1,7 @@
 // src/data/simulatedThemesData.js
 
 export const simulatedThemesData = [
-  // Piezīme: "Sākums" un "Visas" tiek pievienotas App.jsx inicializācijas laikā,
-  // tāpēc šīs simulētajos datos var nebūt.
-  // Esmu tās atstājis simulētajos datos, ja vēlaties tās izmantot kā fallback.
-  // Svarīgi: Pārliecināties, ka ID ir unikāli.
-  {
-    id: 1, // Speciāls ID "Sākums" tēmai
-    name: "Sākums",
-    summary: "Laipni lūdzam mūsu mājaslapā! Šeit atradīsiet jaunāko un aktuālāko informāciju.",
-    description: "<p>Esiet sveicināti mūsu digitālajā centrā! Mēs esam priecīgi dalīties ar jums jaunākajām <b>kartītēm</b>, <b>rakstiem</b> un <b>video</b>, kas aptver dažādas aizraujošas tēmas. Izpētiet mūsu saturu un atklājiet jaunas zināšanas!</p>",
-  },
-  {
-    id: 'all', // Speciāls ID "Visas" tēmai - labots uz 'all'
-    name: "Visas",
-    summary: "Visas kartītes kopā, neatkarīgi no tēmas.",
-    description: "<p>Šeit ir redzami visi mūsu pieejamie kartīšu ieraksti, neatkarīgi no tēmas.</p>",
-  },
+  // Piezīme: Sistēmas tēmas (Sākums, Visi) tiek definētas centrāli useData.js hook.
   {
     id: 100,
     name: "Spānijas kailgliemezis",
