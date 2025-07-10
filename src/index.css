@@ -48,7 +48,7 @@
     /* Fontu un izkārtojuma mainīgie */
     --font-family: 'Roboto', sans-serif;
     --base-font-size: 17px;
-    --content-max-width: 1100px;
+    --content-max-width: 2100px; /* Palielināts platums */
 }
 
 /* Vispārīgi ķermeņa stili */

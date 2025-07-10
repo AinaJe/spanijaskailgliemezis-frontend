@@ -1,5 +1,5 @@
 // src/pages/AdminPage.jsx
-import React, { useState, useEffect, useMemo, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import './AdminPage.css';
 import Accordion from '../components/common/Accordion/Accordion';
 import AdminSection from '../components/common/AdminSection';
@@ -13,7 +13,7 @@ import EditVideoForm from '../components/forms/EditVideoForm';
 import EditCardForm from '../components/forms/EditCardForm';
 import ConfirmDeleteModal from '../components/common/Modals/ConfirmDeleteModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrashAlt, faEye, faGripVertical } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrashAlt, faEye, faGripVertical, faSave } from '@fortawesome/free-solid-svg-icons';
 import { formatDateTimeToDDMMYYYYHHMM, formatDateToDDMMYYYY } from '../utils/dateUtils';
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -39,18 +39,9 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
   const [openAccordionId, setOpenAccordionId] = useState(null);
   const [openCardThemeAccordionId, setOpenCardThemeAccordionId] = useState(null);
   
-  // Stāvokļi rediģēšanas un dzēšanas logiem
   const [editModalState, setEditModalState] = useState({ item: null, type: null });
   const [deleteModalState, setDeleteModalState] = useState({ item: null, type: null });
-
-  // JAUNS: Stāvoklis priekš "Pievienot..." modālajiem logiem
-  const [addModalsState, setAddModalsState] = useState({
-    author: false,
-    theme: false,
-    card: false,
-    article: false,
-    video: false,
-  });
+  const [addModalsState, setAddModalsState] = useState({ author: false, theme: false, card: false, article: false, video: false });
 
   const [authorsCurrentPage, setAuthorsCurrentPage] = useState(1);
   const [authorsItemsPerPage, setAuthorsItemsPerPage] = useState(ITEMS_PER_PAGE_OPTIONS[0]);
@@ -71,8 +62,12 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
   const [adminCardThemeFilter, setAdminCardThemeFilter] = useState('');
 
   const [sortedCards, setSortedCards] = useState(cards);
+  const [isOrderChanged, setIsOrderChanged] = useState(false); // Jauns stāvoklis pogai
 
-  useEffect(() => { setSortedCards(cards); }, [cards]);
+  useEffect(() => { 
+    setSortedCards(cards);
+    setIsOrderChanged(false);
+  }, [cards]);
 
   const handleDragEnd = (event) => {
     const {active, over} = event;
@@ -80,9 +75,18 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
       setSortedCards((items) => {
         const oldIndex = items.findIndex((item) => item.id === active.id);
         const newIndex = items.findIndex((item) => item.id === over.id);
+        setIsOrderChanged(true); // Uzstādām, ka secība ir mainīta
         return arrayMove(items, oldIndex, newIndex);
       });
     }
+  };
+  
+  const handleSaveOrder = () => {
+    // Šeit būtu API izsaukums, lai nosūtītu jauno secību uz serveri
+    console.log("Jaunā kartīšu secība:", sortedCards.map(c => c.id));
+    alert("Secība saglabāta (simulācija)!");
+    setCards(sortedCards); // Atjaunojam galveno datu avotu
+    setIsOrderChanged(false); // Paslēpjam pogu
   };
 
   const paginatedAuthors = Array.isArray(authors) ? authors.slice((authorsCurrentPage - 1) * authorsItemsPerPage, authorsCurrentPage * authorsItemsPerPage) : [];
@@ -115,13 +119,8 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
   const handleToggleAccordion = (id) => setOpenAccordionId(prevId => (prevId === id ? null : id));
   const handleToggleCardThemeAccordion = (id) => setOpenCardThemeAccordionId(prevId => (prevId === id ? null : id));
   
-  // JAUNS: Funkcijas "Pievienot..." logu atvēršanai un aizvēršanai
-  const handleShowAddModal = (type) => {
-    setAddModalsState(prev => ({ ...prev, [type]: true }));
-  };
-  const handleCloseAddModal = (type) => {
-    setAddModalsState(prev => ({ ...prev, [type]: false }));
-  };
+  const handleShowAddModal = (type) => setAddModalsState(prev => ({ ...prev, [type]: true }));
+  const handleCloseAddModal = (type) => setAddModalsState(prev => ({ ...prev, [type]: false }));
   
   const handleEdit = (item, type) => setEditModalState({ item, type });
   const handleDelete = (item, type) => setDeleteModalState({ item, type });
@@ -148,7 +147,6 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
     closeModal();
   };
   
-  // JAUNS: Atjaunināti "add" handler'i, lai tie aizvērtu pareizo modālo logu
   const addHandlers = {
       author: (data) => { setAuthors(prev => [...prev, {id: Date.now(), ...data, created_at: new Date().toISOString()}]); handleCloseAddModal('author'); },
       theme: (data) => { setThemesData(prev => [...prev, {id: Date.now(), ...data, created_at: new Date().toISOString()}]); handleCloseAddModal('theme'); },
@@ -166,10 +164,8 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
     <div className="admin-page-container">
       <h2 className="admin-page-title">Ierakstu pārvaldība</h2>
       
-      {/* JAUNS: onShow tagad izmanto pareizo funkciju */}
       <AdminActionButtons onShow={handleShowAddModal} />
 
-      {/* JAUNS: AdminModals saņem pareizo stāvokli un aizvēršanas funkciju */}
       <AdminModals 
         modalsState={addModalsState}
         handlers={{ add: addHandlers, onClose: handleCloseAddModal }}
@@ -303,6 +299,13 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
           onToggle={() => handleToggleAccordion('cardsOrdering')}
           content={
             <>
+              {isOrderChanged && (
+                <div style={{ textAlign: 'right', marginBottom: '15px' }}>
+                  <button onClick={handleSaveOrder} className="admin-action-button" style={{ maxWidth: '200px' }}>
+                    <FontAwesomeIcon icon={faSave} /> Saglabāt secību
+                  </button>
+                </div>
+              )}
               {Object.keys(groupedCardsByThemeForSorting).length === 0 ? <p>Nav nevienas kartītes.</p> : 
                 Object.keys(groupedCardsByThemeForSorting).map(themeId => {
                   const themeCards = groupedCardsByThemeForSorting[themeId];

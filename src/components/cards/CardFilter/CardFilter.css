@@ -33,28 +33,29 @@
 /* Autoru izvēles rūtiņu grupa */
 .author-checkbox-group,
 .card-selection-list {
-  display: flex; /* Sakārto elementus rindā */
-  flex-wrap: wrap; /* Ļauj elementiem pāriet jaunā rindā */
-  gap: 10px 15px; /* Atstarpe starp elementiem (vertikāli un horizontāli) */
-  max-height: 150px; /* Maksimālais augstums ar ritjoslu */
-  overflow-y: auto; /* Iespējo vertikālo ritināšanu */
-  border: 1px solid var(--border-color); /* Apmales krāsa no mainīgā */
-  padding: 10px; /* Iekšējā atkāpe */
-  border-radius: 4px; /* Noapaļoti stūri */
-  background-color: var(--grey-100); /* Fona krāsa no mainīgā */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 15px;
+  max-height: 600px;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  padding: 10px;
+  border-radius: 4px;
+  background-color: var(--grey-100);
 }
 
 /* Akordeona filtrēšanas wrapperis (iekš CardFilter) */
 .accordion-filter-wrapper {
-    width: 100%; /* Aizņem visu pieejamo platumu */
-    max-height: 250px; /* Maksimālais augstums ar ritjoslu */
-    overflow-y: auto; /* Iespējo vertikālo ritināšanu */
-    border: 1px solid var(--border-color); /* Apmales krāsa no mainīgā */
-    border-radius: 4px; /* Noapaļoti stūri */
-    background-color: var(--grey-100); /* Fona krāsa no mainīgā */
-    padding: 5px; /* Iekšējā atkāpe */
-    box-sizing: border-box; /* Nodrošina, ka padding un border ietilpst platumā */
+    width: 100%;
+    max-height: 800px; 
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--grey-100);
+    padding: 5px;
+    box-sizing: border-box;
 }
+
 
 /* Ligzdots kartīšu atlases saraksts (iekš akordeona) */
 .card-selection-list.nested {
@@ -216,10 +217,10 @@
   /* Autoru un karšu atlases sarakstu maksimālais augstums mobilajās ierīcēs */
   .author-checkbox-group,
   .card-selection-list {
-    max-height: 120px;
+    max-height: 300px;
   }
   /* Akordeona filtra wrapperim samazināts maksimālais augstums */
   .accordion-filter-wrapper {
-      max-height: 200px;
+      max-height: 900px;
   }
 }

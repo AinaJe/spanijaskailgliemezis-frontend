@@ -2,22 +2,22 @@
 
 /* Kartīšu saraksta konteiners */
 .card-list-container {
-  display: flex; /* Sakārto kartītes rindā */
-  flex-wrap: wrap; /* Ļauj kartītēm pāriet jaunā rindā, ja nav pietiekami daudz vietas */
-  gap: 20px; /* Atstarpe starp kartītēm */
-  justify-content: center; /* Centrē kartītes horizontāli */
-  padding: 20px; /* Iekšējā atkāpe ap sarakstu */
-  background-color: transparent; /* Caurspīdīgs fons */
-  border-radius: 8px; /* Noapaļoti stūri */
-  min-height: 100px; /* Minimālais augstums */
-  transition: background-color 0.2s ease; /* Pārejas efekts fona krāsai */
-  max-width: var(--content-max-width); /* Maksimālais platums no mainīgā */
-  margin: 0 auto; /* Centrē sarakstu lapā */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center; /* Šī īpašība nodrošina, ka kartīšu grupa ir centrēta */
+  padding: 20px;
+  background-color: transparent;
+  border-radius: 8px;
+  min-height: 100px;
+  transition: background-color 0.2s ease;
+  max-width: var(--content-max-width);
+  margin: 0 auto;
 }
 
 /* Ziņojums, ja nav nevienas kartītes */
 .no-cards-message {
-  text-align: center; /* Teksta centrēšana */
-  color: var(--grey-500); /* Teksta krāsa no mainīgā */
-  width: 100%; /* Aizņem visu pieejamo platumu */
+  text-align: center;
+  color: var(--grey-500);
+  width: 100%;
 }

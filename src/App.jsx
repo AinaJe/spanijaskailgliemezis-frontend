@@ -16,7 +16,7 @@ const LazyInfoModal = lazy(() => import('./components/common/Modals/InfoModal'))
 function App() {
   const { authors, setAuthors, themesData, setThemesData, cards, setCards, articles, setArticles, videos, setVideos } = useData();
   
-  const [selectedItem, setSelectedItem] = useState(null); // Universāls state modālajam logam
+  const [selectedItem, setSelectedItem] = useState(null);
   const [modalType, setModalType] = useState(null);
   const [activeSection, setActiveSection] = useState('home');
   const [activeTheme, setActiveTheme] = useState(1);
@@ -77,6 +77,12 @@ function App() {
     resetArticlesPagination();
     resetVideosPagination();
     
+    // Šis ir galvenais labojums:
+    // Ja mēs jau esam 'recommendations' sadaļā un mainām tēmu, mēs NEVĒLAMIES atiestatīt tēmu uz 'all'.
+    if (activeSection === 'recommendations') {
+        return;
+    }
+    
     let newTheme;
     switch (activeSection) {
       case 'home': newTheme = 1; break;
@@ -101,7 +107,6 @@ function App() {
     }
   }, [activeSection, activeTheme, filterTheme, setFilterTheme, setFilterAuthors, handleClearCardSelections]);
 
-  // Centrālā funkcija modālā loga atvēršanai
   const openModal = useCallback((item, type) => {
     setSelectedItem(item);
     setModalType(type);
