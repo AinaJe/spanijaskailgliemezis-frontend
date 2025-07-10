@@ -15,7 +15,12 @@ export const useData = () => {
 
   useEffect(() => {
     setAuthors(simulatedAuthors);
-    setThemes(simulatedThemesData);
+    const initialThemes = [
+        { id: 1, name: 'Sākums', summary: 'Laipni lūdzam mūsu mājaslapā! Šeit atradīsiet jaunāko un aktuālāko informāciju.', description: '<p>Esiet sveicināti mūsu digitālajā centrā! Mēs esam priecīgi dalīties ar jums jaunākajām <b>kartītēm</b>, <b>rakstiem</b> un <b>video</b>, kas aptver dažādas aizraujošas tēmas. Izpētiet mūsu saturu un atklājiet jaunas zināšanas!</p>' },
+        { id: 'all', name: 'Visas', summary: 'Visas kartītes kopā, neatkarīgi no tēmas.', description: '<p>Šeit ir redzami visi mūsu pieejamie kartīšu ieraksti, neatkarīgi no tēmas.</p>' },
+        ...(Array.isArray(simulatedThemesData) ? simulatedThemesData : [])
+    ];
+    setThemes(initialThemes);
     setRawCards(simulatedCards);
     setRawArticles(simulatedArticles);
     setRawVideos(simulatedVideos);
@@ -28,11 +33,16 @@ export const useData = () => {
     const enrichedCards = (Array.isArray(rawCards) ? rawCards : []).map(card => {
         const author = safeAuthors.find(a => a.id === card.authorId);
         const theme = safeThemes.find(t => t.id === card.theme);
+        const imagesWithAuthors = card.images.map(img => ({
+            ...img,
+            authorName: safeAuthors.find(a => a.id === img.authorId)?.name || 'Nezināms autors'
+        }));
         return {
             ...card,
             authorName: author ? author.name : 'Nezināms autors',
             themeName: theme ? theme.name : 'Nezināma tēma',
-            allAuthors: safeAuthors // Pievienojam visus autorus attēlu karuselim
+            images: imagesWithAuthors,
+            allAuthors: safeAuthors
         };
     });
 
@@ -56,10 +66,10 @@ export const useData = () => {
   return {
     authors,
     setAuthors,
-    themesData: themes, // Pārsaucam, lai saglabātu konsekvenci
+    themesData: themes,
     setThemesData: setThemes,
     cards: enrichedData.enrichedCards,
-    setCards: setRawCards, // Setteris strādā ar "jēlajiem" datiem
+    setCards: setRawCards,
     articles: enrichedData.enrichedArticles,
     setArticles: setRawArticles,
     videos: enrichedData.enrichedVideos,
