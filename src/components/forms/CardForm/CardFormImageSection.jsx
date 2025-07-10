@@ -12,9 +12,8 @@ const SortableImageItem = ({ image, index, images, onImageChange, onImageFileCha
         transition,
     };
 
-    // Galīgais labojums priekš select vērtības
     const getSelectValue = () => {
-        const authorId = image.authorId || ''; // Nodrošinām, ka authorId nav undefined
+        const authorId = image.authorId || '';
         if (String(authorId).startsWith('new-author-')) {
             return `new-author-${index}`;
         }
@@ -36,17 +35,15 @@ const SortableImageItem = ({ image, index, images, onImageChange, onImageFileCha
               </label>
             </div>
 
-            {image.sourceType === 'url' ? (
-              <>
+            {/* GALVENAIS LABOJUMS ŠEIT: */}
+            <div style={{ display: image.sourceType === 'url' ? 'block' : 'none', width: '100%' }}>
                 <label className="card-form-label">Attēla URL {index + 1}:</label>
                 <input type="text" value={image.url || ''} onChange={(e) => onImageChange(index, 'url', e.target.value)} className="card-form-input" placeholder="https://example.com/image.jpg" />
-              </>
-            ) : (
-              <>
+            </div>
+            <div style={{ display: image.sourceType === 'upload' ? 'block' : 'none', width: '100%' }}>
                 <label className="card-form-label">Augšupielādēt attēlu {index + 1}:</label>
                 <input type="file" onChange={(e) => onImageFileChange(index, e.target.files[0])} className="card-form-input" accept="image/*" />
-              </>
-            )}
+            </div>
 
             <label className="card-form-label">Attēla Apraksts {index + 1}:</label>
             <textarea value={image.description || ''} onChange={(e) => onImageChange(index, 'description', e.target.value)} rows="2" className="card-form-textarea" placeholder="Īss apraksts attēlam"></textarea>
