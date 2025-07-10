@@ -9,6 +9,7 @@ import AddAuthorForm from '../components/forms/AddAuthorForm';
 import AddThemeForm from '../components/forms/AddThemeForm';
 import AddArticleForm from '../components/forms/AddArticleForm';
 import AddVideoForm from '../components/forms/AddVideoForm';
+import AdminSection from '../components/common/AdminSection'; // Jaunais imports
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faEdit, faTrashAlt, faEye, faGripVertical } from '@fortawesome/free-solid-svg-icons';
@@ -366,6 +367,30 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
     setIsAddVideoModalOpen(false);
     alert("Video pievienots (simulācija)!");
   };
+  
+  const authorColumns = [
+    { label: 'ID', width: '60px' },
+    { label: 'Vārds', width: 'auto' },
+    { label: 'Izveidots', width: '180px' },
+    { label: 'Darbības', width: '120px' },
+  ];
+
+  const themeColumns = [
+    { label: 'ID', width: '60px' },
+    { label: 'Nosaukums', width: '150px' },
+    { label: 'Kopsavilkums', width: 'auto' },
+    { label: 'Izveidots', width: '180px' },
+    { label: 'Darbības', width: '120px' },
+  ];
+  
+  const articleColumns = [
+    { label: 'ID', width: '60px' },
+    { label: 'Datums', width: '120px' },
+    { label: 'Nosaukums', width: 'auto' },
+    { label: 'Autors', width: '195px' },
+    { label: 'Izveidots', width: '180px' },
+    { label: 'Darbības', width: '120px' },
+  ];
 
   return (
     <div className="admin-page-container">
@@ -405,243 +430,123 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
       </Modal>
 
       <div className="admin-content-sections">
-        <Accordion
-          title="Autori"
-          isOpen={openAccordionId === 'authors'}
-          onToggle={() => handleToggleAccordion('authors')}
-          content={
-            <>
-              {paginatedAuthors.length === 0 ? (
-                <p>Nav neviena autora.</p>
-              ) : (
-                <div className="admin-table-wrapper">
-                    <table className="admin-data-table">
-                        <colgroup>
-                            <col style={{ width: '60px' }} /><col style={{ width: 'auto' }} /><col style={{ width: '180px' }} /><col style={{ width: '120px' }} />
-                        </colgroup>
-                        <thead>
-                            <tr>
-                                <th data-label="ID">ID</th>
-                                <th data-label="Vārds">Vārds</th>
-                                <th data-label="Izveidots">Izveidots</th>
-                                <th data-label="Darbības">Darbības</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {paginatedAuthors.map(author => (
-                                <tr key={author.id}>
-                                    <td data-label="ID">{author.id}</td>
-                                    <td data-label="Vārds">{author.name}</td>
-                                    <td data-label="Izveidots">{formatDateTimeToDDMMYYYYHHMM(author.created_at)}</td>
-                                    <td data-label="Darbības" className="admin-table-actions">
-                                        <button onClick={() => handleView('autoru', author.id)} className="admin-table-button view-button">
-                                            <FontAwesomeIcon icon={faEye} />
-                                        </button>
-                                        <button onClick={() => handleEdit('autoru', author.id)} className="admin-table-button edit-button">
-                                            <FontAwesomeIcon icon={faEdit} />
-                                        </button>
-                                        <button onClick={() => handleDelete('autoru', author.id)} className="admin-table-button delete-button">
-                                            <FontAwesomeIcon icon={faTrashAlt} />
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-              )}
-              <Pagination
-                totalItems={Array.isArray(authors) ? authors.length : 0}
-                itemsPerPage={authorsItemsPerPage}
-                currentPage={authorsCurrentPage}
-                onPageChange={setAuthorsCurrentPage}
-                onItemsPerPageChange={setAuthorsItemsPerPage}
-                itemsPerPageOptions={ITEMS_PER_PAGE_OPTIONS}
-              />
-            </>
-          }
+        <AdminSection
+            title="Autori"
+            isOpen={openAccordionId === 'authors'}
+            onToggle={() => handleToggleAccordion('authors')}
+            data={paginatedAuthors}
+            columns={authorColumns}
+            renderRow={(author) => (
+                <tr key={author.id}>
+                    <td data-label="ID">{author.id}</td>
+                    <td data-label="Vārds">{author.name}</td>
+                    <td data-label="Izveidots">{formatDateTimeToDDMMYYYYHHMM(author.created_at)}</td>
+                    <td data-label="Darbības" className="admin-table-actions">
+                        <button onClick={() => handleView('autoru', author.id)} className="admin-table-button view-button"><FontAwesomeIcon icon={faEye} /></button>
+                        <button onClick={() => handleEdit('autoru', author.id)} className="admin-table-button edit-button"><FontAwesomeIcon icon={faEdit} /></button>
+                        <button onClick={() => handleDelete('autoru', author.id)} className="admin-table-button delete-button"><FontAwesomeIcon icon={faTrashAlt} /></button>
+                    </td>
+                </tr>
+            )}
+            paginationProps={{
+                totalItems: authors.length,
+                itemsPerPage: authorsItemsPerPage,
+                currentPage: authorsCurrentPage,
+                onPageChange: setAuthorsCurrentPage,
+                onItemsPerPageChange: setAuthorsItemsPerPage,
+            }}
+            itemsPerPageOptions={ITEMS_PER_PAGE_OPTIONS}
         />
 
-        <Accordion
-          title="Tēmas"
-          isOpen={openAccordionId === 'themes'}
-          onToggle={() => handleToggleAccordion('themes')}
-          content={
-            <>
-              {paginatedThemes.length === 0 ? (
-                <p>Nav nevienas tēmas.</p>
-              ) : (
-                <div className="admin-table-wrapper">
-                    <table className="admin-data-table">
-                        <colgroup>
-                            <col style={{ width: '60px' }} /><col style={{ width: '150px' }} /><col style={{ width: 'auto' }} /><col style={{ width: '180px' }} /><col style={{ width: '120px' }} />
-                        </colgroup>
-                        <thead>
-                            <tr>
-                                <th data-label="ID">ID</th>
-                                <th data-label="Nosaukums">Nosaukums</th>
-                                <th data-label="Kopsavilkums">Kopsavilkums</th>
-                                <th data-label="Izveidots">Izveidots</th>
-                                <th data-label="Darbības">Darbības</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {paginatedThemes.map(theme => (
-                                <tr key={theme.id}>
-                                    <td data-label="ID">{theme.id}</td>
-                                    <td data-label="Nosaukums">{theme.name}</td>
-                                    <td data-label="Kopsavilkums">{theme.summary || 'Nav kopsavilkuma'}</td>
-                                    <td data-label="Izveidots">{formatDateTimeToDDMMYYYYHHMM(theme.created_at)}</td>
-                                    <td data-label="Darbības" className="admin-table-actions">
-                                        <button onClick={() => handleView('tēmu', theme.id)} className="admin-table-button view-button">
-                                            <FontAwesomeIcon icon={faEye} />
-                                        </button>
-                                        <button onClick={() => handleEdit('tēmu', theme.id)} className="admin-table-button edit-button">
-                                            <FontAwesomeIcon icon={faEdit} />
-                                        </button>
-                                        <button onClick={() => handleDelete('tēmu', theme.id)} className="admin-table-button delete-button">
-                                            <FontAwesomeIcon icon={faTrashAlt} />
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-              )}
-              <Pagination
-                totalItems={actualThemes.length}
-                itemsPerPage={themesItemsPerPage}
-                currentPage={themesCurrentPage}
-                onPageChange={setThemesCurrentPage}
-                onItemsPerPageChange={setThemesItemsPerPage}
-                itemsPerPageOptions={ITEMS_PER_PAGE_OPTIONS}
-              />
-            </>
-          }
+        <AdminSection
+            title="Tēmas"
+            isOpen={openAccordionId === 'themes'}
+            onToggle={() => handleToggleAccordion('themes')}
+            data={paginatedThemes}
+            columns={themeColumns}
+            renderRow={(theme) => (
+                <tr key={theme.id}>
+                    <td data-label="ID">{theme.id}</td>
+                    <td data--label="Nosaukums">{theme.name}</td>
+                    <td data-label="Kopsavilkums">{theme.summary || 'Nav kopsavilkuma'}</td>
+                    <td data-label="Izveidots">{formatDateTimeToDDMMYYYYHHMM(theme.created_at)}</td>
+                    <td data-label="Darbības" className="admin-table-actions">
+                        <button onClick={() => handleView('tēmu', theme.id)} className="admin-table-button view-button"><FontAwesomeIcon icon={faEye} /></button>
+                        <button onClick={() => handleEdit('tēmu', theme.id)} className="admin-table-button edit-button"><FontAwesomeIcon icon={faEdit} /></button>
+                        <button onClick={() => handleDelete('tēmu', theme.id)} className="admin-table-button delete-button"><FontAwesomeIcon icon={faTrashAlt} /></button>
+                    </td>
+                </tr>
+            )}
+            paginationProps={{
+                totalItems: actualThemes.length,
+                itemsPerPage: themesItemsPerPage,
+                currentPage: themesCurrentPage,
+                onPageChange: setThemesCurrentPage,
+                onItemsPerPageChange: setThemesItemsPerPage,
+            }}
+            itemsPerPageOptions={ITEMS_PER_PAGE_OPTIONS}
+        />
+        
+        <AdminSection
+            title="Raksti"
+            isOpen={openAccordionId === 'articles'}
+            onToggle={() => handleToggleAccordion('articles')}
+            data={paginatedArticles}
+            columns={articleColumns}
+            renderRow={(article) => (
+                 <tr key={article.id}>
+                    <td data-label="ID">{article.id}</td>
+                    <td data-label="Datums">{formatDateToDDMMYYYY(article.date)}</td>
+                    <td data-label="Nosaukums">{article.title}</td>
+                    <td data-label="Autors">{authors.find(a => a.id === article.authorId)?.name || 'N/A'}</td>
+                    <td data-label="Izveidots">{formatDateTimeToDDMMYYYYHHMM(article.created_at)}</td>
+                    <td data-label="Darbības" className="admin-table-actions">
+                        <button onClick={() => handleView('rakstu', article.id)} className="admin-table-button view-button"><FontAwesomeIcon icon={faEye} /></button>
+                        <button onClick={() => handleEdit('rakstu', article.id)} className="admin-table-button edit-button"><FontAwesomeIcon icon={faEdit} /></button>
+                        <button onClick={() => handleDelete('rakstu', article.id)} className="admin-table-button delete-button"><FontAwesomeIcon icon={faTrashAlt} /></button>
+                    </td>
+                </tr>
+            )}
+            paginationProps={{
+                totalItems: articles.length,
+                itemsPerPage: articlesItemsPerPage,
+                currentPage: articlesCurrentPage,
+                onPageChange: setArticlesCurrentPage,
+                onItemsPerPageChange: setArticlesItemsPerPage,
+            }}
+            itemsPerPageOptions={ITEMS_PER_PAGE_OPTIONS}
         />
 
-        <Accordion
-          title="Raksti"
-          isOpen={openAccordionId === 'articles'}
-          onToggle={() => handleToggleAccordion('articles')}
-          content={
-            <>
-              {paginatedArticles.length === 0 ? (
-                <p>Nav neviena raksta.</p>
-              ) : (
-                <div className="admin-table-wrapper">
-                    <table className="admin-data-table">
-                        <colgroup>
-                            <col style={{ width: '60px' }} /><col style={{ width: '120px' }} /><col style={{ width: 'auto' }} /><col style={{ width: '195px' }} /><col style={{ width: '180px' }} /><col style={{ width: '120px' }} />
-                        </colgroup>
-                        <thead>
-                            <tr>
-                                <th data-label="ID">ID</th>
-                                <th data-label="Datums">Datums</th>
-                                <th data-label="Nosaukums">Nosaukums</th>
-                                <th data-label="Autors">Autors</th>
-                                <th data-label="Izveidots">Izveidots</th>
-                                <th data-label="Darbības">Darbības</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {paginatedArticles.map(article => (
-                                <tr key={article.id}>
-                                    <td data-label="ID">{article.id}</td>
-                                    <td data-label="Datums">{formatDateToDDMMYYYY(article.date)}</td>
-                                    <td data-label="Nosaukums">{article.title}</td>
-                                    <td data-label="Autors">{authors.find(a => a.id === article.authorId)?.name || 'N/A'}</td>
-                                    <td data-label="Izveidots">{formatDateTimeToDDMMYYYYHHMM(article.created_at)}</td>
-                                    <td data-label="Darbības" className="admin-table-actions">
-                                        <button onClick={() => handleView('rakstu', article.id)} className="admin-table-button view-button">
-                                            <FontAwesomeIcon icon={faEye} />
-                                        </button>
-                                        <button onClick={() => handleEdit('rakstu', article.id)} className="admin-table-button edit-button">
-                                            <FontAwesomeIcon icon={faEdit} />
-                                        </button>
-                                        <button onClick={() => handleDelete('rakstu', article.id)} className="admin-table-button delete-button">
-                                            <FontAwesomeIcon icon={faTrashAlt} />
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-              )}
-              <Pagination
-                totalItems={Array.isArray(articles) ? articles.length : 0}
-                itemsPerPage={articlesItemsPerPage}
-                currentPage={articlesCurrentPage}
-                onPageChange={setArticlesCurrentPage}
-                onItemsPerPageChange={setArticlesItemsPerPage}
-                itemsPerPageOptions={ITEMS_PER_PAGE_OPTIONS}
-              />
-            </>
-          }
+        <AdminSection
+            title="Video"
+            isOpen={openAccordionId === 'videos'}
+            onToggle={() => handleToggleAccordion('videos')}
+            data={paginatedVideos}
+            columns={articleColumns}
+            renderRow={(video) => (
+                <tr key={video.id}>
+                    <td data-label="ID">{video.id}</td>
+                    <td data-label="Datums">{formatDateToDDMMYYYY(video.date)}</td>
+                    <td data-label="Nosaukums">{video.title}</td>
+                    <td data-label="Autors">{authors.find(a => a.id === video.authorId)?.name || 'N/A'}</td>
+                    <td data-label="Izveidots">{formatDateTimeToDDMMYYYYHHMM(video.created_at)}</td>
+                    <td data-label="Darbības" className="admin-table-actions">
+                        <button onClick={() => handleView('video', video.id)} className="admin-table-button view-button"><FontAwesomeIcon icon={faEye} /></button>
+                        <button onClick={() => handleEdit('video', video.id)} className="admin-table-button edit-button"><FontAwesomeIcon icon={faEdit} /></button>
+                        <button onClick={() => handleDelete('video', video.id)} className="admin-table-button delete-button"><FontAwesomeIcon icon={faTrashAlt} /></button>
+                    </td>
+                </tr>
+            )}
+            paginationProps={{
+                totalItems: videos.length,
+                itemsPerPage: videosItemsPerPage,
+                currentPage: videosCurrentPage,
+                onPageChange: setVideosCurrentPage,
+                onItemsPerPageChange: setVideosItemsPerPage,
+            }}
+            itemsPerPageOptions={ITEMS_PER_PAGE_OPTIONS}
         />
 
-        <Accordion
-          title="Video"
-          isOpen={openAccordionId === 'videos'}
-          onToggle={() => handleToggleAccordion('videos')}
-          content={
-            <>
-              {paginatedVideos.length === 0 ? (
-                <p>Nav neviena video.</p>
-              ) : (
-                <div className="admin-table-wrapper">
-                    <table className="admin-data-table">
-                        <colgroup>
-                            <col style={{ width: '60px' }} /><col style={{ width: '120px' }} /><col style={{ width: 'auto' }} /><col style={{ width: '195px' }} /><col style={{ width: '180px' }} /><col style={{ width: '120px' }} />
-                        </colgroup>
-                        <thead>
-                            <tr>
-                                <th data-label="ID">ID</th>
-                                <th data-label="Datums">Datums</th>
-                                <th data-label="Nosaukums">Nosaukums</th>
-                                <th data-label="Autors">Autors</th>
-                                <th data-label="Izveidots">Izveidots</th>
-                                <th data-label="Darbības">Darbības</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {paginatedVideos.map(video => (
-                                <tr key={video.id}>
-                                    <td data-label="ID">{video.id}</td>
-                                    <td data-label="Datums">{formatDateToDDMMYYYY(video.date)}</td>
-                                    <td data-label="Nosaukums">{video.title}</td>
-                                    <td data-label="Autors">{authors.find(a => a.id === video.authorId)?.name || 'N/A'}</td>
-                                    <td data-label="Izveidots">{formatDateTimeToDDMMYYYYHHMM(video.created_at)}</td>
-                                    <td data-label="Darbības" className="admin-table-actions">
-                                        <button onClick={() => handleView('video', video.id)} className="admin-table-button view-button">
-                                            <FontAwesomeIcon icon={faEye} />
-                                        </button>
-                                        <button onClick={() => handleEdit('video', video.id)} className="admin-table-button edit-button">
-                                            <FontAwesomeIcon icon={faEdit} />
-                                        </button>
-                                        <button onClick={() => handleDelete('video', video.id)} className="admin-table-button delete-button">
-                                            <FontAwesomeIcon icon={faTrashAlt} />
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-              )}
-              <Pagination
-                totalItems={Array.isArray(videos) ? videos.length : 0}
-                itemsPerPage={videosItemsPerPage}
-                currentPage={videosCurrentPage}
-                onPageChange={setVideosCurrentPage}
-                onItemsPerPageChange={setVideosItemsPerPage}
-                itemsPerPageOptions={ITEMS_PER_PAGE_OPTIONS}
-              />
-            </>
-          }
-        />
         <Accordion
           title="Kartītes"
           isOpen={openAccordionId === 'cards'}
