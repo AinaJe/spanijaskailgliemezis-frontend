@@ -1,55 +1,82 @@
 // src/pages/AdminPage.jsx
-import React, { useState } from 'react'; // Importējam React un useState hooku
-import './AdminPage.css'; // Importējam šīs lapas stilus
-import Accordion from '../components/common/Accordion/Accordion'; // Importējam Accordion komponenti
-import Pagination from '../components/common/Pagination/Pagination'; // Importējam Pagination komponenti
-import Modal from '../components/common/Modals/Modal'; // Importējam Modal komponenti
-import CardForm from '../components/forms/CardForm/CardForm'; // Importējam CardForm komponenti
-import AddAuthorForm from '../components/forms/AddAuthorForm'; // Importējam AddAuthorForm
-import AddThemeForm from '../components/forms/AddThemeForm'; // Importējam AddThemeForm
-import AddArticleForm from '../components/forms/AddArticleForm'; // Importējam AddArticleForm
-import AddVideoForm from '../components/forms/AddVideoForm'; // Importējam AddVideoForm
+import React, { useState, useEffect } from 'react';
+import './AdminPage.css';
+import Accordion from '../components/common/Accordion/Accordion';
+import Pagination from '../components/common/Pagination/Pagination';
+import Modal from '../components/common/Modals/Modal';
+import CardForm from '../components/forms/CardForm/CardForm';
+import AddAuthorForm from '../components/forms/AddAuthorForm';
+import AddThemeForm from '../components/forms/AddThemeForm';
+import AddArticleForm from '../components/forms/AddArticleForm';
+import AddVideoForm from '../components/forms/AddVideoForm';
 
-// Importējam FontAwesome ikonas
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faEdit, faTrashAlt, faEye } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faEdit, faTrashAlt, faEye, faGripVertical } from '@fortawesome/free-solid-svg-icons';
 
-// Importējam datuma formatēšanas palīgfunkcijas
 import { formatDateTimeToDDMMYYYYHHMM, formatDateToDDMMYYYY } from '../utils/dateUtils';
 
 import config from '/src/config';
 
-// Lapošanas opcijas ierakstiem tabulās
+import { DndContext, closestCenter } from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+
 const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20, 50, 100, Infinity];
 
-/**
- * Administratora lapas komponente.
- * Nodrošina datu pārvaldību (autori, tēmas, raksti, video, kartītes)
- * un formas jaunu ierakstu pievienošanai.
- * @param {object} props - Komponentes props.
- * @param {Array<object>} props.authors - Autoru masīvs.
- * @param {Array<object>} props.themes - Tēmu masīvs.
- * @param {Array<object>} props.articles - Rakstu masīvs.
- * @param {Array<object>} props.videos - Video masīvs.
- * @param {Array<object>} props.cards - Kartīšu masīvs.
- * @param {function} props.setAuthors - Funkcija autoru stāvokļa atjaunināšanai.
- * @param {function} props.setThemesData - Funkcija tēmu stāvokļa atjaunināšanai.
- * @param {function} props.setCards - Funkcija karšu stāvokļa atjaunināšanai.
- * @param {function} props.setArticles - Funkcija rakstu stāvokļa atjaunināšanai.
- * @param {function} props.setVideos - Funkcija video stāvokļa atjaunināšanai.
- */
+const SortableCardRow = ({ card, themes, authors, handleView, handleEdit, handleDelete }) => {
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+    } = useSortable({ id: card.id });
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    };
+
+    return (
+        <tr ref={setNodeRef} style={style} {...attributes}>
+            <td className="drag-handle" {...listeners}>
+                <FontAwesomeIcon icon={faGripVertical} />
+            </td>
+            <td data-label="ID">{card.id}</td>
+            <td data-label="Nosaukums">{card.title}</td>
+            <td data-label="Tēma">{themes.find(t => t.id === card.theme)?.name || 'N/A'}</td>
+            <td data-label="Autors">{authors.find(a => a.id === card.authorId)?.name || 'N/A'}</td>
+            <td data-label="Izveidots">{formatDateTimeToDDMMYYYYHHMM(card.created_at)}</td>
+            <td data-label="Darbības" className="admin-table-actions">
+                <button onClick={() => handleView('kartīti', card.id)} className="admin-table-button view-button">
+                    <FontAwesomeIcon icon={faEye} />
+                </button>
+                <button onClick={() => handleEdit('kartīti', card.id)} className="admin-table-button edit-button">
+                    <FontAwesomeIcon icon={faEdit} />
+                </button>
+                <button onClick={() => handleDelete('kartīti', card.id)} className="admin-table-button delete-button">
+                    <FontAwesomeIcon icon={faTrashAlt} />
+                </button>
+            </td>
+        </tr>
+    );
+};
+
+
 const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setThemesData, setCards, setArticles, setVideos }) => {
-  // Stāvoklis, kas kontrolē, kurš akordeons ir atvērts
   const [openAccordionId, setOpenAccordionId] = useState(null);
 
-  // Modālo logu stāvokļi pievienošanas formām
   const [isAddAuthorModalOpen, setIsAddAuthorModalOpen] = useState(false);
   const [isAddThemeModalOpen, setIsAddThemeModalOpen] = useState(false);
   const [isAddCardModalOpen, setIsAddCardModalOpen] = useState(false);
   const [isAddArticleModalOpen, setIsAddArticleModalOpen] = useState(false);
   const [isAddVideoModalOpen, setIsAddVideoModalOpen] = useState(false);
 
-  // Lapošanas stāvokļi katrai tabulai administratora lapā
   const [authorsCurrentPage, setAuthorsCurrentPage] = useState(1);
   const [authorsItemsPerPage, setAuthorsItemsPerPage] = useState(ITEMS_PER_PAGE_OPTIONS[0]);
 
@@ -64,21 +91,37 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
 
   const [cardsCurrentPage, setCardsCurrentPage] = useState(1);
   const [cardsItemsPerPage, setCardsItemsPerPage] = useState(ITEMS_PER_PAGE_OPTIONS[0]);
+  
+  const [sortedCards, setSortedCards] = useState(cards);
 
-  // Lapoti datu saraksti, ko attēlot tabulās
+  useEffect(() => {
+      setSortedCards(cards);
+  }, [cards]);
+
+  const handleDragEnd = (event) => {
+    const {active, over} = event;
+    if (active.id !== over.id) {
+      setSortedCards((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+        const newOrder = arrayMove(items, oldIndex, newIndex);
+        // Šeit vairs nav setCards(newOrder), kas izraisīja kļūdu
+        return newOrder;
+      });
+    }
+  };
+
   const paginatedAuthors = Array.isArray(authors) ? authors.slice(
     (authorsCurrentPage - 1) * authorsItemsPerPage,
     (authorsCurrentPage - 1) * authorsItemsPerPage + authorsItemsPerPage
   ) : [];
 
-  // Filtrējam "Sākums" (ID 1) un "Visas" (ID 2) tēmas no administratora skata, un sakārtojam tās alfabētiski
   const actualThemes = Array.isArray(themes) ? themes.filter(t => t.id !== 1 && t.id !== 2) : [];
   const paginatedThemes = [...actualThemes].sort((a, b) => a.name.localeCompare(b.name)).slice(
     (themesCurrentPage - 1) * themesItemsPerPage,
     (themesCurrentPage - 1) * themesItemsPerPage + themesItemsPerPage
   );
 
-  // Sakārtojam rakstus pēc datuma dilstošā secībā
   const paginatedArticles = Array.isArray(articles) ? [...articles].sort((a, b) => {
     const dateA = a.date ? new Date(a.date) : new Date(0);
     const dateB = b.date ? new Date(b.date) : new Date(0);
@@ -88,7 +131,6 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
     (articlesCurrentPage - 1) * articlesItemsPerPage + articlesItemsPerPage
   ) : [];
 
-  // Sakārtojam video pēc datuma dilstošā secībā
   const paginatedVideos = Array.isArray(videos) ? [...videos].sort((a, b) => {
     const dateA = a.date ? new Date(a.date) : new Date(0);
     const dateB = b.date ? new Date(b.date) : new Date(0);
@@ -98,35 +140,25 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
     (videosCurrentPage - 1) * videosItemsPerPage + videosItemsPerPage
   ) : [];
 
-  // Piezīme: Kartītēm simulācijā nav secības, tāpēc vienkārši lapojam esošo secību
-  const paginatedCards = Array.isArray(cards) ? cards.slice(
+  const paginatedCards = Array.isArray(sortedCards) ? sortedCards.slice(
     (cardsCurrentPage - 1) * cardsItemsPerPage,
     (cardsCurrentPage - 1) * cardsItemsPerPage + cardsItemsPerPage
   ) : [];
 
-  /**
-   * Pārslēdz akordeona atvēršanas stāvokli.
-   * @param {string} id - Akordeona ID.
-   */
   const handleToggleAccordion = (id) => {
     setOpenAccordionId(prevId => (prevId === id ? null : id));
   };
 
-  // Simulētas darbības (skatīšanās, rediģēšana, dzēšana)
   const handleView = (type, id) => {
     alert(`Skatīt: ${type} ar ID ${id}`);
-    // Šeit nākotnē varētu atvērt detalizētu modālo logu ar attiecīgā ieraksta informāciju
   };
 
   const handleEdit = (type, id) => {
     alert(`Rediģēt: ${type} ar ID ${id}`);
-    // Šeit nākotnē varētu atvērt rediģēšanas formu modālajā logā ar attiecīgā ieraksta datiem
   };
 
   const handleDelete = (type, id) => {
     if (window.confirm(`Vai tiešām vēlaties dzēst ${type} ar ID ${id}?`)) {
-      // Šeit nākotnē būtu API izsaukums datu dzēšanai
-      // Simulē dzēšanu no stāvokļa
       switch (type) {
         case 'autoru':
           setAuthors(prev => prev.filter(item => item.id !== id));
@@ -150,30 +182,26 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
     }
   };
 
-  // Pievienošanas funkcijas (simulēta datu pievienošana)
  const addAuthor = async (newAuthorData) => {
     try {
-      // Veicam POST pieprasījumu uz backend
-      const response = await fetch(`${config.API_BASE_URL}/authors`, { //
-        method: 'POST', //
+      const response = await fetch(`${config.API_BASE_URL}/authors`, {
+        method: 'POST',
         headers: {
-          'Content-Type': 'application/json', //
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(newAuthorData), //
+        body: JSON.stringify(newAuthorData),
       });
 
-      const responseData = await response.json(); //
+      const responseData = await response.json();
 
-      if (!response.ok) { // Ja atbilde nav OK (piem., 400, 409, 500)
-        // Ja ir validācijas kļūdas, tās būs responseData.error
+      if (!response.ok) {
         const errorMessage = responseData.messages?.error || responseData.error?.name || 'Neizdevās pievienot autoru.';
         alert(`Kļūda: ${errorMessage}`);
         console.error('API kļūda pievienojot autoru:', responseData);
         return;
       }
 
-      // Ja pievienošana ir veiksmīga, atjauninām frontend stāvokli ar datiem no backend
-      setAuthors(prev => [...prev, responseData.data]); //
+      setAuthors(prev => [...prev, responseData.data]);
       setIsAddAuthorModalOpen(false);
       alert("Autors veiksmīgi pievienots!");
     } catch (error) {
@@ -184,12 +212,9 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
 
   const addTheme = async (newThemeData) => {
     console.log("Adding theme:", newThemeData);
-    // Tēmas ID ģenerēšana: ja ir kāda galvenā navigācijas tēma, izmanto tās esošo ID, citādi ģenerē jaunu
-    // Piezīme: Ja jaunās tēmas nosaukums sakrīt ar galvenās navigācijas tēmu (Sākums, Biedrība, Tirdzniecība, Stāsti, Izdrukām),
-    // tad izmantosim to ID. Pretējā gadījumā ģenerēsim jaunu.
-    const mainNavThemeIds = { // Mapējam nosaukumu uz ID
+    const mainNavThemeIds = {
         "Sākums": 1,
-        "Visas": 2, // Lai gan "Visas" netiks pievienotas kā jauna tēma, saglabājam to te
+        "Visas": 2,
         "Biedrība": 104,
         "Tirdzniecība": 105,
         "Stāsti": 106,
@@ -199,7 +224,7 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
     if (mainNavThemeIds[newThemeData.name]) {
         newId = mainNavThemeIds[newThemeData.name];
     } else {
-        newId = Date.now(); // Jauna skaitliska ID ģenerēšana
+        newId = Date.now();
     }
 
     setThemesData(prev => [...prev, { ...newThemeData, id: newId, created_at: new Date().toISOString() }]);
@@ -209,11 +234,9 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
 
   const addCard = async (newCardData) => {
     console.log('Adding card:', newCardData);
-    // Simulē API atbildi
     const response = await new Promise(resolve => setTimeout(() => {
-        const savedCard = { ...newCardData, id: Date.now() }; // Skaitlisks ID
+        const savedCard = { ...newCardData, id: Date.now() };
         let finalAuthorId = newCardData.authorId;
-        // Apstrādā jauna autora pievienošanu kartītei
         if (newCardData.authorId && String(newCardData.authorId).startsWith('new-author-')) {
             const newAuthorName = String(newCardData.authorId).replace('new-author-', '');
             const existingAuthor = authors.find(a => a.name === newAuthorName);
@@ -227,7 +250,6 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
         }
 
         let finalThemeId = newCardData.theme;
-        // Apstrādā jaunas tēmas pievienošanu kartītei
         if (newCardData.isNewTheme && newCardData.newThemeName) {
             const newThemeName = newCardData.newThemeName;
             const existingTheme = themes.find(t => t.name === newThemeName);
@@ -239,7 +261,6 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
                 finalThemeId = newThemeTempId;
             }
         } else if (newCardData.theme) {
-            // Ja izvēlēta esoša tēma, atrodam tās ID
             const existingTheme = themes.find(t => t.name === newCardData.theme);
             if (existingTheme) {
                 finalThemeId = existingTheme.id;
@@ -249,7 +270,6 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
             }
         }
 
-        // Apstrādā attēlu autorus
         const imagesWithFinalAuthorIds = newCardData.images.map(img => {
             if (img.authorId && typeof img.authorId === 'string' && String(img.authorId).startsWith('new-author-')) {
                 const newImageAuthorName = img.newImageAuthorNameInput ? img.newImageAuthorNameInput.trim() : '';
@@ -275,7 +295,6 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
         });
     }, 500));
 
-    // Atjaunina kartīšu stāvokli ar jaunajiem datiem un atrastajiem/pievienotajiem autoru/tēmu nosaukumiem
     setCards((prevCards) => {
       const cardAuthor = authors.find(a => a.id === response.authorId);
       const cardThemeData = themes.find(t => t.id === response.theme);
@@ -301,7 +320,6 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
   const addArticle = async (newArticleData) => {
     console.log("Adding article:", newArticleData);
     let finalAuthorId = newArticleData.authorId;
-    // Apstrādā jauna autora pievienošanu rakstam
     if (newArticleData.authorId && String(newArticleData.authorId).startsWith('new-author-')) {
         const newAuthorName = String(newArticleData.authorId).replace('new-author-', '');
         const existingAuthor = authors.find(a => a.name === newAuthorName);
@@ -322,7 +340,6 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
   const addVideo = async (newVideoData) => {
     console.log("Adding video:", newVideoData);
     let finalAuthorId = newVideoData.authorId;
-    // Apstrādā jauna autora pievienošanu video
     if (newVideoData.authorId && String(newVideoData.authorId).startsWith('new-author-')) {
         const newAuthorName = String(newVideoData.authorId).replace('new-author-', '');
         const existingAuthor = authors.find(a => a.name === newAuthorName);
@@ -344,7 +361,6 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
     <div className="admin-page-container">
       <h2 className="admin-page-title">Ierakstu pārvaldība</h2>
 
-      {/* Darbību pogas jaunu ierakstu pievienošanai */}
       <div className="admin-action-buttons">
         <button className="admin-action-button" onClick={() => setIsAddAuthorModalOpen(true)}><FontAwesomeIcon icon={faPlus} /> Pievienot autoru</button>
         <button className="admin-action-button" onClick={() => setIsAddThemeModalOpen(true)}><FontAwesomeIcon icon={faPlus} /> Pievienot tēmu</button>
@@ -353,7 +369,6 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
         <button className="admin-action-button" onClick={() => setIsAddVideoModalOpen(true)}><FontAwesomeIcon icon={faPlus} /> Pievienot video</button>
       </div>
 
-      {/* Modālie logi pievienošanas formām */}
       <Modal isOpen={isAddAuthorModalOpen} onClose={() => setIsAddAuthorModalOpen(false)} title="Pievienot autoru">
         <AddAuthorForm onAddAuthor={addAuthor} onClose={() => setIsAddAuthorModalOpen(false)} availableAuthors={authors} />
       </Modal>
@@ -365,11 +380,9 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
       <Modal isOpen={isAddCardModalOpen} onClose={() => setIsAddCardModalOpen(false)} title="Pievienot kartīti">
         <CardForm
           onAddCard={addCard}
-          // availableThemes tiek filtrētas, lai izslēgtu "Sākums" (ID 1) un "Visas" (ID 2)
-          // Un citas galvenās navigācijas tēmas, kurām ir fiksēta pozīcija un nav paredzēts tās pievienot caur formu
           availableThemes={themes.filter(t => ![1, 2, 104, 105, 106, 107].includes(t.id)).map(t => t.name)}
           availableAuthors={authors}
-          allowHomepageTheme={true} // Atļauj "Sākums" tēmu priekš kartītēm
+          allowHomepageTheme={true}
         />
       </Modal>
 
@@ -381,10 +394,7 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
         <AddVideoForm onAddVideo={addVideo} onClose={() => setIsAddVideoModalOpen(false)} availableAuthors={authors} />
       </Modal>
 
-
-      {/* Datu tabulu sekcijas (katra akordeonā) */}
       <div className="admin-content-sections">
-        {/* Autoru tabula */}
         <Accordion
           title="Autori"
           isOpen={openAccordionId === 'authors'}
@@ -442,7 +452,6 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
           }
         />
 
-        {/* Tēmu tabula */}
         <Accordion
           title="Tēmas"
           isOpen={openAccordionId === 'themes'}
@@ -502,7 +511,6 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
           }
         />
 
-        {/* Rakstu tabula */}
         <Accordion
           title="Raksti"
           isOpen={openAccordionId === 'articles'}
@@ -564,7 +572,6 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
           }
         />
 
-        {/* Video tabula */}
         <Accordion
           title="Video"
           isOpen={openAccordionId === 'videos'}
@@ -625,7 +632,6 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
             </>
           }
         />
-        {/* Kartīšu tabula */}
         <Accordion
           title="Kartītes"
           isOpen={openAccordionId === 'cards'}
@@ -635,47 +641,53 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
               {paginatedCards.length === 0 ? (
                 <p>Nav nevienas kartītes.</p>
               ) : (
-                <div className="admin-table-wrapper">
+                <DndContext
+                  collisionDetection={closestCenter}
+                  onDragEnd={handleDragEnd}
+                >
+                  <div className="admin-table-wrapper">
                     <table className="admin-data-table">
                         <colgroup>
-                            <col style={{ width: '60px' }} /><col style={{ width: 'auto' }} /><col style={{ width: '150px' }} /><col style={{ width: '195px' }} /><col style={{ width: '180px' }} /><col style={{ width: '120px' }} />
+                          <col style={{ width: '40px' }} />
+                          <col style={{ width: '60px' }} />
+                          <col style={{ width: 'auto' }} />
+                          <col style={{ width: '150px' }} />
+                          <col style={{ width: '195px' }} />
+                          <col style={{ width: '180px' }} />
+                          <col style={{ width: '120px' }} />
                         </colgroup>
                         <thead>
-                            <tr>
-                                <th data-label="ID">ID</th>
-                                <th data-label="Nosaukums">Nosaukums</th>
-                                <th data-label="Tēma">Tēma</th>
-                                <th data-label="Autors">Autors</th>
-                                <th data-label="Izveidots">Izveidots</th>
-                                <th data-label="Darbības">Darbības</th>
-                            </tr>
+                          <tr>
+                            <th />
+                            <th data-label="ID">ID</th>
+                            <th data-label="Nosaukums">Nosaukums</th>
+                            <th data-label="Tēma">Tēma</th>
+                            <th data-label="Autors">Autors</th>
+                            <th data-label="Izveidots">Izveidots</th>
+                            <th data-label="Darbības">Darbības</th>
+                          </tr>
                         </thead>
-                        <tbody>
-                            {paginatedCards.map(card => (
-                                <tr key={card.id}>
-                                    <td data-label="ID">{card.id}</td>
-                                    <td data-label="Nosaukums">{card.title}</td>
-                                    {/* Atrod tēmas nosaukumu pēc ID */}
-                                    <td data-label="Tēma">{themes.find(t => t.id === card.theme)?.name || 'N/A'}</td>
-                                    {/* Atrod autora nosaukumu pēc ID */}
-                                    <td data-label="Autors">{authors.find(a => a.id === card.authorId)?.name || 'N/A'}</td>
-                                    <td data-label="Izveidots">{formatDateTimeToDDMMYYYYHHMM(card.created_at)}</td>
-                                    <td data-label="Darbības" className="admin-table-actions">
-                                        <button onClick={() => handleView('kartīti', card.id)} className="admin-table-button view-button">
-                                            <FontAwesomeIcon icon={faEye} />
-                                        </button>
-                                        <button onClick={() => handleEdit('kartīti', card.id)} className="admin-table-button edit-button">
-                                            <FontAwesomeIcon icon={faEdit} />
-                                        </button>
-                                        <button onClick={() => handleDelete('kartīti', card.id)} className="admin-table-button delete-button">
-                                            <FontAwesomeIcon icon={faTrashAlt} />
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
+                        <SortableContext
+                            items={sortedCards.map(c => c.id)}
+                            strategy={verticalListSortingStrategy}
+                        >
+                            <tbody>
+                              {paginatedCards.map((card) => (
+                                <SortableCardRow 
+                                    key={card.id} 
+                                    card={card} 
+                                    themes={themes} 
+                                    authors={authors}
+                                    handleView={handleView}
+                                    handleEdit={handleEdit}
+                                    handleDelete={handleDelete}
+                                />
+                              ))}
+                            </tbody>
+                        </SortableContext>
                     </table>
-                </div>
+                  </div>
+                </DndContext>
               )}
               <Pagination
                 totalItems={Array.isArray(cards) ? cards.length : 0}
@@ -693,4 +705,4 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
   );
 };
 
-export default AdminPage; // Eksportējam komponenti
+export default AdminPage;

@@ -173,3 +173,12 @@
   width: 120px; /* Paplašināts platums 3 pogām */
   text-align: center; /* Centrē saturu */
 }
+
+.drag-handle {
+  cursor: grab;
+  padding: 0 10px;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
