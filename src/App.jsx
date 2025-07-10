@@ -61,11 +61,10 @@ function App() {
     
     setAuthors(simulatedAuthors);
     
-    // Papildinām simulētās tēmas ar Sākums un Visas
     const initialThemes = [
         { id: 1, name: 'Sākums', summary: 'Laipni lūdzam mūsu mājaslapā! Šeit atradīsiet jaunāko un aktuālāko informāciju.', description: '<p>Esiet sveicināti mūsu digitālajā centrā! Mēs esam priecīgi dalīties ar jums jaunākajām <b>kartītēm</b>, <b>rakstiem</b> un <b>video</b>, kas aptver dažādas aizraujošas tēmas. Izpētiet mūsu saturu un atklājiet jaunas zināšanas!</p>' },
-        { id: 'all', name: 'Visas', summary: 'Visas kartītes kopā, neatkarīgi no tēmas.', description: '<p>Šeit ir redzami visi mūsu pieejamie kartīšu ieraksti, neatkarīgi no tēmas.</p>' }, // ID mainīts uz 'all'
-        ...(Array.isArray(simulatedThemesData) ? simulatedThemesData : []) // Nodrošinām, ka tas ir masīvs
+        { id: 'all', name: 'Visas', summary: 'Visas kartītes kopā, neatkarīgi no tēmas.', description: '<p>Šeit ir redzami visi mūsu pieejamie kartīšu ieraksti, neatkarīgi no tēmas.</p>' },
+        ...(Array.isArray(simulatedThemesData) ? simulatedThemesData : [])
     ];
     setThemesData(initialThemes);
 
@@ -90,9 +89,8 @@ function App() {
         setActiveTheme(1);
         setFilterTheme(1);
         break;
+      // LABOJUMS: Noņemam tēmas atiestatīšanu šeit, jo to pārvalda klikšķu apstrādes funkcijas
       case 'recommendations':
-        setActiveTheme('all');
-        setFilterTheme('all');
         break;
       case 'association':
         setActiveTheme(104);
@@ -128,10 +126,9 @@ function App() {
 
   // useEffect hook, lai sinhronizētu filterTheme ar activeTheme, ja mainās activeTheme un sadaļa ir "Ieteikumi"
   useEffect(() => {
-    if (activeSection === 'recommendations') { // Pārbaudām, vai esam "Ieteikumi" sadaļā
+    if (activeSection === 'recommendations') {
       if (activeTheme !== filterTheme) {
         setFilterTheme(activeTheme);
-        // JAUNS: Notīrām autoru un atlasītās kartītes, mainot tēmu "Ieteikumi" sadaļā
         setFilterAuthors([]);
         setSelectedFilteredCardIds([]);
       }
