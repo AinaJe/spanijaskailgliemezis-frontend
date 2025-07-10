@@ -1,0 +1,171 @@
+/* src/components/layout/Footer/Footer.css */
+
+/* Aplikācijas kājenes stils */
+.app-footer {
+    background-color: var(--dark-color); /* Fona krāsa no mainīgā */
+    color: var(--white-color); /* Teksta krāsa no mainīgā */
+    padding: 20px 10px; /* Iekšējā atkāpe (vertikāli 20px, horizontāli 10px) */
+    text-align: center; /* Teksta līdzināšana centrā */
+    margin-top: 40px; /* Atstarpe no augšas */
+    font-size: 0.9em; /* Fonta izmērs */
+    box-shadow: 0 -2px 4px var(--shadow-medium); /* Ēna virs kājenes */
+    display: flex; /* Sakārto saturu rindā */
+    justify-content: center; /* Horizontāli centrē saturu */
+    align-items: flex-end; /* Vertikāli pielīdzina saturu apakšā */
+    flex-wrap: wrap; /* Ļauj elementiem pāriet jaunā rindā, ja nav pietiekami daudz vietas */
+    gap: 30px; /* Atstarpe starp sadaļām */
+}
+
+/* Kājenes satura wrapperis */
+.footer-content-wrapper {
+    display: flex; /* Sakārto sadaļas rindā */
+    flex-wrap: wrap; /* Ļauj sadaļām pāriet jaunā rindā */
+    justify-content: space-around; /* Izplata sadaļas ar vienādu atstarpi starp tām */
+    align-items: stretch; /* Nodrošina, ka sadaļas izstiepjas, lai aizņemtu visu augstumu */
+    max-width: 1200px; /* Maksimālais platums */
+    width: 100%; /* Aizņem visu pieejamo platumu */
+}
+
+/* Vispārīgs kājenes sadaļas stils */
+.footer-section {
+    text-align: center; /* Teksta līdzināšana centrā */
+    display: flex; /* Sakārto elementus kolonnā */
+    flex-direction: column; /* Elementi tiek izkārtoti vertikāli */
+    justify-content: center; /* Vertikāli centrē saturu */
+    align-items: center; /* Horizontāli centrē saturu */
+    padding: 10px; /* Iekšējā atkāpe */
+    box-sizing: border-box; /* Nodrošina, ka padding un border ietilpst platumā */
+}
+
+/* Copyright sadaļas stils */
+.footer-section:nth-child(1) {
+    flex-grow: 3; /* Ļauj šai sadaļai augt vairāk nekā citām */
+    flex-basis: auto; /* Platums automātiski pielāgojas saturam */
+    text-align: left; /* Teksta līdzināšana pa kreisi */
+    align-items: flex-start; /* Elementi tiek pielīdzināti pa kreisi */
+    min-width: 400px; /* Minimālais platums, lai tekstu nelauztu (pielāgot, ja nepieciešams) */
+}
+
+/* Sociālo un ārējo saišu sadaļu stils */
+.footer-section:nth-child(2), /* Sociālo saišu sadaļa */
+.footer-section:nth-child(3) { /* Ārējo saišu sadaļa */
+    flex-grow: 1; /* Ļauj šīm sadaļām augt vienmērīgi */
+    flex-basis: auto; /* Platums automātiski pielāgojas saturam */
+}
+
+/* Copyright teksta stils */
+.copyright p {
+    text-align: left; /* Teksta līdzināšana pa kreisi */
+    white-space: nowrap; /* Novērš teksta aplūšanu jaunā rindā */
+    overflow: hidden; /* Paslēpj pārpildītu saturu */
+    text-overflow: ellipsis; /* Pievieno elipses, ja teksts ir pārāk garš */
+    margin: 0; /* Noņem margas */
+    line-height: 1.5; /* Rindas augstums */
+    opacity: 0.9; /* Nedaudz caurspīdīgs teksts */
+}
+
+/* Kājenes virsraksts */
+.footer-section h4 {
+    color: var(--white-color); /* Teksta krāsa no mainīgā */
+    margin-top: 0; /* Noņem augšējo margu */
+    margin-bottom: 10px; /* Atstarpe no apakšas */
+    font-size: 1.1em; /* Fonta izmērs */
+}
+
+/* Sociālo ikonu konteiners */
+.social-icons {
+    display: flex; /* Sakārto ikonas rindā */
+    justify-content: center; /* Horizontāli centrē ikonas */
+    gap: 15px; /* Atstarpe starp ikonām */
+    margin-top: 10px; /* Atstarpe no augšas */
+}
+
+/* Sociālo ikonu saites stils */
+.social-icon-link {
+    color: var(--white-color); /* Ikonas krāsa no mainīgā */
+    transition: color 0.2s ease, transform 0.2s ease; /* Pārejas efekti */
+}
+
+/* Sociālo ikonu saites hover stāvoklis */
+.social-icon-link:hover {
+    color: var(--primary-color); /* Ikonas krāsa, turot peli virs tās */
+    transform: scale(1.1); /* Palielina ikonu */
+}
+
+/* Ārējo saišu saraksts */
+.external-links ul {
+    list-style: none; /* Noņem saraksta punktus */
+    padding: 0; /* Noņem iekšējo atkāpi */
+    margin: 0; /* Noņem ārējās margas */
+}
+
+/* Ārējo saišu saraksta elements */
+.external-links li {
+    margin-bottom: 8px; /* Atstarpe starp saraksta elementiem */
+}
+
+/* Ārējo saišu stils */
+.external-links a {
+    color: var(--info-color); /* Teksta krāsa no mainīgā */
+    text-decoration: none; /* Noņem pasvītrojumu */
+    transition: color 0.2s ease; /* Pārejas efekts */
+}
+
+/* Ārējo saišu hover stāvoklis */
+.external-links a:hover {
+    color: var(--info-hover); /* Teksta krāsa, turot peli virs saites */
+    text-decoration: underline; /* Pievieno pasvītrojumu */
+}
+
+/* Responsīvās izmaiņas mazākiem ekrāniem */
+@media (max-width: 768px) {
+    /* Kājenes iekšējās atkāpes un atstarpes */
+    .app-footer {
+        padding: 15px 5px;
+        gap: 20px;
+    }
+
+    /* Kājenes sadaļu izkārtojums */
+    .footer-section {
+        flex-basis: 45%; /* Platums, lai divas sadaļas ietilptu rindā */
+        padding: 10px;
+    }
+    
+    /* Copyright, sociālo un ārējo saišu sadaļas mobilajās ierīcēs */
+    .footer-section:nth-child(1),
+    .footer-section:nth-child(2),
+    .footer-section:nth-child(3) {
+        flex-grow: 1; /* Ļauj sadaļām augt, aizņemot pieejamo vietu */
+        flex-basis: 100%; /* Aizņem visu platumu */
+        max-width: none; /* Noņem maksimālo platumu */
+        align-items: center; /* Horizontāli centrē elementus */
+        text-align: center; /* Teksta līdzināšana centrā */
+    }
+
+    /* Copyright sadaļas specifiskie stili mobilajās ierīcēs */
+    .footer-section.copyright {
+        text-align: center;
+        align-items: center;
+    }
+    .footer-section.copyright p {
+        white-space: normal; /* Atļauj teksta aplūšanu jaunā rindā */
+        overflow: visible; /* Padara pārpildīto saturu redzamu */
+        text-overflow: clip; /* Noņem elipses */
+    }
+}
+
+@media (max-width: 480px) {
+    /* Kājenes izkārtojums kolonnā ļoti maziem ekrāniem */
+    .app-footer {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    /* Kājenes sadaļas aizņem visu platumu */
+    .footer-section {
+        flex-basis: 100%;
+        max-width: none;
+        margin-bottom: 10px;
+    }
+}

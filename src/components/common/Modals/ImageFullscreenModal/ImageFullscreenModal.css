@@ -1,0 +1,93 @@
+/* src/components/common/Modals/ImageFullscreenModal/ImageFullscreenModal.css */
+
+/* Pilnekrāna modālā loga pārklājums (fons aiz modālā) */
+.fullscreen-modal-overlay {
+  position: fixed; /* Fiksēts pozicionējums attiecībā pret skatlogu */
+  top: 0; /* Pielīdzina augšējai malai */
+  left: 0; /* Pielīdzina kreisajai malai */
+  width: 100%; /* Aizņem visu platumu */
+  height: 100%; /* Aizņem visu augstumu */
+  background-color: var(--overlay-dark); /* Fona krāsa ar caurspīdīgumu no mainīgā */
+  display: flex; /* Sakārto saturu centrā */
+  justify-content: center; /* Horizontāli centrē */
+  align-items: center; /* Vertikāli centrē */
+  z-index: 2000; /* Augstāks z-index nekā citiem modālajiem logiem */
+  animation: fadeIn 0.3s ease-out; /* Pārejas efekts parādīšanās brīdī */
+}
+
+/* Pilnekrāna modālā loga satura bloks */
+.fullscreen-modal-content {
+  position: relative; /* Nepieciešams bērnu elementu pozicionēšanai */
+  max-width: 95vw; /* Maksimālais platums ir 95% no skatloga platuma */
+  max-height: 95vh; /* Maksimālais augstums ir 95% no skatloga augstuma */
+  display: flex; /* Sakārto elementus kolonnā */
+  flex-direction: column; /* Elementi tiek izkārtoti vertikāli */
+  justify-content: center; /* Vertikāli centrē */
+  align-items: center; /* Horizontāli centrē */
+  background-color: var(--black-color); /* Fona krāsa no mainīgā */
+  border-radius: 8px; /* Noapaļoti stūri */
+  overflow: hidden; /* Paslēpj pārpildīto saturu */
+}
+
+/* Pilnekrāna attēls modālajā logā */
+.fullscreen-modal-image {
+  max-width: 100%; /* Maksimālais platums */
+  max-height: 100%; /* Maksimālais augstums */
+  object-fit: contain; /* Attēls tiek samazināts, lai ietilptu rāmī, saglabājot proporcijas */
+  display: block; /* Nodrošina bloka elementa uzvedību */
+}
+
+/* Pilnekrāna attēla apraksta teksts */
+.fullscreen-modal-description {
+  color: var(--white-color); /* Teksta krāsa no mainīgā */
+  background-color: var(--overlay-dark); /* Fona krāsa ar caurspīdīgumu no mainīgā */
+  padding: 10px 20px; /* Iekšējā atkāpe */
+  margin: 0; /* Noņem margas */
+  width: 100%; /* Aizņem visu platumu */
+  text-align: center; /* Teksta līdzināšana centrā */
+  position: absolute; /* Absolūta pozicionēšana */
+  bottom: 0; /* Pielīdzina apakšējai malai */
+  left: 0; /* Pielīdzina kreisajai malai */
+  box-sizing: border-box; /* Nodrošina, ka padding ietilpst platumā */
+  font-size: 1em; /* Fonta izmērs */
+}
+
+/* Pilnekrāna modālā loga aizvēršanas poga */
+.fullscreen-modal-close-button {
+  position: absolute; /* Absolūta pozicionēšana */
+  top: 15px; /* Pozicionē no augšas */
+  right: 15px; /* Pozicionē no labās puses */
+  background: none; /* Noņem fonu */
+  border: none; /* Noņem apmali */
+  font-size: 36px; /* Fonta izmērs (x simbolam) */
+  color: var(--white-color); /* Teksta krāsa no mainīgā */
+  cursor: pointer; /* Kursoru maina uz rādītāju */
+  z-index: 2001; /* Augstāks z-index nekā saturam */
+  transition: color 0.2s ease; /* Pārejas efekts */
+  text-shadow: 0 0 5px var(--shadow-medium); /* Teksta ēna no mainīgā */
+}
+
+/* Aizvēršanas pogas hover stāvoklis */
+.fullscreen-modal-close-button:hover {
+  color: var(--primary-color); /* Krāsa, turot peli virs pogas */
+}
+
+/* fadeIn animācija */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Responsīvās izmaiņas mazākiem ekrāniem */
+@media (max-width: 768px) {
+  /* Aizvēršanas pogas izmērs un pozīcija mobilajās ierīcēs */
+  .fullscreen-modal-close-button {
+    font-size: 30px;
+    top: 10px;
+    right: 10px;
+  }
+  /* Apraksta fonta izmērs mobilajās ierīcēs */
+  .fullscreen-modal-description {
+    font-size: 0.9em;
+  }
+}

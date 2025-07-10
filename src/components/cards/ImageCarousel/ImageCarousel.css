@@ -1,0 +1,101 @@
+/* src/components/cards/ImageCarousel/ImageCarousel.css */
+
+/* Attēlu karuseļa konteiners */
+.image-carousel {
+  position: relative; /* Nepieciešams bultiņu pozicionēšanai */
+  width: 100%; /* Aizņem visu platumu */
+  max-width: 900px; /* Maksimālais platums */
+  margin: 20px auto; /* Atkāpe no malām un centrēšana */
+  border: 1px solid var(--border-color); /* Apmales krāsa no mainīgā */
+  border-radius: 8px; /* Noapaļoti stūri */
+  overflow: hidden; /* Paslēpj pārpildīto saturu */
+  background-color: var(--grey-100); /* Fona krāsa no mainīgā */
+  box-shadow: 0 2px 5px var(--shadow-medium); /* Ēna no mainīgā */
+}
+
+/* Attēlu karuseļa displeja zona */
+.image-carousel-display {
+  display: flex; /* Sakārto attēlu centrā */
+  align-items: center; /* Vertikāli centrē */
+  justify-content: center; /* Horizontāli centrē */
+  height: 350px; /* Fiksēts augstums */
+  overflow: hidden; /* Paslēpj pārpildīto saturu */
+}
+
+/* Attēls karuselī */
+.image-carousel-image {
+  max-width: 100%; /* Maksimālais platums */
+  max-height: 100%; /* Maksimālais augstums */
+  object-fit: contain; /* Attēls tiek samazināts, lai ietilptu rāmī, saglabājot proporcijas */
+  display: block; /* Nodrošina bloka elementa uzvedību */
+}
+
+/* Attēla apraksta teksts karuselī */
+.image-carousel-description {
+  text-align: center; /* Teksta centrēšana */
+  padding: 10px 15px; /* Iekšējā atkāpe */
+  margin: 0; /* Noņem margas */
+  background-color: var(--grey-200); /* Fona krāsa no mainīgā */
+  border-top: 1px solid var(--border-color); /* Augšējā apmale no mainīgā */
+  font-size: 0.9em; /* Fonta izmērs */
+}
+
+/* Karuseļa navigācijas bultu pogas */
+.image-carousel-button {
+  position: absolute; /* Absolūta pozicionēšana */
+  top: 50%; /* Vertikāli centrē */
+  transform: translateY(-50%); /* Precīza vertikālā centrēšana */
+  background-color: var(--overlay-dark); /* Fona krāsa ar caurspīdīgumu no mainīgā */
+  color: var(--white-color); /* Teksta krāsa no mainīgā */
+  border: none; /* Noņem apmali */
+  border-radius: 50%; /* Apaļa forma */
+  width: 40px; /* Platums */
+  height: 40px; /* Augstums */
+  font-size: 24px; /* Fonta izmērs (bultām) */
+  cursor: pointer; /* Kursoru maina uz rādītāju */
+  z-index: 10; /* Atrodas virs attēla */
+  transition: background-color 0.3s ease; /* Pārejas efekts */
+}
+
+/* Karuseļa pogu hover stāvoklis */
+.image-carousel-button:hover {
+  background-color: var(--overlay-dark); /* Fona krāsa, turot peli virs pogas (var būt nedaudz tumšāka, ja nepieciešams, bet tagad izmantojam to pašu) */
+}
+
+/* Iepriekšējās pogas pozicionēšana */
+.image-carousel-button.prev {
+  left: 10px; /* Pozicionē no kreisās puses */
+}
+
+/* Nākamās pogas pozicionēšana */
+.image-carousel-button.next {
+  right: 10px; /* Pozicionē no labās puses */
+}
+
+/* Karuseļa lapošanas (pagination) displejs */
+.image-carousel-pagination {
+  text-align: center; /* Teksta centrēšana */
+  padding: 5px 0; /* Iekšējā atkāpe */
+  background-color: var(--grey-200); /* Fona krāsa no mainīgā */
+  font-size: 0.8em; /* Fonta izmērs */
+}
+
+/* Ziņojums, ja nav attēlu karuselī */
+.image-carousel-no-images {
+  text-align: center; /* Teksta centrēšana */
+  color: var(--grey-500); /* Teksta krāsa no mainīgā */
+  padding: 20px; /* Iekšējā atkāpe */
+  font-style: italic; /* Kursīvs teksts */
+}
+
+/* Responsīvās izmaiņas mazākiem ekrāniem */
+@media (max-width: 600px) {
+  /* Karuseļa platums mobilajās ierīcēs */
+  .image-carousel {
+    max-width: 100%;
+  }
+  /* Karuseļa displeja augstums mobilajās ierīcēs */
+  .image-carousel-display {
+    height: 250px;
+  }
+}

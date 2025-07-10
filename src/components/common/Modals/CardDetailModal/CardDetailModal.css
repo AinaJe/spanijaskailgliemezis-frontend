@@ -1,0 +1,87 @@
+/* src/components/common/Modals/CardDetailModal/CardDetailModal.css */
+
+/* Modālā loga pārklājums (fons aiz modālā) */
+.card-detail-modal-overlay {
+  position: fixed; /* Fiksēts pozicionējums attiecībā pret skatlogu */
+  top: 0; /* Pielīdzina augšējai malai */
+  left: 0; /* Pielīdzina kreisajai malai */
+  width: 100%; /* Aizņem visu platumu */
+  height: 100%; /* Aizņem visu augstumu */
+  background-color: var(--overlay-dark); /* Fona krāsa ar caurspīdīgumu no mainīgā */
+  display: flex; /* Sakārto saturu centrā */
+  justify-content: center; /* Horizontāli centrē */
+  align-items: center; /* Vertikāli centrē */
+  z-index: 1000; /* Augsts z-index, lai atrastos virs citiem elementiem */
+}
+
+/* Modālā loga satura bloks */
+.card-detail-modal-content {
+  background-color: var(--white-color); /* Fona krāsa no mainīgā */
+  padding: 30px; /* Iekšējā atkāpe */
+  border-radius: 8px; /* Noapaļoti stūri */
+  max-width: 80%; /* Maksimālais platums */
+  max-height: 90%; /* Maksimālais augstums */
+  overflow-y: auto; /* Iespējo vertikālo ritināšanu, ja saturs pārsniedz augstumu */
+  box-shadow: 0 5px 15px var(--shadow-strong); /* Ēna no mainīgā */
+  position: relative; /* Nepieciešams absolūti pozicionētai aizvēršanas pogai */
+}
+
+/* Modālā loga aizvēršanas poga */
+.card-detail-modal-close-button {
+  position: absolute; /* Absolūta pozicionēšana */
+  top: 10px; /* Pozicionē no augšas */
+  right: 10px; /* Pozicionē no labās puses */
+  background: none; /* Noņem fonu */
+  border: none; /* Noņem apmali */
+  font-size: 24px; /* Fonta izmērs (x simbolam) */
+  cursor: pointer; /* Kursoru maina uz rādītāju */
+  color: var(--dark-color); /* Teksta krāsa no mainīgā */
+}
+
+/* Modālā loga virsraksts */
+.card-detail-modal-content h2 {
+  margin-top: 0; /* Noņem augšējo margu */
+  color: var(--secondary-color); /* Teksta krāsa no mainīgā */
+}
+
+/* Tēmas un autora teksta stils */
+.card-detail-modal-theme,
+.card-detail-modal-author {
+  margin-bottom: 5px; /* Atstarpe no apakšas */
+  font-size: 0.95em; /* Fonta izmērs */
+  color: var(--dark-color); /* Teksta krāsa no mainīgā */
+}
+
+/* Kopsavilkuma teksta stils */
+.card-detail-modal-summary {
+  font-size: 1.1em; /* Fonta izmērs */
+  font-style: italic; /* Kursīvs teksts */
+  color: var(--grey-700); /* Teksta krāsa no mainīgā (bija darker-grey) */
+  margin-bottom: 20px; /* Atstarpe no apakšas */
+}
+
+/* Satura sekcija (apraksts) modālajā logā */
+.card-detail-content-section {
+  margin-top: 20px; /* Atstarpe no augšas */
+  border-top: 1px solid var(--border-color); /* Augšējā apmale no mainīgā (bija lighter-border) */
+  padding-top: 20px; /* Iekšējā atkāpe no apmales */
+}
+
+/* Satura sekcijas virsraksts */
+.card-detail-content-section h3 {
+  color: var(--secondary-color); /* Teksta krāsa no mainīgā */
+  margin-top: 0; /* Noņem augšējo margu */
+  margin-bottom: 15px; /* Atstarpe no apakšas */
+}
+
+/* Attēli detalizētajā kartītes skatā */
+/* Pārvietots no index.css, jo attiecas uz CardDetailModal saturu */
+.card-detail-content-section img {
+  width: auto !important;
+  max-width: 100% !important;
+  height: auto !important;
+  display: block !important;
+  margin: 10px auto !important;
+  padding: 0 !important;
+  object-fit: contain;
+}

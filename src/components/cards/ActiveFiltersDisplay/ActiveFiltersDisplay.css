@@ -1,0 +1,107 @@
+/* src/components/cards/ActiveFiltersDisplay/ActiveFiltersDisplay.css */
+
+/* Aktīvo filtru displeja konteiners */
+.active-filters-display-container {
+  background-color: var(--grey-100); /* Fona krāsa no mainīgā */
+  border: 1px solid var(--border-color); /* Apmales krāsa no mainīgā */
+  border-radius: 8px; /* Noapaļoti stūri */
+  padding: 10px 15px; /* Iekšējā atkāpe */
+  margin: 20px auto; /* Atkāpe no malām un centrēšana */
+  max-width: var(--content-max-width); /* Maksimālais platums no mainīgā */
+  display: flex; /* Sakārto elementus rindā */
+  flex-wrap: wrap; /* Ļauj elementiem pāriet jaunā rindā, ja nav pietiekami daudz vietas */
+  align-items: center; /* Vertikāli centrē elementus */
+  gap: 10px; /* Atstarpe starp elementiem */
+  font-size: 0.9em; /* Fonta izmērs */
+  box-shadow: 0 1px 3px var(--shadow-light); /* Ēna no mainīgā */
+}
+
+/* Aktīvo filtru etiķete "Aktīvie filtri:" */
+.active-filters-label {
+  font-weight: bold; /* Fonta biezums */
+  color: var(--dark-color); /* Teksta krāsa no mainīgā */
+  margin-right: 5px; /* Atstarpe no nākamā elementa */
+}
+
+/* Aktīvo filtru saraksta konteiners */
+.active-filters-list {
+  display: flex; /* Sakārto filtru tagus rindā */
+  flex-wrap: wrap; /* Ļauj tagiem pāriet jaunā rindā */
+  gap: 8px; /* Atstarpe starp filtru tagiem */
+  flex-grow: 1; /* Ļauj sarakstam aizņemt visu pieejamo vietu */
+}
+
+/* Aktīvā filtra tags (piemēram, "Tēma: Spānijas kailgliemezis") */
+.active-filter-tag {
+  background-color: var(--primary-color); /* Fona krāsa no mainīgā */
+  color: var(--white-color); /* Teksta krāsa no mainīgā */
+  padding: 5px 10px; /* Iekšējā atkāpe */
+  padding-right: 25px; /* Papildu atkāpe labajā pusē aizvēršanas pogai */
+  border-radius: 15px; /* Izteikti noapaļoti stūri, lai izskatītos kā tags */
+  display: flex; /* Sakārto tekstu un pogu rindā */
+  align-items: center; /* Vertikāli centrē elementus */
+  position: relative; /* Nepieciešams absolūti pozicionētai pogai */
+}
+
+/* Pogas, lai noņemtu atsevišķu filtru */
+.remove-filter-button {
+  background: none; /* Noņem fonu */
+  border: none; /* Noņem apmali */
+  color: var(--white-color); /* Teksta krāsa */
+  font-size: 1.2em; /* Fonta izmērs (x simbolam) */
+  line-height: 1; /* Rindas augstums */
+  padding: 0; /* Noņem iekšējo atkāpi */
+  margin-left: 8px; /* Atstarpe no teksta */
+  cursor: pointer; /* Kursoru maina uz rādītāju */
+  position: absolute; /* Absolūta pozicionēšana taga iekšpusē */
+  right: 8px; /* Pozicionē labajā pusē */
+  top: 50%; /* Vertikāli centrē */
+  transform: translateY(-50%); /* Precīza vertikālā centrēšana */
+  opacity: 0.8; /* Caurspīdīgums */
+  transition: opacity 0.2s ease; /* Pārejas efekts caurspīdīgumam */
+}
+
+/* Noņemšanas pogas hover stāvoklis */
+.remove-filter-button:hover {
+  opacity: 1; /* Caurspīdīgumu noņem, turot peli virs pogas */
+}
+
+/* Poga, lai notīrītu visus aktīvos filtrus */
+.clear-all-filters-button {
+  background-color: var(--button-dark-bg); /* Fona krāsa no mainīgā */
+  color: var(--white-color); /* Teksta krāsa */
+  border: none; /* Noņem apmali */
+  border-radius: 4px; /* Noapaļoti stūri */
+  padding: 8px 12px; /* Iekšējā atkāpe */
+  cursor: pointer; /* Kursoru maina uz rādītāju */
+  font-size: 0.85em; /* Fonta izmērs */
+  transition: background-color 0.2s ease; /* Pārejas efekts fona krāsai */
+  margin-left: auto; /* Pielīdzina pogu pa labi, ja pieejama vieta */
+}
+
+/* Notīrīt visu filtru pogas hover stāvoklis */
+.clear-all-filters-button:hover {
+  background-color: var(--button-dark-hover); /* Fona krāsa, turot peli virs pogas */
+}
+
+/* Responsīvās izmaiņas mazākiem ekrāniem */
+@media (max-width: 600px) {
+  /* Konteineris maina izkārtojumu uz kolonnām */
+  .active-filters-display-container {
+    flex-direction: column;
+    align-items: flex-start; /* Elementi tiek pielīdzināti pa kreisi */
+  }
+
+  /* Aktīvo filtru saraksts aizņem visu platumu un tiek pielīdzināts pa kreisi */
+  .active-filters-list {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  /* Notīrīt visu filtru poga aizņem visu platumu un tiek pabīdīta uz augšu */
+  .clear-all-filters-button {
+    width: 100%;
+    margin-top: 10px;
+    margin-left: 0;
+  }
+}

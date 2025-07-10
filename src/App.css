@@ -1,0 +1,25 @@
+/* src/App.css */
+
+/* Galvenais aplikācijas konteiners */
+.App {
+    display: flex; /* Sakārto elementus kolonnā */
+    flex-direction: column; /* Elementi tiek izkārtoti vertikāli */
+    min-height: 100vh; /* Nodrošina, ka aplikācija aizņem vismaz visu skatlogu augstumu */
+    text-align: center; /* Centrē vispārīgu tekstu App komponentē */
+}
+
+/* Galvenā satura zona */
+main {
+    flex-grow: 1; /* Ļauj main saturam aizņemt visu pieejamo vietu starp header un footer */
+    padding: 20px; /* Iekšējā atkāpe ap galveno saturu */
+    max-width: var(--content-max-width); /* Maksimālais platums, kas definēts index.css */
+    margin: 0 auto; /* Centrē galveno saturu lapā */
+}
+
+/* Vispārīgs sadaļas virsraksts */
+.section-title {
+  color: var(--dark-color); /* Virsraksta teksta krāsa */
+  margin-bottom: 30px; /* Atstarpe zem virsraksta */
+  font-size: 2.2em; /* Fonta izmērs */
+  text-align: center; /* Centrē virsrakstu */
+}

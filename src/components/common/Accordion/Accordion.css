@@ -1,0 +1,62 @@
+/* src/components/common/Accordion/Accordion.css */
+
+/* Akordeona vienības konteiners */
+.accordion-item {
+  border: 1px solid var(--border-color); /* Apmales krāsa no mainīgā */
+  border-radius: 4px; /* Noapaļoti stūri */
+  margin-bottom: 10px; /* Atstarpe starp akordeona vienībām */
+  overflow: hidden; /* Nodrošina, ka saturs nepārsniedz rāmi */
+}
+
+/* Akordeona pogas stils */
+.accordion-button {
+  width: 100%; /* Aizņem visu pieejamo platumu */
+  background-color: var(--grey-100); /* Fona krāsa no mainīgā */
+  color: var(--dark-color); /* Teksta krāsa no mainīgā */
+  padding: 12px 15px; /* Iekšējā atkāpe */
+  border: none; /* Noņem apmali */
+  text-align: left; /* Teksta līdzināšana pa kreisi */
+  font-size: 1em; /* Fonta izmērs */
+  font-weight: bold; /* Fonta biezums */
+  cursor: pointer; /* Kursoru maina uz rādītāju */
+  display: flex; /* Izmanto flexbox elementu izkārtošanai */
+  justify-content: space-between; /* Izplata elementus ar atstarpi starp tiem (virsraksts un ikona) */
+  align-items: center; /* Vertikāli centrē elementus */
+  transition: background-color 0.2s ease; /* Pārejas efekts fona krāsai */
+}
+
+/* Akordeona pogas hover stāvoklis */
+.accordion-button:hover {
+  background-color: var(--hover-bg); /* Fona krāsa, turot peli virs pogas */
+}
+
+/* Akordeona pogas aktīvais (atvērtais) stāvoklis */
+.accordion-button[aria-expanded="true"] {
+  background-color: var(--primary-color); /* Fona krāsa, kad akordeons ir atvērts */
+  color: var(--white-color); /* Teksta krāsa, kad akordeons ir atvērts */
+}
+
+/* Akordeona ikonas krāsa, kad akordeons ir atvērts */
+.accordion-button[aria-expanded="true"] .accordion-icon {
+  color: var(--white-color); /* Ikonas krāsa, kad akordeons ir atvērts */
+}
+
+/* Akordeona virsraksta teksta daļa */
+.accordion-title {
+  flex-grow: 1; /* Ļauj virsrakstam aizņemt visu pieejamo vietu */
+}
+
+/* Akordeona ikona */
+.accordion-icon {
+  font-size: 1.2em; /* Ikonas izmērs */
+  font-weight: bold; /* Ikonas biezums */
+  margin-left: 10px; /* Atstarpe no virsraksta */
+  color: var(--secondary-color); /* Ikonas krāsa */
+}
+
+/* Akordeona satura bloks */
+.accordion-content {
+  padding: 15px; /* Iekšējā atkāpe */
+  background-color: var(--white-color); /* Fona krāsa */
+  border-top: 1px solid var(--border-color); /* Augšējā apmale */
+}

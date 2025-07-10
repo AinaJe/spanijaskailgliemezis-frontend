@@ -1,0 +1,167 @@
+/* src/components/common/RichTextEditor/RichTextEditor.css */
+
+/* Bagātinātā teksta redaktora konteiners */
+.rich-text-editor-container {
+  border: 1px solid var(--border-color); /* Apmales krāsa no mainīgā */
+  border-radius: 4px; /* Noapaļoti stūri */
+  background-color: var(--white-color); /* Fona krāsa no mainīgā */
+}
+
+/* Redaktora konteiners, kad tas ir tikai skatīšanās režīmā (nevar rediģēt) */
+.rich-text-editor-container.is-view-only {
+  border: none !important; /* Noņem apmali */
+  background-color: transparent !important; /* Caurspīdīgs fons */
+  padding: 0 !important; /* Noņem iekšējo atkāpi */
+  box-shadow: none !important; /* Noņem ēnu */
+}
+
+/* Redaktora laukums, kad tas ir tikai skatīšanās režīmā */
+.rich-text-editor-container.is-view-only .tiptap-editor {
+  min-height: auto !important; /* Augstums automātiski pielāgojas saturam */
+  padding: 0 !important; /* Noņem iekšējo atkāpi */
+  background-color: transparent !important; /* Caurspīdīgs fons */
+  cursor: default !important; /* Kursoru maina uz noklusējuma */
+  outline: none !important; /* Noņem fokusa apmali */
+  box-shadow: none !important; /* Noņem ēnu */
+  white-space: normal; /* Atļauj teksta aplūšanu */
+  word-break: break-word; /* Ļauj vārdiem aplūst, ja tie ir pārāk gari */
+}
+
+/* ProseMirror laukums (Tiptap iekšējais elements), kad redaktors ir tikai skatīšanās režīmā */
+.rich-text-editor-container.is-view-only .tiptap-editor .ProseMirror {
+    padding: 0 !important; /* Noņem iekšējo atkāpi */
+}
+
+/* Tiptap rīkjosla */
+.tiptap-toolbar {
+  margin-bottom: 10px; /* Atstarpe no apakšas */
+  border-bottom: 1px solid var(--border-color); /* Apakšējā apmale no mainīgā */
+  border-radius: 4px 4px 0 0; /* Noapaļoti augšējie stūri */
+  padding: 5px; /* Iekšējā atkāpe */
+  display: flex; /* Sakārto elementus kolonnā */
+  flex-direction: column; /* Elementi tiek izkārtoti vertikāli */
+  gap: 5px; /* Atstarpe starp rīkjoslas rindām */
+  background-color: var(--light-bg); /* Fona krāsa no mainīgā */
+}
+
+/* Tiptap rīkjoslas rinda */
+.tiptap-toolbar-row {
+  display: flex; /* Sakārto pogas rindā */
+  flex-wrap: wrap; /* Ļauj pogām pāriet jaunā rindā */
+  gap: 5px; /* Atstarpe starp pogām */
+  justify-content: flex-start; /* Pielīdzina pogas pa kreisi */
+}
+
+/* Tiptap rīkjoslas rinda ar augšējo apmali */
+.tiptap-toolbar-row.top-border {
+  border-top: 1px solid var(--border-color); /* Augšējā apmale no mainīgā */
+  padding-top: 5px; /* Iekšējā atkāpe no apmales */
+  margin-top: 5px; /* Atstarpe no augšas */
+}
+
+/* Tiptap pogas stils */
+.tiptap-button {
+  padding: 8px 12px; /* Iekšējā atkāpe */
+  border: 1px solid var(--border-color); /* Apmales krāsa no mainīgā */
+  border-radius: 4px; /* Noapaļoti stūri */
+  cursor: pointer; /* Kursoru maina uz rādītāju */
+  background-color: var(--white-color); /* Fona krāsa no mainīgā */
+  color: var(--black-color); /* Teksta krāsa no mainīgā */
+  display: flex; /* Sakārto ikonu/tekstu centrā */
+  align-items: center; /* Vertikāli centrē */
+  justify-content: center; /* Horizontāli centrē */
+  min-width: 35px; /* Minimālais platums */
+  box-sizing: border-box; /* Nodrošina, ka padding un border ietilpst platumā */
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s; /* Pārejas efekti */
+  font-size: 0.9em; /* Fonta izmērs */
+}
+
+/* Tiptap pogas hover stāvoklis */
+.tiptap-button:hover {
+  background-color: var(--hover-bg); /* Fona krāsa, turot peli virs pogas */
+}
+
+/* Tiptap pogas aktīvais stāvoklis */
+.tiptap-button.is-active {
+  background-color: var(--primary-color); /* Fona krāsa aktīvajam stāvoklim */
+  color: var(--white-color); /* Teksta krāsa aktīvajam stāvoklim */
+  border-color: var(--primary-color); /* Apmales krāsa aktīvajam stāvoklim */
+}
+
+/* Krāsu paraugu pogas stils */
+.tiptap-button.color-swatch {
+  width: 30px; /* Platums */
+  height: 30px; /* Augstums */
+  padding: 0; /* Noņem iekšējo atkāpi */
+  border: 1px solid var(--border-color); /* Apmales krāsa */
+}
+
+/* Krāsu paraugu pogas aktīvais stāvoklis */
+.tiptap-button.color-swatch.is-active {
+    border: 2px solid var(--primary-color) !important; /* Biezāka apmale ar primāro krāsu */
+    box-shadow: 0 0 0 1px var(--primary-color); /* Ēna */
+}
+
+/* Tiptap redaktora laukums */
+.tiptap-editor {
+  min-height: 150px; /* Minimālais augstums */
+  padding: 10px; /* Iekšējā atkāpe */
+  background-color: var(--white-color); /* Fona krāsa no mainīgā */
+  outline: none; /* Noņem noklusējuma fokusa apmali */
+  cursor: text; /* Kursoru maina uz teksta ievades kursoru */
+  box-sizing: border-box; /* Nodrošina, ka padding ietilpst platumā */
+  text-align: left; /* Teksta līdzināšana pa kreisi */
+}
+
+/* Agresīva TipTap editora fokusa apmales noņemšana */
+/* Pārvietots no index.css, jo attiecas uz tiptap */
+.tiptap-editor:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Nodrošinām, ka redaktoram nav noklusējuma apmales */
+/* Pārvietots no index.css, jo attiecas uz tiptap */
+.tiptap-editor {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Tiptap redaktorā ievietoto attēlu stils */
+/* Pārvietots no index.css, jo attiecas uz tiptap saturu */
+.tiptap-editor img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+/* Pielāgot attēlu izmērus TipTap redaktorā, kad uz tiem uzklikšķināts */
+/* Pārvietots no index.css, jo attiecas uz tiptap */
+.tiptap-editor img.ProseMirror-selectednode {
+  outline: 3px solid var(--primary-color);
+}
+
+/* Tiptap redaktora kursora krāsa */
+.tiptap-editor.ProseMirror {
+    caret-color: var(--text-color); /* Kursora krāsa, kad nav fokusā */
+}
+/* Tiptap redaktora kursora krāsa, kad tas ir fokusā */
+.tiptap-editor.ProseMirror-focused {
+    caret-color: var(--primary-color); /* Kursora krāsa, kad ir fokusā */
+}
+
+/* Pielāgojam krāsu pogu aktīvo stāvokli - specifiski TipTap toolbar */
+/* Pārvietots no index.css, jo attiecas uz tiptap toolbar pogām */
+.tiptap-toolbar button.is-active {
+    background-color: var(--info-color) !important;
+    color: var(--white-color) !important;
+}
+/* Specifisks stils krāsu paraugu pogām */
+.tiptap-toolbar button.is-active[style*="background-color: rgb"] {
+    border: 2px solid var(--info-color) !important;
+    box-shadow: 0 0 0 1px var(--info-color);
+}

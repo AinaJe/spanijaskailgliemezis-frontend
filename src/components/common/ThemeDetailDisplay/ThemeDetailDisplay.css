@@ -1,0 +1,35 @@
+/* src/components/common/ThemeDetailDisplay/ThemeDetailDisplay.css */
+
+/* Tēmas detaļu displeja konteiners */
+.theme-detail-display-container {
+  background-color: var(--white-color); /* Fona krāsa no mainīgā */
+  border: 1px solid var(--border-color); /* Apmales krāsa no mainīgā */
+  border-radius: 8px; /* Noapaļoti stūri */
+  padding: 20px; /* Iekšējā atkāpe */
+  margin: 20px auto; /* Atkāpe no malām un centrēšana */
+  max-width: var(--content-max-width); /* Maksimālais platums no mainīgā */
+  box-shadow: 0 2px 5px var(--shadow-light); /* Ēna no mainīgā */
+  text-align: left; /* Teksta līdzināšana pa kreisi */
+}
+
+/* Tēmas detaļu virsraksts */
+.theme-detail-title {
+  color: var(--primary-color); /* Teksta krāsa no mainīgā */
+  margin-top: 0; /* Noņem augšējo margu */
+  margin-bottom: 10px; /* Atstarpe no apakšas */
+  font-size: 1.8em; /* Fonta izmērs */
+}
+
+/* Tēmas detaļu kopsavilkums */
+.theme-detail-summary {
+  font-size: 1.1em; /* Fonta izmērs */
+  color: var(--text-color); /* Teksta krāsa no mainīgā */
+  margin-bottom: 15px; /* Atstarpe no apakšas */
+}
+
+/* Tēmas detaļu apraksta sadaļa */
+.theme-detail-description {
+  margin-top: 15px; /* Atstarpe no augšas */
+  border-top: 1px solid var(--border-color); /* Augšējā apmale no mainīgā */
+  padding-top: 15px; /* Iekšējā atkāpe no apmales */
+}

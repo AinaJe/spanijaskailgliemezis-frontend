@@ -1,0 +1,73 @@
+/* src/index.css */
+:root {
+    /* Bāzes krāsas (galvenās tēmas krāsas + melns/balts) */
+    --primary-color: #4CAF50; /* Spilgti zaļš, asociējas ar dabu */
+    --secondary-color: #7986CB; /* Maigi zils, rada stabilitātes sajūtu */
+    --success-color: #66BB6A; /* Zaļš panākumiem */
+    --danger-color: #EF5350; /* Sarkans briesmām */
+    --warning-color: #FFCA28; /* Dzeltens brīdinājumiem */
+    --info-color: #26C6DA; /* Tirkīza zils informācijai */
+    --white-color: #FFFFFF; /* Tīri balta */
+    --black-color: #000000; /* Tīri melna */
+
+    /* Pelēkie toņi - vēl optimizēti */
+    --grey-100: #F9F9F9; /* Ļoti gaišs (piem., fons pāra rindām, gaiši foni, light-bg) */
+    --grey-200: #EEEEEE; /* Gaiši pelēks (piem., apmales, header fons tabulām, hover fons) */
+    --grey-500: #9E9E9E; /* Vidēji pelēks (piem., placeholder teksts, tukšu sarakstu ziņas) */
+    --grey-700: #424242; /* Tumšs pelēks (piem., galvenais teksts, tumšākas ikonas, dark-color) */
+    --grey-900: #212121; /* Ļoti tumšs pelēks (gandrīz melns teksts) */
+
+    /* Hover efekti (tumšākas pamatkrāsas versijas) */
+    --primary-hover: #3e8e41;
+    --secondary-hover: #6573bd;
+    --success-hover: #218838;
+    --danger-hover: #c82333;
+    --info-hover: #138496;
+    --warning-hover: #e0a800;
+    
+    /* Pogu foni */
+    --button-dark-bg: #6c757d; /* Bija --dark-blue-grey */
+    --button-dark-hover: #5a6268; /* Bija --dark-blue-grey-hover */
+
+    /* Ēnu krāsas - optimizēti */
+    --shadow-light: rgba(0, 0, 0, 0.08);
+    --shadow-medium: rgba(0, 0, 0, 0.15); /* Nedaudz tumšāka, lai labāk izceltos */
+    --shadow-strong: rgba(0, 0, 0, 0.25); /* Nedaudz tumšāka */
+    --overlay-dark: rgba(0, 0, 0, 0.6); /* Modālo logu un karuseļa pārklājums */
+    --text-shadow: rgba(0, 0, 0, 0.7); /* Teksta ēna (virssargs) */
+
+    /* Funkcionālie mainīgie (atsaucas uz iepriekš definētajām krāsām) */
+    --light-bg: var(--grey-100); /* Aplikācijas galvenais fons */
+    --dark-color: var(--grey-700); /* Tumšā pelēkā teksta/elementu krāsa */
+    --text-color: var(--grey-700); /* Standarta teksta krāsa */
+    --card-bg: var(--white-color); /* Karšu fons */
+    --border-color: var(--grey-200); /* Vispārīgas apmales krāsa */
+    --hover-bg: var(--grey-200); /* Vispārīgs hover fons */
+    --even-row-bg: var(--grey-100); /* Pāra rindu fons tabulās */
+
+    /* Fontu un izkārtojuma mainīgie */
+    --font-family: 'Roboto', sans-serif;
+    --base-font-size: 17px;
+    --content-max-width: 1100px;
+}
+
+/* Vispārīgi ķermeņa stili */
+body {
+    margin: 0;
+    font-family: var(--font-family);
+    background-color: var(--light-bg);
+    color: var(--text-color);
+    font-size: var(--base-font-size);
+}
+
+/* Galvenais saknes elements */
+#root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Aplikācijas galvenais stils */
+.App {
+    text-align: center;
+}

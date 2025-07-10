@@ -1,0 +1,175 @@
+/* src/pages/AdminPage.css */
+
+/* Admin lapas konteiners */
+.admin-page-container {
+  background-color: var(--white-color); /* Fona krāsa */
+  border-radius: 8px; /* Noapaļoti stūri */
+  box-shadow: 0 2px 4px var(--shadow-medium); /* Ēna */
+  padding: 20px; /* Iekšējā atkāpe */
+  margin: 20px auto; /* Atkāpe no malām un centrēšana */
+  max-width: var(--content-max-width); /* Maksimālais platums */
+  text-align: center; /* Teksta centrēšana */
+}
+
+/* Admin lapas virsraksts */
+.admin-page-title {
+  color: var(--dark-color); /* Virsraksta teksta krāsa */
+  margin-bottom: 30px; /* Atstarpe zem virsraksta */
+  font-size: 2.2em; /* Fonta izmērs */
+}
+
+/* Administratora lapas darbību pogu konteiners */
+.admin-action-buttons {
+  display: flex; /* Sakārto pogas rindā */
+  flex-wrap: wrap; /* Ļauj pogām pāriet jaunā rindā, ja nav pietiekami daudz vietas */
+  justify-content: center; /* Centrē pogas horizontāli */
+  gap: 15px; /* Atstarpe starp pogām */
+  margin-bottom: 40px; /* Atstarpe zem pogu bloka */
+}
+
+/* Administratora lapas darbību poga */
+.admin-action-button {
+  background-color: var(--primary-color); /* Pogas fona krāsa no mainīgajiem */
+  color: var(--white-color); /* Teksta krāsa no mainīgajiem */
+  padding: 12px 20px; /* Iekšējā atkāpe pogā */
+  border: none; /* Noņem apmali */
+  border-radius: 5px; /* Noapaļoti stūri */
+  cursor: pointer; /* Kursoru maina uz rādītāju, norādot, ka tas ir klikšķināms elements */
+  font-size: 1.0em; /* Fonta izmērs */
+  font-weight: bold; /* Fonta biezums */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Pārejas efekti peles virzībā un transformācijā */
+  flex-grow: 1; /* Ļauj pogai augt, aizņemot pieejamo vietu */
+  max-width: 220px; /* Maksimālais pogas platums */
+  display: flex; /* Izmanto flex, lai centrētu ikonu un tekstu */
+  align-items: center; /* Centrē elementus vertikāli */
+  justify-content: center; /* Centrē elementus horizontāli */
+  gap: 8px; /* Atstarpe starp ikonu un tekstu */
+}
+
+/* Administratora darbību pogas hover stāvoklis */
+.admin-action-button:hover {
+  background-color: var(--primary-hover); /* Fona krāsa, turot peli virs pogas */
+  transform: translateY(-2px); /* Nedaudz pabīda pogu uz augšu */
+}
+
+/* Admin lapas satura sekcijas (akordeonu bloks) */
+.admin-content-sections {
+  margin-top: 20px; /* Atstarpe no augšas */
+  border-top: 1px solid var(--border-color); /* Augšējā apmale */
+  padding-top: 30px; /* Iekšējā atkāpe no apmales */
+}
+
+/* Admin tabulu konteineris, kas nodrošina horizontālo ritināšanu mobilajās ierīcēs */
+.admin-table-wrapper {
+  overflow-x: auto; /* Iespējo horizontālo ritināšanu, ja saturs ir platāks par konteineru */
+  margin-top: 15px; /* Atstarpe no augšas */
+  margin-bottom: 15px; /* Atstarpe no apakšas */
+  width: 100%; /* Aizņem visu pieejamo platumu */
+  box-sizing: border-box; /* Nodrošina, ka padding un border ietilpst platumā */
+}
+
+/* Admin datu tabula */
+.admin-data-table {
+  width: 100%; /* Aizņem visu pieejamo platumu */
+  border-collapse: collapse; /* Apvieno tabulas apmales */
+  margin: 0; /* Noņem ārējās margas */
+  box-sizing: border-box; /* Nodrošina, ka padding un border ietilpst platumā */
+  table-layout: fixed; /* Fiksēts kolonnu platums */
+}
+
+/* Admin tabulas galvenes šūna un datu šūna */
+.admin-data-table th,
+.admin-data-table td {
+  border: 1px solid var(--border-color); /* Apmales krāsa */
+  padding: 10px; /* Iekšējā atkāpe šūnās */
+  text-align: left; /* Teksta līdzināšana pa kreisi */
+  vertical-align: middle; /* Vertikālā līdzināšana uz vidu */
+  box-sizing: border-box; /* Nodrošina, ka padding un border ietilpst platumā */
+  overflow: hidden; /* Paslēpj pārpildītu saturu */
+  white-space: nowrap; /* Novērš teksta aplūšanu jaunā rindā */
+  text-overflow: ellipsis; /* Pievieno elipses, ja teksts ir pārāk garš */
+}
+
+/* Admin tabulas galvenes šūna */
+.admin-data-table th {
+  background-color: var(--grey-200); /* Fona krāsa */
+  font-weight: bold; /* Fonta biezums */
+  color: var(--text-color); /* Teksta krāsa */
+}
+
+/* Admin tabulas pāra rinda */
+.admin-data-table tr:nth-child(even) {
+  background-color: var(--even-row-bg); /* Fona krāsa pāra rindām */
+}
+
+/* Admin tabulas rindas hover stāvoklis */
+.admin-data-table tr:hover {
+  background-color: var(--hover-bg); /* Fona krāsa, turot peli virs rindas */
+}
+
+/* Admin tabulas darbību pogu konteiners */
+.admin-table-actions {
+  display: flex; /* Sakārto pogas rindā */
+  flex-wrap: nowrap; /* Novērš aplūšanu jaunā rindā */
+  gap: 5px; /* Atstarpe starp pogām */
+  justify-content: center; /* Centrē pogas horizontāli */
+  align-items: center; /* Centrē pogas vertikāli */
+  height: 100%; /* Nodrošina, ka pogas aizņem visu šūnas augstumu */
+}
+
+/* Admin tabulas poga */
+.admin-table-button {
+  padding: 6px 10px; /* Iekšējā atkāpe pogā */
+  border: none; /* Noņem apmali */
+  border-radius: 4px; /* Noapaļoti stūri */
+  cursor: pointer; /* Kursoru maina uz rādītāju */
+  font-size: 0.85em; /* Fonta izmērs */
+  transition: background-color 0.2s ease, opacity 0.2s ease; /* Pārejas efekti */
+  display: flex; /* Izmanto flex, lai centrētu ikonu */
+  align-items: center; /* Centrē elementus vertikāli */
+  justify-content: center; /* Centrē elementus horizontāli */
+  gap: 0px; /* Noņem atstarpi starp ikonu un tekstu (ja tāds būtu) */
+  width: 35px; /* Fiksēts pogas platums */
+  height: 35px; /* Fiksēts pogas augstums */
+  flex-shrink: 0; /* Novērš pogas samazināšanos */
+}
+
+/* Skatīšanās pogas stils */
+.admin-table-button.view-button {
+  background-color: var(--info-color); /* Fona krāsa */
+  color: var(--white-color); /* Teksta krāsa */
+}
+
+/* Skatīšanās pogas hover stāvoklis */
+.admin-table-button.view-button:hover {
+  background-color: var(--info-hover); /* Fona krāsa, turot peli virs pogas */
+}
+
+/* Rediģēšanas pogas stils */
+.admin-table-button.edit-button {
+  background-color: var(--warning-color); /* Fona krāsa */
+  color: var(--white-color); /* Teksta krāsa */
+}
+
+/* Rediģēšanas pogas hover stāvoklis */
+.admin-table-button.edit-button:hover {
+  background-color: var(--warning-hover); /* Fona krāsa, turot peli virs pogas */
+}
+
+/* Dzēšanas pogas stils */
+.admin-table-button.delete-button {
+  background-color: var(--danger-color); /* Fona krāsa */
+  color: var(--white-color); /* Teksta krāsa */
+}
+
+/* Dzēšanas pogas hover stāvoklis */
+.admin-table-button.delete-button:hover {
+  background-color: var(--danger-hover); /* Fona krāsa, turot peli virs pogas */
+}
+
+/* Admin tabulas pēdējās kolonnas platums */
+.admin-data-table th:last-child,
+.admin-data-table td:last-child {
+  width: 120px; /* Paplašināts platums 3 pogām */
+  text-align: center; /* Centrē saturu */
+}

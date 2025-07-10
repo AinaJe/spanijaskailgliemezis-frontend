@@ -1,0 +1,225 @@
+/* src/components/cards/CardFilter/CardFilter.css */
+
+/* Kartīšu filtra konteiners */
+.card-filter-container {
+  background-color: var(--white-color); /* Fona krāsa no mainīgā */
+  border: 1px solid var(--border-color); /* Apmales krāsa no mainīgā */
+  border-radius: 8px; /* Noapaļoti stūri */
+  padding: 20px; /* Iekšējā atkāpe */
+  margin: 0 auto; /* Centrē filtru horizontāli */
+  max-width: var(--content-max-width); /* Maksimālais platums no mainīgā */
+  box-shadow: none; /* Noņem noklusējuma ēnu (jo modālais logs to nodrošina) */
+  display: flex; /* Sakārto elementus kolonnā */
+  flex-direction: column; /* Elementi tiek izkārtoti vertikāli */
+  gap: 15px; /* Atstarpe starp filtra grupām */
+  text-align: left; /* Teksta līdzināšana pa kreisi */
+}
+
+/* Vispārīga filtra grupas izkārtojums */
+.filter-group {
+  display: flex; /* Sakārto elementus kolonnā */
+  flex-direction: column; /* Elementi tiek izkārtoti vertikāli */
+  gap: 5px; /* Atstarpe starp etiķeti un kontroli */
+}
+
+/* Filtra grupas etiķete */
+.filter-label {
+  font-weight: bold; /* Fonta biezums */
+  color: var(--dark-color); /* Teksta krāsa no mainīgā */
+  margin-bottom: 5px; /* Atstarpe zem etiķetes */
+  font-size: 0.95em; /* Fonta izmērs */
+}
+
+/* Autoru izvēles rūtiņu grupa */
+.author-checkbox-group,
+.card-selection-list {
+  display: flex; /* Sakārto elementus rindā */
+  flex-wrap: wrap; /* Ļauj elementiem pāriet jaunā rindā */
+  gap: 10px 15px; /* Atstarpe starp elementiem (vertikāli un horizontāli) */
+  max-height: 150px; /* Maksimālais augstums ar ritjoslu */
+  overflow-y: auto; /* Iespējo vertikālo ritināšanu */
+  border: 1px solid var(--border-color); /* Apmales krāsa no mainīgā */
+  padding: 10px; /* Iekšējā atkāpe */
+  border-radius: 4px; /* Noapaļoti stūri */
+  background-color: var(--grey-100); /* Fona krāsa no mainīgā */
+}
+
+/* Akordeona filtrēšanas wrapperis (iekš CardFilter) */
+.accordion-filter-wrapper {
+    width: 100%; /* Aizņem visu pieejamo platumu */
+    max-height: 250px; /* Maksimālais augstums ar ritjoslu */
+    overflow-y: auto; /* Iespējo vertikālo ritināšanu */
+    border: 1px solid var(--border-color); /* Apmales krāsa no mainīgā */
+    border-radius: 4px; /* Noapaļoti stūri */
+    background-color: var(--grey-100); /* Fona krāsa no mainīgā */
+    padding: 5px; /* Iekšējā atkāpe */
+    box-sizing: border-box; /* Nodrošina, ka padding un border ietilpst platumā */
+}
+
+/* Ligzdots kartīšu atlases saraksts (iekš akordeona) */
+.card-selection-list.nested {
+    flex-direction: column; /* Elementi tiek izkārtoti vertikāli */
+    gap: 5px; /* Atstarpe starp elementiem */
+    padding: 0; /* Noņem iekšējo atkāpi */
+    border: none; /* Noņem apmali */
+    background-color: transparent; /* Caurspīdīgs fons */
+    max-height: none; /* Noņem maksimālo augstumu */
+    overflow-y: visible; /* Ritināšana nav nepieciešama */
+}
+
+/* Autora izvēles rūtiņas etiķete un kartītes atlases etiķete */
+.author-checkbox-label,
+.card-selection-label {
+  display: flex; /* Sakārto elementus rindā */
+  align-items: center; /* Vertikāli centrē elementus */
+  gap: 5px; /* Atstarpe starp izvēles rūtiņu un tekstu */
+  cursor: pointer; /* Kursoru maina uz rādītāju */
+  font-size: 0.9em; /* Fonta izmērs */
+  color: var(--text-color); /* Teksta krāsa no mainīgā */
+  line-height: 1.3; /* Rindas augstums */
+  width: auto; /* Platums automātiski pielāgojas saturam */
+  min-width: 120px; /* Minimālais platums */
+  margin-right: 10px; /* Atstarpe no nākamā elementa */
+}
+
+/* Kartītes atlases etiķete (specifiski) */
+.card-selection-label {
+    align-items: flex-start; /* Elementi tiek pielīdzināti augšā */
+    min-width: unset; /* Noņem minimālo platumu */
+    width: 100%; /* Aizņem visu platumu */
+    margin-right: 0; /* Noņem labo margu */
+}
+
+/* Kartītes atlases virsraksta teksta daļa */
+.card-selection-title {
+  font-weight: bold; /* Fonta biezums */
+  margin-right: 5px; /* Atstarpe no kopsavilkuma */
+}
+
+/* Kartītes atlases tēmas kopsavilkuma teksts */
+.card-selection-theme-summary {
+  font-size: 0.8em; /* Fonta izmērs */
+  color: var(--grey-500); /* Teksta krāsa no mainīgā */
+  font-style: italic; /* Kursīvs teksts */
+  flex-grow: 1; /* Ļauj elementam aizņemt visu pieejamo vietu */
+}
+
+/* Autora izvēles rūtiņa un kartītes atlases izvēles rūtiņa */
+.author-checkbox,
+.card-selection-checkbox {
+  transform: scale(1.1); /* Palielina izmēru */
+  cursor: pointer; /* Kursoru maina uz rādītāju */
+  accent-color: var(--primary-color); /* Izvēles rūtiņas krāsa */
+  flex-shrink: 0; /* Novērš elementa samazināšanos */
+}
+
+/* Ziņojums, ja nav kartīšu filtrā */
+.no-cards-message-filter {
+  color: var(--grey-500); /* Teksta krāsa no mainīgā */
+  font-style: italic; /* Kursīvs teksts */
+  width: 100%; /* Aizņem visu platumu */
+  text-align: center; /* Teksta centrēšana */
+}
+
+/* Atlases darbību pogu konteiners */
+.selection-actions {
+  margin-top: 15px; /* Atstarpe no augšas */
+  padding-top: 15px; /* Iekšējā atkāpe no augšas */
+  border-top: 1px solid var(--border-color); /* Augšējā apmale */
+  display: flex; /* Sakārto pogas rindā */
+  flex-wrap: wrap; /* Ļauj pogām pāriet jaunā rindā */
+  gap: 10px; /* Atstarpe starp pogām */
+  justify-content: center; /* Centrē pogas horizontāli */
+}
+
+/* Vispārīgs atlases pogas stils */
+.selection-button {
+  padding: 10px 15px; /* Iekšējā atkāpe */
+  border: none; /* Noņem apmali */
+  border-radius: 4px; /* Noapaļoti stūri */
+  cursor: pointer; /* Kursoru maina uz rādītāju */
+  font-size: 0.9em; /* Fonta izmērs */
+  transition: background-color 0.3s ease, color 0.3s ease; /* Pārejas efekti */
+}
+
+/* Primārās atlases pogas stils */
+.selection-button.primary {
+  background-color: var(--primary-color); /* Fona krāsa */
+  color: var(--white-color); /* Teksta krāsa */
+}
+
+/* Primārās atlases pogas hover stāvoklis */
+.selection-button.primary:hover {
+  background-color: var(--primary-hover); /* Fona krāsa, turot peli virs pogas */
+}
+
+/* Sekundārās atlases pogas stils */
+.selection-button.secondary {
+  background-color: var(--button-dark-bg); /* Fona krāsa no mainīgā */
+  color: var(--white-color); /* Teksta krāsa */
+}
+
+/* Sekundārās atlases pogas hover stāvoklis */
+.selection-button.secondary:hover {
+  background-color: var(--button-dark-hover); /* Fona krāsa, turot peli virs pogas */
+}
+
+/* Apstiprināšanas pogas stils */
+.selection-button.confirm {
+    background-color: var(--success-color); /* Fona krāsa */
+    color: var(--white-color); /* Teksta krāsa */
+}
+
+/* Apstiprināšanas pogas hover stāvoklis */
+.selection-button.confirm:hover {
+    background-color: var(--success-hover); /* Fona krāsa, turot peli virs pogas */
+}
+
+/* Poga filtru modālā loga atvēršanai (tiek parādīta CardsPage, nevis filtrā pašā) */
+.toggle-filters-button {
+  display: block; /* Bloka elements */
+  margin: 10px auto 20px auto; /* Centrēšana un margas */
+  background-color: var(--button-dark-bg); /* Fona krāsa no mainīgā */
+  color: var(--white-color); /* Teksta krāsa */
+  border: none; /* Noņem apmali */
+  border-radius: 5px; /* Noapaļoti stūri */
+  cursor: pointer; /* Kursoru maina uz rādītāju */
+  font-size: 1em; /* Fonta izmērs */
+  transition: background-color 0.3s ease; /* Pārejas efekts */
+  padding: 10px 20px; /* Iekšējā atkāpe */
+}
+
+/* Filru modālā loga atvēršanas pogas hover stāvoklis */
+.toggle-filters-button:hover {
+  background-color: var(--button-dark-hover); /* Fona krāsa, turot peli virs pogas */
+}
+
+/* Responsīvās izmaiņas mazākiem ekrāniem */
+@media (max-width: 600px) {
+  /* Filtra konteinera iekšējās atkāpes un atstarpes */
+  .card-filter-container {
+    padding: 15px;
+    gap: 10px;
+  }
+
+  /* Atlases darbību pogu izkārtojums kolonnā */
+  .selection-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* Atlases pogas aizņem visu platumu */
+  .selection-button {
+    width: 100%;
+  }
+
+  /* Autoru un karšu atlases sarakstu maksimālais augstums mobilajās ierīcēs */
+  .author-checkbox-group,
+  .card-selection-list {
+    max-height: 120px;
+  }
+  /* Akordeona filtra wrapperim samazināts maksimālais augstums */
+  .accordion-filter-wrapper {
+      max-height: 200px;
+  }
+}

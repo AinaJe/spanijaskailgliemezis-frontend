@@ -1,0 +1,117 @@
+/* src/components/common/Pagination/Pagination.css */
+
+/* Lapošanas (pagination) konteiners */
+.pagination-container {
+  display: flex; /* Sakārto elementus rindā */
+  justify-content: space-between; /* Izplata elementus ar atstarpi starp tiem */
+  align-items: center; /* Vertikāli centrē elementus */
+  margin-top: 25px; /* Atstarpe no augšas */
+  margin-bottom: 15px; /* Atstarpe no apakšas */
+  flex-wrap: wrap; /* Ļauj elementiem pāriet jaunā rindā, ja nav pietiekami daudz vietas */
+  padding: 0 10px; /* Horizontālā iekšējā atkāpe */
+}
+
+/* "Ieraksti lapā" izvēles lauka selektors */
+.items-per-page-selector {
+  display: flex; /* Sakārto etiķeti un selektoru rindā */
+  align-items: center; /* Vertikāli centrē elementus */
+  gap: 8px; /* Atstarpe starp etiķeti un selektoru */
+  margin-bottom: 10px; /* Atstarpe no apakšas (mobilajām ierīcēm) */
+}
+
+/* "Ieraksti lapā" selektora etiķete */
+.items-per-page-selector label {
+  font-size: 0.9em; /* Fonta izmērs */
+  color: var(--text-color); /* Teksta krāsa no mainīgā */
+}
+
+/* "Ieraksti lapā" selektora izvēles lauks */
+.items-per-page-select {
+  padding: 6px 10px; /* Iekšējā atkāpe */
+  border: 1px solid var(--border-color); /* Apmales krāsa no mainīgā */
+  border-radius: 4px; /* Noapaļoti stūri */
+  font-size: 0.9em; /* Fonta izmērs */
+  cursor: pointer; /* Kursoru maina uz rādītāju */
+  background-color: var(--white-color); /* Fona krāsa no mainīgā */
+}
+
+/* Lapošanas pogu saraksts */
+.pagination-list {
+  list-style: none; /* Noņem saraksta punktus */
+  padding: 0; /* Noņem iekšējo atkāpi */
+  margin: 0; /* Noņem ārējās margas */
+  display: flex; /* Sakārto pogas rindā */
+  gap: 5px; /* Atstarpe starp pogām */
+  margin-bottom: 10px; /* Atstarpe no apakšas (mobilajām ierīcēm) */
+}
+
+/* Lapošanas saraksta elements */
+.pagination-item {
+  display: inline-block; /* Nodrošina bloka elementa uzvedību, bet rindā */
+}
+
+/* Lapošanas poga */
+.pagination-button {
+  padding: 8px 12px; /* Iekšējā atkāpe */
+  border: 1px solid var(--primary-color); /* Apmales krāsa no mainīgā */
+  border-radius: 4px; /* Noapaļoti stūri */
+  background-color: var(--white-color); /* Fona krāsa no mainīgā */
+  color: var(--primary-color); /* Teksta krāsa no mainīgā */
+  font-size: 0.9em; /* Fonta izmērs */
+  cursor: pointer; /* Kursoru maina uz rādītāju */
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; /* Pārejas efekti */
+}
+
+/* Lapošanas pogas hover stāvoklis (kad nav atspējota) */
+.pagination-button:hover:not(:disabled) {
+  background-color: var(--primary-color); /* Fona krāsa, turot peli virs pogas */
+  color: var(--white-color); /* Teksta krāsa */
+}
+
+/* Aktīvās lapošanas pogas stils */
+.pagination-button.active {
+  background-color: var(--primary-color); /* Fona krāsa */
+  color: var(--white-color); /* Teksta krāsa */
+  font-weight: bold; /* Fonta biezums */
+}
+
+/* Atspējotas lapošanas pogas stils */
+.pagination-button:disabled {
+  opacity: 0.5; /* Caurspīdīgums */
+  cursor: not-allowed; /* Kursoru maina uz "aizliegts" */
+}
+
+/* Lapošanas elipses (punkts, punkts, punkts) stils */
+.pagination-ellipsis {
+    padding: 8px 0; /* Iekšējā atkāpe */
+    color: var(--grey-700); /* Teksta krāsa no mainīgā */
+    font-weight: bold; /* Fonta biezums */
+}
+
+/* Responsīvās izmaiņas mazākiem ekrāniem */
+@media (max-width: 600px) {
+  /* Lapošanas konteinera izkārtojums kolonnā */
+  .pagination-container {
+    flex-direction: column;
+    align-items: center; /* Horizontāli centrē elementus */
+    gap: 15px; /* Atstarpe starp elementiem */
+  }
+
+  /* "Ieraksti lapā" selektora platums un centrēšana */
+  .items-per-page-selector {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Lapošanas saraksta platums, centrēšana un aplūšana */
+  .pagination-list {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* Lapošanas pogu iekšējā atkāpe */
+  .pagination-button {
+    padding: 6px 10px;
+  }
+}

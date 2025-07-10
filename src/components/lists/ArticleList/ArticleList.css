@@ -1,0 +1,174 @@
+/* src/components/lists/ArticleList/ArticleList.css */
+
+/* Konteineri rakstu un video sarakstiem */
+.article-list-container,
+.video-list-container {
+  margin: 20px auto; /* Atkāpe no malām un centrēšana */
+  max-width: var(--content-max-width); /* Maksimālais platums no mainīgā */
+  background-color: var(--white-color); /* Fona krāsa no mainīgā */
+  padding: 20px; /* Iekšējā atkāpe */
+  border-radius: 8px; /* Noapaļoti stūri */
+  box-shadow: 0 2px 4px var(--shadow-medium); /* Ēna no mainīgā */
+  overflow-x: auto; /* Iespējo horizontālo ritināšanu, ja saturs ir platāks */
+}
+
+/* Ziņojums, ja saraksts ir tukšs */
+.empty-list-message {
+  text-align: center; /* Teksta centrēšana */
+  color: var(--grey-500); /* Teksta krāsa no mainīgā */
+  font-style: italic; /* Kursīvs teksts */
+  padding: 20px; /* Iekšējā atkāpe */
+}
+
+/* Tabulu stili rakstiem un video */
+.article-table,
+.video-table {
+  width: 100%; /* Aizņem visu pieejamo platumu */
+  border-collapse: collapse; /* Apvieno tabulas apmales */
+  margin-top: 15px; /* Atstarpe no augšas */
+}
+
+/* Galvenes un datu šūnu stili */
+.article-table th,
+.article-table td,
+.video-table th,
+.video-table td {
+  border: 1px solid var(--border-color); /* Apmales krāsa no mainīgā */
+  padding: 10px; /* Iekšējā atkāpe šūnās */
+  text-align: left; /* Teksta līdzināšana pa kreisi */
+}
+
+/* Galvenes šūnu stili */
+.article-table th,
+.video-table th {
+  background-color: var(--grey-200); /* Fona krāsa no mainīgā */
+  font-weight: bold; /* Fonta biezums */
+  color: var(--text-color); /* Teksta krāsa no mainīgā */
+}
+
+/* Pāra rindu fona krāsa */
+.article-table tr:nth-child(even),
+.video-table tr:nth-child(even) {
+  background-color: var(--even-row-bg); /* Fona krāsa no mainīgā */
+}
+
+/* Rindu hover stāvoklis */
+.article-table tr:hover,
+.video-table tr:hover {
+  background-color: var(--hover-bg); /* Fona krāsa, turot peli virs rindas */
+}
+
+/* Vispārīgs darbību pogas stils */
+.action-button {
+  padding: 6px 10px; /* Iekšējā atkāpe */
+  border: none; /* Noņem apmali */
+  border-radius: 4px; /* Noapaļoti stūri */
+  cursor: pointer; /* Kursoru maina uz rādītāju */
+  font-size: 0.85em; /* Fonta izmērs */
+  transition: background-color 0.2s ease; /* Pārejas efekts */
+  text-decoration: none; /* Noņem pasvītrojumu saitēm */
+  display: inline-block; /* Nodrošina pareizu izkārtojumu */
+  white-space: nowrap; /* Novērš teksta aplūšanu jaunā rindā */
+}
+
+/* "Skatīties" pogas stils */
+.view-button {
+  background-color: var(--info-color); /* Fona krāsa no mainīgā */
+  color: var(--white-color); /* Teksta krāsa no mainīgā */
+}
+
+/* "Skatīties" pogas hover stāvoklis */
+.view-button:hover {
+  background-color: var(--info-hover); /* Fona krāsa, turot peli virs pogas */
+}
+
+/* Video apraksta teksta stils */
+.video-description-text {
+  font-size: 0.9em; /* Fonta izmērs */
+  color: var(--text-color); /* Teksta krāsa (bija darkest-grey, tagad text-color) */
+  margin-top: 10px; /* Atstarpe no augšas */
+}
+
+/* Ziņojums, ja nav saites */
+.no-link-message {
+  font-size: 0.85em; /* Fonta izmērs */
+  color: var(--grey-500); /* Teksta krāsa no mainīgā */
+  font-style: italic; /* Kursīvs teksts */
+  white-space: nowrap; /* Novērš teksta aplūšanu jaunā rindā */
+}
+
+/* Nodrošina, ka datuma kolonna neaplok */
+.article-table td:nth-of-type(1),
+.video-table td:nth-of-type(1) {
+  white-space: nowrap;
+}
+
+/* Responsīvās izmaiņas mazākiem ekrāniem */
+@media (max-width: 768px) {
+  /* Konteineru iekšējās atkāpes un maksimālais platums mobilajās ierīcēs */
+  .article-list-container,
+  .video-list-container {
+    padding: 10px;
+    max-width: 100%;
+  }
+
+  /* Tabulas kļūst par bloku elementiem ar horizontālo ritināšanu */
+  .article-table,
+  .video-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  /* Paslēpj galvenes mobilajās ierīcēs */
+  .article-table thead, .video-table thead {
+    display: none;
+  }
+
+  /* Rindas kļūst par bloku elementiem ar atsevišķām apmalēm */
+  .article-table tr, .video-table tr {
+    margin-bottom: 10px;
+    display: block;
+    border: 1px solid var(--border-color); /* Apmales krāsa */
+    border-radius: 4px;
+  }
+
+  /* Datu šūnas kļūst par bloku elementiem ar etiķetēm */
+  .article-table td, .video-table td {
+    display: block;
+    text-align: right; /* Saturs pielīdzināts pa labi */
+    border-bottom: 1px solid var(--border-color); /* Apakšējā apmale */
+    font-size: 0.8em;
+    padding-left: 50%; /* Vieta etiķetei */
+    position: relative; /* Nepieciešams etiķetes pozicionēšanai */
+    white-space: normal; /* Atļauj teksta aplūšanu */
+  }
+
+  /* Noņem pēdējās šūnas apakšējo apmali */
+  .article-table td:last-child, .video-table td:last-child {
+      border-bottom: none;
+  }
+
+  /* Etiķetes pirms datiem mobilajās ierīcēs */
+  .article-table td::before, .video-table td::before {
+    content: attr(data-label); /* Parāda data-label atribūta vērtību */
+    position: absolute; /* Absolūta pozicionēšana šūnas iekšpusē */
+    left: 10px; /* Pozicionē pa kreisi */
+    font-weight: bold; /* Fonta biezums */
+    text-align: left; /* Teksta līdzināšana pa kreisi */
+    color: var(--grey-700); /* Teksta krāsa */
+  }
+
+  /* Specifiskas etiķetes katrai kolonnai */
+  .article-table td:nth-of-type(1)::before { content: "Datums"; }
+  .article-table td:nth-of-type(2)::before { content: "Nosaukums"; }
+  .article-table td:nth-of-type(3)::before { content: "Kopsavilkums"; }
+  .article-table td:nth-of-type(4)::before { content: "Autors"; }
+  .article-table td:nth-of-type(5)::before { content: "Darbības"; }
+
+  .video-table td:nth-of-type(1)::before { content: "Datums"; }
+  .video-table td:nth-of-type(2)::before { content: "Nosaukums"; }
+  .video-table td:nth-of-type(3)::before { content: "Kopsavilkums"; }
+  .video-table td:nth-of-type(4)::before { content: "Autors"; }
+  .video-table td:nth-of-type(5)::before { content: "Darbības"; }
+}

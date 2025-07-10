@@ -1,0 +1,94 @@
+/* src/components/common/Modals/Modal.css */
+
+/* Modālā loga pārklājums (fons aiz modālā) */
+.modal-overlay {
+  position: fixed; /* Fiksēts pozicionējums attiecībā pret skatlogu */
+  top: 0; /* Pielīdzina augšējai malai */
+  left: 0; /* Pielīdzina kreisajai malai */
+  width: 100%; /* Aizņem visu platumu */
+  height: 100%; /* Aizņem visu augstumu */
+  background-color: var(--overlay-dark); /* Fona krāsa ar caurspīdīgumu no mainīgā */
+  display: flex; /* Sakārto saturu centrā */
+  justify-content: center; /* Horizontāli centrē */
+  align-items: center; /* Vertikāli centrē */
+  z-index: 1000; /* Augsts z-index, lai atrastos virs citiem elementiem */
+  animation: fadeIn 0.3s ease-out; /* Pārejas efekts parādīšanās brīdī */
+}
+
+/* Modālā loga satura bloks */
+.modal-content {
+  background-color: var(--white-color); /* Fona krāsa no mainīgā */
+  padding: 20px 30px; /* Iekšējā atkāpe */
+  border-radius: 8px; /* Noapaļoti stūri */
+  width: 90%; /* Platums */
+  height: 90%; /* Augstums */
+  max-width: 1400px; /* Maksimālais platums */
+  max-height: 90vh; /* Maksimālais augstums (90% no skatloga augstuma) */
+  overflow-y: auto; /* Iespējo vertikālo ritināšanu, ja saturs pārsniedz augstumu */
+  box-shadow: 0 5px 15px var(--shadow-strong); /* Ēna no mainīgā */
+  position: relative; /* Nepieciešams absolūti pozicionētiem elementiem */
+  display: flex; /* Sakārto elementus kolonnā */
+  flex-direction: column; /* Elementi tiek izkārtoti vertikāli */
+}
+
+/* Modālā loga virsraksts */
+.modal-title {
+  color: var(--primary-color); /* Teksta krāsa no mainīgā */
+  margin-top: 0; /* Noņem augšējo margu */
+  margin-bottom: 20px; /* Atstarpe no apakšas */
+  text-align: center; /* Teksta līdzināšana centrā */
+  font-size: 1.8em; /* Fonta izmērs */
+}
+
+/* Modālā loga aizvēršanas poga */
+.modal-close-button {
+  position: absolute; /* Absolūta pozicionēšana */
+  top: 10px; /* Pozicionē no augšas */
+  right: 15px; /* Pozicionē no labās puses */
+  background: none; /* Noņem fonu */
+  border: none; /* Noņem apmali */
+  font-size: 28px; /* Fonta izmērs (x simbolam) */
+  cursor: pointer; /* Kursoru maina uz rādītāju */
+  color: var(--grey-700); /* Teksta krāsa no mainīgā */
+  transition: color 0.2s ease; /* Pārejas efekts */
+}
+
+/* Aizvēršanas pogas hover stāvoklis */
+.modal-close-button:hover {
+  color: var(--black-color); /* Krāsa, turot peli virs pogas */
+}
+
+/* Modālā loga satura bloks */
+.modal-body {
+  flex-grow: 1; /* Ļauj saturam aizņemt visu pieejamo vietu */
+  padding-right: 5px; /* Neliela labā atkāpe ritjoslai */
+}
+
+/* fadeIn animācija */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* slideIn animācija (šobrīd netiek izmantota, bet saglabāta, ja nākotnē vajadzētu) */
+@keyframes slideIn {
+  from { transform: translateY(-50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Responsīvās izmaiņas mazākiem ekrāniem */
+@media (max-width: 768px) {
+  /* Modālā loga saturs mobilajās ierīcēs */
+  .modal-content {
+    padding: 15px 20px;
+    width: 98%; /* Lielāks platums */
+    height: 98%; /* Lielāks augstums */
+    max-width: none; /* Noņem maksimālo platumu */
+    max-height: none; /* Noņem maksimālo augstumu */
+  }
+
+  /* Modālā loga virsraksta izmērs mobilajās ierīcēs */
+  .modal-title {
+    font-size: 1.5em;
+  }
+}

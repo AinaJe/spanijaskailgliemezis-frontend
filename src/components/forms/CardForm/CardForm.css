@@ -1,0 +1,286 @@
+/* src/components/forms/CardForm/CardForm.css */
+
+/* Kartītes formas konteiners */
+.card-form-container {
+  background-color: var(--white-color); /* Fona krāsa no mainīgā */
+  padding: 20px; /* Iekšējā atkāpe */
+  border-radius: 8px; /* Noapaļoti stūri */
+  box-shadow: 0 2px 4px var(--shadow-medium); /* Ēna no mainīgā */
+  margin-bottom: 20px; /* Atstarpe no apakšas */
+  max-width: 800px; /* Maksimālais platums */
+  margin: 20px auto; /* Atkāpe no malām un centrēšana */
+}
+
+/* Kartītes formas virsraksts */
+.card-form-title {
+  color: var(--secondary-color); /* Teksta krāsa no mainīgā */
+  margin-bottom: 20px; /* Atstarpe zem virsraksta */
+}
+
+/* Cilņu navigācijas stili */
+.tab-navigation {
+  display: flex; /* Sakārto cilnes rindā */
+  justify-content: flex-start; /* Pielīdzina cilnes pa kreisi */
+  margin-bottom: 20px; /* Atstarpe zem cilnēm */
+  border-bottom: 1px solid var(--border-color); /* Apakšējā apmale no mainīgā */
+}
+
+/* Cilnes poga */
+.tab-button {
+  padding: 10px 15px; /* Iekšējā atkāpe */
+  border: none; /* Noņem apmali */
+  background-color: transparent; /* Caurspīdīgs fons */
+  color: var(--grey-700); /* Teksta krāsa no mainīgā (bija #555) */
+  font-weight: bold; /* Fonta biezums */
+  cursor: pointer; /* Kursoru maina uz rādītāju */
+  border-bottom: 3px solid transparent; /* Apakšējā apmale, kas mainās aktīvajam stāvoklim */
+  transition: all 0.3s ease; /* Pārejas efekti */
+  font-size: 1em; /* Fonta izmērs */
+}
+
+/* Cilnes pogas hover stāvoklis */
+.tab-button:hover {
+  color: var(--primary-color); /* Teksta krāsa, turot peli virs pogas */
+  border-bottom-color: var(--grey-200); /* Apakšējā apmales krāsa no mainīgā (bija #eee) */
+}
+
+/* Aktīvās cilnes poga */
+.tab-button.active {
+  color: var(--primary-color); /* Teksta krāsa aktīvajam stāvoklim */
+  border-bottom-color: var(--primary-color); /* Apakšējā apmales krāsa aktīvajam stāvoklim */
+}
+
+/* Cilnes satura bloks */
+.tab-content {
+  padding-top: 15px; /* Atstarpe no augšas */
+}
+
+/* Cilnes paneļa animācija */
+.tab-pane {
+  animation: fadeIn 0.3s ease-out; /* Pārejas efekts, kad parādās jauna cilne */
+}
+
+/* fadeIn animācija */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Kartītes formas grupas izkārtojums */
+.card-form-group {
+  margin-bottom: 15px; /* Atstarpe starp formas grupām */
+}
+
+/* Kartītes formas etiķete (label) */
+.card-form-label {
+  display: block; /* Bloka elements */
+  margin-bottom: 5px; /* Atstarpe zem etiķetes */
+  font-weight: bold; /* Fonta biezums */
+}
+
+/* Kartītes formas ievades lauki (input, textarea, select) */
+.card-form-input,
+.card-form-textarea,
+.card-form-select {
+  width: calc(100% - 22px); /* Platums ar iekšējo atkāpi */
+  padding: 10px; /* Iekšējā atkāpe */
+  border: 1px solid var(--border-color); /* Apmales krāsa no mainīgā (bija #ccc) */
+  border-radius: 4px; /* Noapaļoti stūri */
+  box-sizing: border-box; /* Nodrošina, ka padding un border ietilpst platumā */
+}
+
+/* Jaunās tēmas ievades lauka stils */
+.card-form-input.new-theme {
+  margin-top: 10px; /* Atstarpe no augšas */
+}
+
+/* Attēlu sadaļas stils kartītes formā */
+.card-form-image-section {
+  margin-top: 20px; /* Atstarpe no augšas */
+  border-top: 1px solid var(--border-color); /* Augšējā apmale no mainīgā (bija #eee) */
+  padding-top: 20px; /* Iekšējā atkāpe no apmales */
+}
+
+/* Attēlu sadaļas virsraksts */
+.card-form-image-section h3 {
+  color: var(--secondary-color); /* Teksta krāsa no mainīgā (bija #0056b3) */
+  margin-bottom: 15px; /* Atstarpe zem virsraksta */
+}
+
+/* Attēlu avota tipa selektors (radio pogas) */
+.image-source-type-selector {
+  display: flex; /* Sakārto elementus rindā */
+  gap: 15px; /* Atstarpe starp elementiem */
+  margin-bottom: 15px; /* Atstarpe no apakšas */
+  font-size: 0.9em; /* Fonta izmērs */
+}
+
+/* Attēlu avota tipa selektora etiķete */
+.image-source-type-selector label {
+  display: flex; /* Sakārto elementus rindā */
+  align-items: center; /* Vertikāli centrē elementus */
+  gap: 5px; /* Atstarpe starp radio pogu un tekstu */
+  cursor: pointer; /* Kursoru maina uz rādītāju */
+  font-weight: normal; /* Fonta biezums */
+}
+
+/* Konteiners attēlu formas elementiem (iekš drag-and-drop, ja tāds būtu) */
+.image-form-items-container {
+  display: flex; /* Sakārto elementus rindā */
+  flex-wrap: wrap; /* Ļauj elementiem pāriet jaunā rindā */
+  gap: 15px; /* Atstarpe starp elementiem */
+  min-height: 50px; /* Minimālais augstums */
+  background-color: transparent; /* Caurspīdīgs fons */
+  border-radius: 8px; /* Noapaļoti stūri */
+  padding: 10px 0; /* Iekšējā atkāpe */
+}
+
+/* Atsevišķa attēla formas vienība */
+.image-form-item {
+  border: 1px dashed var(--border-color); /* Punktēta apmale no mainīgā (bija #ccc) */
+  padding: 15px; /* Iekšējā atkāpe */
+  border-radius: 8px; /* Noapaļoti stūri */
+  position: relative; /* Nepieciešams absolūti pozicionētiem elementiem */
+  background-color: var(--white-color); /* Fona krāsa no mainīgā */
+  box-shadow: none; /* Noņem ēnu */
+  user-select: none; /* Neļauj lietotājam iezīmēt tekstu */
+  cursor: auto; /* Kursoru maina uz noklusējuma (ja nebūtu drag-and-drop) */
+  transition: background-color 0.2s, box-shadow 0.2s; /* Pārejas efekti */
+  
+  flex: 0 0 calc(33.33% - 10px); /* Platums 3 kolonnām ar atstarpi */
+  max-width: calc(33.33% - 10px); /* Maksimālais platums */
+  box-sizing: border-box; /* Nodrošina, ka padding un border ietilpst platumā */
+  display: flex; /* Sakārto elementus kolonnā */
+  flex-direction: column; /* Elementi tiek izkārtoti vertikāli */
+  align-items: flex-start; /* Pielīdzina elementus pa kreisi */
+}
+
+/* Attēla formas vienības ievades lauki */
+.image-form-item .card-form-label {
+  font-weight: bold; /* Fonta biezums */
+  width: 100%; /* Aizņem visu platumu */
+  margin-bottom: 5px; /* Atstarpe zem etiķetes */
+}
+.image-form-item input[type="text"],
+.image-form-item textarea,
+.image-form-item select,
+.image-form-item input[type="file"] {
+  width: 100%; /* Aizņem visu platumu */
+  padding: 8px; /* Iekšējā atkāpe */
+  border: 1px solid var(--border-color); /* Apmales krāsa no mainīgā (bija #ddd) */
+  border-radius: 4px; /* Noapaļoti stūri */
+  margin-bottom: 10px; /* Atstarpe no apakšas */
+  box-sizing: border-box; /* Nodrošina, ka padding un border ietilpst platumā */
+}
+
+/* Attēla formas teksta lauka specifiskie stili */
+.image-form-item textarea {
+    margin-bottom: 0; /* Noņem apakšējo margu, ja nākamais elements nav jāatdala */
+}
+
+/* Attēla noņemšanas poga */
+.image-remove-button {
+  position: absolute; /* Absolūta pozicionēšana */
+  top: 10px; /* Pozicionē no augšas */
+  right: 10px; /* Pozicionē no labās puses */
+  background: none; /* Noņem fonu */
+  border: none; /* Noņem apmali */
+  font-size: 20px; /* Fonta izmērs */
+  cursor: pointer; /* Kursoru maina uz rādītāju */
+  color: var(--danger-color); /* Teksta krāsa no mainīgā */
+  transition: color 0.2s; /* Pārejas efekts */
+}
+
+/* Attēla noņemšanas pogas hover stāvoklis */
+.image-remove-button:hover {
+  color: var(--danger-hover); /* Teksta krāsa, turot peli virs pogas */
+}
+
+/* Attēla priekšskatījuma wrapperis formas iekšpusē */
+.card-form-image-preview-wrapper {
+  display: flex; /* Sakārto attēlu centrā */
+  justify-content: center; /* Horizontāli centrē */
+  align-items: center; /* Vertikāli centrē */
+  width: 100%; /* Aizņem visu platumu */
+  margin-top: 10px; /* Atstarpe no augšas */
+  min-height: 100px; /* Minimālais augstums */
+}
+
+/* Attēlu priekšskatījumiem kartīšu formā */
+/* Pārvietots no index.css, jo attiecas uz CardForm attēlu priekšskatījumiem */
+.card-form-image-preview {
+  max-width: 100px;
+  height: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  object-fit: contain;
+}
+
+/* Placeholder stils CardFormā */
+/* Pārvietots no index.css, jo attiecas uz CardForm attēlu vietturiem */
+.card-form-image-placeholder {
+  width: 100px;
+  height: 100px;
+  border: 1px dashed var(--border-color);
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 0.8em;
+  color: var(--grey-500);
+  background-color: var(--grey-100);
+}
+
+/* Pievienot vēl attēlu pogu */
+.card-form-add-image-button {
+  background-color: var(--info-color); /* Fona krāsa no mainīgā */
+  color: var(--white-color); /* Teksta krāsa */
+  padding: 8px 15px; /* Iekšējā atkāpe */
+  border: none; /* Noņem apmali */
+  border-radius: 4px; /* Noapaļoti stūri */
+  cursor: pointer; /* Kursoru maina uz rādītāju */
+  font-size: 14px; /* Fonta izmērs */
+  margin-bottom: 20px; /* Atstarpe no apakšas */
+  transition: background-color 0.3s ease; /* Pārejas efekts */
+}
+
+/* Pievienot vēl attēlu pogas hover stāvoklis */
+.card-form-add-image-button:hover {
+  background-color: var(--info-hover); /* Fona krāsa, turot peli virs pogas */
+}
+
+/* Kartītes formas iesniegšanas poga */
+.card-form-submit-button {
+  background-color: var(--success-color); /* Fona krāsa no mainīgā */
+  color: var(--white-color); /* Teksta krāsa */
+  padding: 10px 20px; /* Iekšējā atkāpe */
+  border: none; /* Noņem apmali */
+  border-radius: 4px; /* Noapaļoti stūri */
+  cursor: pointer; /* Kursoru maina uz rādītāju */
+  font-size: 16px; /* Fonta izmērs */
+  margin-top: 20px; /* Atstarpe no augšas */
+  transition: background-color 0.3s ease; /* Pārejas efekts */
+}
+
+/* Kartītes formas iesniegšanas pogas hover stāvoklis */
+.card-form-submit-button:hover {
+  background-color: var(--success-hover); /* Fona krāsa, turot peli virs pogas */
+}
+
+/* Responsivitāte CardForm attēlu sadaļai */
+@media (max-width: 768px) {
+  /* Attēlu formas vienības platums, lai divas ietilptu rindā */
+  .image-form-item {
+    flex: 0 0 calc(50% - 7.5px);
+    max-width: calc(50% - 7.5px);
+  }
+}
+
+@media (max-width: 480px) {
+  /* Attēlu formas vienības platums, lai viena ietilptu rindā */
+  .image-form-item {
+    flex: 0 0 calc(100% - 0px);
+    max-width: calc(100% - 0px);
+  }
+}

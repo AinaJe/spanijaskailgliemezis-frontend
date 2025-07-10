@@ -1,0 +1,116 @@
+/* src/components/forms/AddForm.css */
+
+/* Vispārīga pievienošanas formas izkārtojums */
+.add-form {
+  display: flex; /* Sakārto elementus kolonnā */
+  flex-direction: column; /* Elementi tiek izkārtoti vertikāli */
+  gap: 15px; /* Atstarpe starp formas grupām */
+  padding: 10px; /* Iekšējā atkāpe formas iekšpusē */
+}
+
+/* Katras formas grupas izkārtojums */
+.form-group {
+  display: flex; /* Sakārto elementus kolonnā */
+  flex-direction: column; /* Elementi tiek izkārtoti vertikāli */
+}
+
+/* Formas grupas etiķete (label) */
+.form-group label {
+  font-weight: bold; /* Fonta biezums */
+  color: var(--text-color); /* Teksta krāsa no mainīgā */
+  margin-bottom: 5px; /* Atstarpe zem etiķetes */
+}
+
+/* Vispārīgs formas kontroles (input, select, textarea) stils */
+.form-control {
+  padding: 10px; /* Iekšējā atkāpe */
+  border: 1px solid var(--border-color); /* Apmales krāsa no mainīgā */
+  border-radius: 4px; /* Noapaļoti stūri */
+  font-size: 1em; /* Fonta izmērs */
+}
+
+/* Formas kontroles fokusa stāvoklis */
+.form-control:focus {
+  outline: none; /* Noņem pārlūka noklusējuma fokusa apmali */
+  border-color: var(--primary-color); /* Apmales krāsa fokusā */
+  /* Izmanto rgba, lai nodrošinātu caurspīdīgumu, balstoties uz primāro krāsu */
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary-color) 20%, transparent);
+}
+
+/* Teksta lauka (textarea) specifiskie stili */
+textarea.form-control {
+  resize: vertical; /* Atļauj lietotājam mainīt augstumu vertikāli */
+  min-height: 80px; /* Minimālais augstums */
+}
+
+/* RichTextEditor komponentes stils, ja to izmanto formā */
+.add-form .tiptap-editor {
+  border: 1px solid var(--border-color); /* Apmales krāsa */
+  min-height: 120px; /* Minimālais augstums */
+  padding: 10px; /* Iekšējā atkāpe */
+  background-color: var(--white-color); /* Fona krāsa */
+  border-radius: 4px; /* Noapaļoti stūri */
+}
+
+/* RichTextEditor rīkjoslas stils, ja to izmanto formā */
+.add-form .tiptap-toolbar {
+  background-color: var(--light-bg); /* Fona krāsa */
+}
+
+/* Formas darbību pogu konteiners */
+.form-actions {
+  display: flex; /* Sakārto pogas rindā */
+  justify-content: flex-end; /* Pielīdzina pogas pa labi */
+  gap: 10px; /* Atstarpe starp pogām */
+  margin-top: 20px; /* Atstarpe no augšas */
+}
+
+/* Vispārīgie stili iesniegšanas un atcelšanas pogām */
+.submit-button,
+.cancel-button {
+  padding: 10px 20px; /* Iekšējā atkāpe */
+  border: none; /* Noņem apmali */
+  border-radius: 4px; /* Noapaļoti stūri */
+  cursor: pointer; /* Kursoru maina uz rādītāju */
+  font-size: 1em; /* Fonta izmērs */
+  font-weight: bold; /* Fonta biezums */
+  transition: background-color 0.2s ease; /* Pārejas efekts fona krāsai */
+}
+
+/* Iesniegšanas pogas stils */
+.submit-button {
+  background-color: var(--primary-color); /* Fona krāsa */
+  color: var(--white-color); /* Teksta krāsa */
+}
+
+/* Iesniegšanas pogas hover stāvoklis */
+.submit-button:hover {
+  background-color: var(--primary-hover); /* Fona krāsa, turot peli virs pogas */
+}
+
+/* Atcelšanas pogas stils */
+.cancel-button {
+  background-color: var(--button-dark-bg); /* Fona krāsa no mainīgā */
+  color: var(--white-color); /* Teksta krāsa */
+}
+
+/* Atcelšanas pogas hover stāvoklis */
+.cancel-button:hover {
+  background-color: var(--button-dark-hover); /* Fona krāsa, turot peli virs pogas */
+}
+
+/* Responsīvās izmaiņas mazākiem ekrāniem */
+@media (max-width: 600px) {
+  /* Pievienošanas formas atkāpe */
+  .add-form {
+    padding: 10px;
+  }
+  /* Darbību pogu izkārtojums kolonnā */
+  .form-actions {
+    flex-direction: column;
+  }
+  /* Iesniegšanas un atcelšanas pogas aizņem visu platumu */
+  .submit-button, .cancel-button {
+    width: 100%;
+  }
+}

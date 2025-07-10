@@ -1,0 +1,136 @@
+/* src/components/cards/Card/Card.css */
+
+/* Vispārīgs kartītes stils */
+.card {
+  border: 1px solid var(--card-border); /* Apmales krāsa no mainīgā */
+  border-radius: 8px; /* Noapaļoti stūri */
+  padding: 15px; /* Iekšējā atkāpe */
+  
+  width: 320px; /* Fiksēts platums */
+  height: 420px; /* Fiksēts augstums */
+  box-sizing: border-box; /* Nodrošina, ka padding un border ietilpst platumā */
+
+  text-align: left; /* Teksta līdzināšana pa kreisi */
+  display: flex; /* Sakārto elementus kolonnā */
+  flex-direction: column; /* Elementi tiek izkārtoti vertikāli */
+  justify-content: space-between; /* Izplata saturu vertikāli, atstājot atstarpi starp elementiem */
+  user-select: none; /* Neļauj lietotājam iezīmēt tekstu */
+  background-color: var(--card-bg); /* Fona krāsa no mainīgā */
+  box-shadow: 0 2px 4px var(--shadow-light); /* Ēna no mainīgā */
+  transition: background-color 0.2s, box-shadow 0.2s, border-color 0.2s; /* Pārejas efekti */
+  position: relative; /* Nepieciešams, ja kartītes iekšpusē būs absolūti pozicionēti elementi */
+}
+
+/* Kartītes virsraksts */
+.card h3 {
+  margin-top: 0; /* Noņem augšējo margu */
+  margin-bottom: 10px; /* Atstarpe zem virsraksta */
+  color: var(--secondary-color); /* Teksta krāsa no mainīgā */
+  white-space: nowrap; /* Novērš teksta aplūšanu jaunā rindā */
+  overflow: hidden; /* Paslēpj pārpildītu saturu */
+  text-overflow: ellipsis; /* Pievieno elipses, ja teksts ir pārāk garš */
+}
+
+/* Attēla priekšskatījuma konteiners kartītē */
+.card-image-preview {
+  margin-bottom: 10px; /* Atstarpe zem attēla */
+  text-align: center; /* Centrē attēlu */
+}
+
+/* Galvenais attēls kartītes priekšskatījumā */
+/* Pārvietots no index.css, jo attiecas tieši uz kartītes priekšskatījumu */
+.card-preview-main-image {
+  width: 90% !important; /* Platums */
+  max-width: 90% !important; /* Maksimālais platums */
+  height: 180px !important; /* Augstums */
+  object-fit: cover !important; /* Attēls aizpilda rāmi, apgriežot to, ja nepieciešams */
+  display: block !important; /* Nodrošina bloka elementa uzvedību */
+  margin: 0 auto 10px auto !important; /* Centrē attēlu horizontāli un pievieno apakšējo margu */
+  padding: 0 !important; /* Noņem iekšējo atkāpi */
+  border-radius: 4px; /* Noapaļoti stūri */
+  border: 1px solid var(--border-color); /* Apmales krāsa no mainīgā */
+  box-sizing: border-box; /* Nodrošina, ka padding un border ietilpst platumā */
+}
+
+/* Attēla vietturis, ja attēla nav */
+.card-image-placeholder {
+  width: 90%; /* Platums */
+  height: 180px; /* Augstums */
+  border: 1px dashed var(--border-color); /* Punktēta apmale no mainīgā */
+  border-radius: 4px; /* Noapaļoti stūri */
+  display: flex; /* Sakārto saturu centrā */
+  justify-content: center; /* Horizontāli centrē */
+  align-items: center; /* Vertikāli centrē */
+  text-align: center; /* Teksta centrēšana */
+  font-size: 0.9em; /* Fonta izmērs */
+  color: var(--grey-500); /* Teksta krāsa no mainīgā */
+  background-color: var(--grey-100); /* Fona krāsa no mainīgā */
+  margin: 0 auto 10px auto; /* Centrē horizontāli un pievieno apakšējo margu */
+  padding: 10px; /* Iekšējā atkāpe */
+  box-sizing: border-box; /* Nodrošina, ka padding un border ietilpst platumā */
+}
+
+/* Attēla viettura teksta stils */
+.card-image-placeholder p {
+  margin: 0; /* Noņem margas */
+  line-height: 1.3; /* Rindas augstums */
+}
+
+/* Kartītes kopsavilkuma teksts */
+.card-summary {
+  font-size: 0.9em; /* Fonta izmērs */
+  color: var(--text-color); /* Teksta krāsa no mainīgā */
+  line-height: 1.4; /* Rindas augstums */
+  margin-bottom: 15px; /* Atstarpe zem kopsavilkuma */
+  overflow: hidden; /* Paslēpj pārpildītu saturu */
+  display: -webkit-box; /* Nepieciešams -webkit-line-clamp */
+  -webkit-line-clamp: 3; /* Ierobežo tekstu līdz 3 rindām */
+  -webkit-box-orient: vertical; /* Nepieciešams -webkit-line-clamp */
+  line-clamp: 3; /* Oficiālā specifikācija, ierobežo tekstu līdz 3 rindām */
+}
+
+/* Autora nosaukuma displejs kartītē */
+.card-author-display {
+  font-size: 0.85em; /* Fonta izmērs */
+  color: var(--grey-700); /* Teksta krāsa no mainīgā */
+  margin-top: auto; /* Pabīda uz leju, aizņemot visu pieejamo vertikālo atstarpi */
+  margin-bottom: 10px; /* Atstarpe no pogas */
+  white-space: nowrap; /* Novērš teksta aplūšanu jaunā rindā */
+  overflow: hidden; /* Paslēpj pārpildītu saturu */
+  text-overflow: ellipsis; /* Pievieno elipses, ja teksts ir pārāk garš */
+  text-align: left; /* Teksta līdzināšana pa kreisi */
+}
+
+/* "Lasīt vairāk" pogas stils kartītē */
+.card-read-more-button {
+  padding: 8px 12px; /* Iekšējā atkāpe */
+  background-color: var(--secondary-color); /* Fona krāsa no mainīgā */
+  color: var(--white-color); /* Teksta krāsa no mainīgā */
+  border: none; /* Noņem apmali */
+  border-radius: 4px; /* Noapaļoti stūri */
+  cursor: pointer; /* Kursoru maina uz rādītāju */
+  align-self: flex-start; /* Pielīdzina pogu pa kreisi */
+  transition: background-color 0.3s ease; /* Pārejas efekts */
+}
+
+/* "Lasīt vairāk" pogas hover stāvoklis */
+.card-read-more-button:hover {
+  background-color: var(--secondary-hover); /* Fona krāsa, turot peli virs pogas */
+}
+
+/* Responsīvās izmaiņas kartītēm */
+@media (max-width: 1200px) {
+  /* Kartītes platums, lai divas ietilptu rindā ar atstarpi */
+  .card {
+    width: calc(50% - 20px);
+  }
+}
+
+@media (max-width: 768px) {
+  /* Kartītes platums, lai viena ietilptu rindā */
+  .card {
+    width: calc(100% - 20px);
+    max-width: none;
+    height: auto; /* Augstums automātiski pielāgojas saturam */
+  }
+}
