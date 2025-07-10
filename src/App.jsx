@@ -11,11 +11,13 @@ import { useFilters } from './hooks/useFilters';
 import { usePagination } from './hooks/usePagination';
 
 const LazyCardDetailModal = lazy(() => import('./components/common/Modals/CardDetailModal/CardDetailModal'));
+const LazyInfoModal = lazy(() => import('./components/common/Modals/InfoModal'));
 
 function App() {
   const { authors, setAuthors, themesData, setThemesData, cards, setCards, articles, setArticles, videos, setVideos } = useData();
   
-  const [selectedCard, setSelectedCard] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null); // Universāls state modālajam logam
+  const [modalType, setModalType] = useState(null);
   const [activeSection, setActiveSection] = useState('home');
   const [activeTheme, setActiveTheme] = useState(1);
 
@@ -99,11 +101,16 @@ function App() {
     }
   }, [activeSection, activeTheme, filterTheme, setFilterTheme, setFilterAuthors, handleClearCardSelections]);
 
-  const handleReadMore = useCallback((card) => {
-    setSelectedCard(card);
+  // Centrālā funkcija modālā loga atvēršanai
+  const openModal = useCallback((item, type) => {
+    setSelectedItem(item);
+    setModalType(type);
   }, []);
 
-  const handleCloseModal = useCallback(() => setSelectedCard(null), []);
+  const handleCloseModal = useCallback(() => {
+    setSelectedItem(null);
+    setModalType(null);
+  }, []);
 
   const currentThemeDetail = useMemo(() => {
     const safeThemes = Array.isArray(themesData) ? themesData : [];
@@ -123,12 +130,12 @@ function App() {
   }, [activeSection, themesData, filterTheme]);
   
   const pageProps = {
-    home: { cards: paginatedCards, onReadMore: handleReadMore, availableAuthors: authors, paginationProps: cardsPaginationProps, homePageThemeDetail: currentThemeDetail },
+    home: { cards: paginatedCards, onReadMore: (item) => openModal(item, 'card'), availableAuthors: authors, paginationProps: cardsPaginationProps, homePageThemeDetail: currentThemeDetail },
     cards: {
       cards: {rawCards: filteredCardsBase, paginated: paginatedCards},
       authors: authors,
       themesData: themesData,
-      onReadMore: handleReadMore,
+      onReadMore: (item) => openModal(item, 'card'),
       filterTheme: filterTheme,
       setFilterTheme: setFilterTheme,
       filterAuthors: filterAuthors,
@@ -146,9 +153,9 @@ function App() {
       paginationProps: cardsPaginationProps,
       currentThemeDetail: currentThemeDetail,
     },
-    articles: { articles: paginatedArticles, availableAuthors: authors, paginationProps: articlesPaginationProps, pageThemeDetail: currentThemeDetail, onReadMore: handleReadMore },
-    videos: { videos: paginatedVideos, availableAuthors: authors, paginationProps: videosPaginationProps, pageThemeDetail: currentThemeDetail, onReadMore: handleReadMore },
-    admin: { authors, themes: themesData, cards, articles, videos, setAuthors, setThemesData, setCards, setArticles, setVideos, handleReadMore }
+    articles: { articles: paginatedArticles, availableAuthors: authors, paginationProps: articlesPaginationProps, pageThemeDetail: currentThemeDetail, onReadMore: (item) => openModal(item, 'rakstu') },
+    videos: { videos: paginatedVideos, availableAuthors: authors, paginationProps: videosPaginationProps, pageThemeDetail: currentThemeDetail, onReadMore: (item) => openModal(item, 'video') },
+    admin: { authors, themes: themesData, cards, articles, videos, setAuthors, setThemesData, setCards, setArticles, setVideos, openModal: openModal }
   };
 
   return (
@@ -169,9 +176,10 @@ function App() {
           <PageRenderer activeSection={activeSection} {...pageProps} />
       </main>
       <Footer />
-      {selectedCard && (
+      {selectedItem && (
         <Suspense fallback={<div>Ielādē...</div>}>
-          <LazyCardDetailModal card={selectedCard} onClose={handleCloseModal} />
+          {modalType === 'card' && <LazyCardDetailModal card={selectedItem} onClose={handleCloseModal} />}
+          {['autoru', 'tēmu', 'rakstu', 'video'].includes(modalType) && <LazyInfoModal item={selectedItem} type={modalType} onClose={handleCloseModal} />}
         </Suspense>
       )}
     </div>

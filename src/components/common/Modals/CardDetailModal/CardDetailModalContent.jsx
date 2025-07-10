@@ -1,12 +1,8 @@
-// src/components/common/Modals/CardDetailModalContent.jsx
-import React, { lazy, Suspense } from "react";
-import "./CardDetailModal.css";
-
-// LABOJUMS: Pareizi ceļi uz citām komponentēm
-const ImageCarousel = lazy(() =>
-  import("../../../cards/ImageCarousel/ImageCarousel")
-);
-import RichTextEditor from "../../RichTextEditor/RichTextEditor";
+// src/components/common/Modals/CardDetailModal/CardDetailModalContent.jsx
+import React, { Suspense } from 'react';
+import ImageCarousel from '../../../cards/ImageCarousel/ImageCarousel';
+import RichTextEditor from '../../RichTextEditor/RichTextEditor';
+import './CardDetailModal.css';
 
 const CardDetailModalContent = ({ card }) => {
   if (!card) return null;
@@ -14,30 +10,26 @@ const CardDetailModalContent = ({ card }) => {
   return (
     <>
       <h2>{card.title}</h2>
-      <p className="card-detail-modal-theme">
-        <strong>Tēma:</strong> {card.themeName || card.theme}
-      </p>
-      <p className="card-detail-modal-author">
-        <strong>Autors:</strong> {card.authorName}
-      </p>
-      {card.summary && (
-        <p className="card-detail-modal-summary">{card.summary}</p>
-      )}
+      
+      <div className="card-detail-modal-meta">
+        <span className="card-detail-modal-theme">{card.themeName || 'Nenorādīta'}</span>
+        <span className="card-detail-modal-author">Autors: {card.authorName}</span>
+      </div>
 
-      {card.images && card.images.length > 0 && (
-        <Suspense fallback={<div>Ielādē attēlus...</div>}>
-          <ImageCarousel
-            images={card.images}
-            availableAuthors={card.allAuthors}
-            onImageClick={() => {}}
-          />
-        </Suspense>
-      )}
+      {card.summary && <p className="card-detail-modal-summary">{card.summary}</p>}
 
       <div className="card-detail-content-section">
         <h3>Apraksts:</h3>
         <RichTextEditor content={card.description} onContentChange={null} />
       </div>
+
+      {card.images && card.images.length > 0 && (
+        <div className="card-detail-content-section">
+            <Suspense fallback={<div>Ielādē attēlus...</div>}>
+            <ImageCarousel images={card.images} availableAuthors={card.allAuthors} onImageClick={() => {}} />
+            </Suspense>
+        </div>
+      )}
     </>
   );
 };

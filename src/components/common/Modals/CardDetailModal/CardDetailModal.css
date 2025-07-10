@@ -1,33 +1,40 @@
-.card-detail-modal-actions {
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border-color);
+/* src/components/common/Modals/CardDetailModal/CardDetailModal.css */
+.card-detail-modal-meta {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 10px;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color);
 }
 
-.card-detail-modal-actions .action-button {
-  padding: 10px 20px;
-  border-radius: 5px;
-  font-size: 1em;
+.card-detail-modal-theme {
+  background-color: var(--primary-color);
+  color: var(--white-color);
+  padding: 5px 12px;
+  border-radius: 15px;
+  font-size: 0.9em;
   font-weight: bold;
-  cursor: pointer;
-  border: none;
 }
 
-.card-detail-modal-actions .delete-button {
-  background-color: var(--danger-color);
-  color: var(--white-color);
-}
-.card-detail-modal-actions .delete-button:hover {
-  background-color: var(--danger-hover);
+.card-detail-modal-author {
+  font-size: 0.9em;
+  color: var(--grey-500);
 }
 
-.card-detail-modal-actions .cancel-button {
-  background-color: var(--grey-500);
-  color: var(--white-color);
+.card-detail-modal-summary {
+  font-size: 1.1em;
+  font-style: italic;
+  color: var(--text-color);
+  margin-bottom: 20px;
 }
-.card-detail-modal-actions .cancel-button:hover {
-  background-color: var(--grey-700);
+
+.card-detail-content-section {
+  margin-top: 15px;
+}
+
+.card-detail-content-section h3 {
+    margin-bottom: 10px;
 }

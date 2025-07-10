@@ -48,14 +48,14 @@ const ConfirmDeleteModal = ({ item, itemType, onClose, onConfirm }) => {
     <Modal isOpen={true} onClose={onClose} title="Apstiprināt dzēšanu">
       <div className="modal-body">
         <p>Vai tiešām vēlaties dzēst šo ierakstu?</p>
-        <div className="item-to-delete-info" style={{ padding: '10px', border: '1px solid #eee', borderRadius: '4px', marginTop: '10px', marginBottom: '20px' }}>
+        <div className="item-to-delete-info" style={{ padding: '10px', border: '1px solid #eee', borderRadius: '4px', marginTop: '10px', marginBottom: '20px', maxHeight: '40vh', overflowY: 'auto' }}>
           {renderItemDetails()}
         </div>
-        <div className="card-detail-modal-actions">
-          <button onClick={() => onConfirm(itemType, item.id)} className="action-button delete-button">
+        <div className="card-detail-modal-actions" style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid var(--border-color)', display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+          <button onClick={() => onConfirm(itemType, item.id)} className="action-button" style={{ backgroundColor: 'var(--danger-color)', color: 'var(--white-color)', padding: '10px 20px', borderRadius: '5px', fontSize: '1em', fontWeight: 'bold', cursor: 'pointer', border: 'none' }}>
             Jā, dzēst
           </button>
-          <button onClick={onClose} className="action-button cancel-button">
+          <button onClick={onClose} className="action-button" style={{ backgroundColor: 'var(--grey-500)', color: 'var(--white-color)', padding: '10px 20px', borderRadius: '5px', fontSize: '1em', fontWeight: 'bold', cursor: 'pointer', border: 'none' }}>
             Atcelt
           </button>
         </div>

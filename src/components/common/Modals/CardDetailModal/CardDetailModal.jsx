@@ -2,7 +2,6 @@
 import React, { lazy, Suspense } from 'react';
 import './CardDetailModal.css';
 
-// LABOJUMS: Pareizais ceļš uz komponenti, kas tagad atrodas tajā pašā mapē
 const CardDetailModalContent = lazy(() => import('./CardDetailModalContent'));
 
 const CardDetailModal = ({ card, onClose }) => {
