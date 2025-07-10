@@ -39,8 +39,18 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
   const [openAccordionId, setOpenAccordionId] = useState(null);
   const [openCardThemeAccordionId, setOpenCardThemeAccordionId] = useState(null);
   
+  // Stāvokļi rediģēšanas un dzēšanas logiem
   const [editModalState, setEditModalState] = useState({ item: null, type: null });
   const [deleteModalState, setDeleteModalState] = useState({ item: null, type: null });
+
+  // JAUNS: Stāvoklis priekš "Pievienot..." modālajiem logiem
+  const [addModalsState, setAddModalsState] = useState({
+    author: false,
+    theme: false,
+    card: false,
+    article: false,
+    video: false,
+  });
 
   const [authorsCurrentPage, setAuthorsCurrentPage] = useState(1);
   const [authorsItemsPerPage, setAuthorsItemsPerPage] = useState(ITEMS_PER_PAGE_OPTIONS[0]);
@@ -105,8 +115,17 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
   const handleToggleAccordion = (id) => setOpenAccordionId(prevId => (prevId === id ? null : id));
   const handleToggleCardThemeAccordion = (id) => setOpenCardThemeAccordionId(prevId => (prevId === id ? null : id));
   
+  // JAUNS: Funkcijas "Pievienot..." logu atvēršanai un aizvēršanai
+  const handleShowAddModal = (type) => {
+    setAddModalsState(prev => ({ ...prev, [type]: true }));
+  };
+  const handleCloseAddModal = (type) => {
+    setAddModalsState(prev => ({ ...prev, [type]: false }));
+  };
+  
   const handleEdit = (item, type) => setEditModalState({ item, type });
   const handleDelete = (item, type) => setDeleteModalState({ item, type });
+  
   const closeModal = () => {
     setEditModalState({ item: null, type: null });
     setDeleteModalState({ item: null, type: null });
@@ -129,12 +148,13 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
     closeModal();
   };
   
+  // JAUNS: Atjaunināti "add" handler'i, lai tie aizvērtu pareizo modālo logu
   const addHandlers = {
-      author: (data) => { setAuthors(prev => [...prev, {id: Date.now(), ...data, created_at: new Date().toISOString()}]); closeModal(); },
-      theme: (data) => { setThemesData(prev => [...prev, {id: Date.now(), ...data, created_at: new Date().toISOString()}]); closeModal(); },
-      card: (data) => { setCards(prev => [...prev, {id: Date.now(), ...data, created_at: new Date().toISOString()}]); closeModal(); },
-      article: (data) => { setArticles(prev => [...prev, {id: Date.now(), ...data, created_at: new Date().toISOString()}]); closeModal(); },
-      video: (data) => { setVideos(prev => [...prev, {id: Date.now(), ...data, created_at: new Date().toISOString()}]); closeModal(); }
+      author: (data) => { setAuthors(prev => [...prev, {id: Date.now(), ...data, created_at: new Date().toISOString()}]); handleCloseAddModal('author'); },
+      theme: (data) => { setThemesData(prev => [...prev, {id: Date.now(), ...data, created_at: new Date().toISOString()}]); handleCloseAddModal('theme'); },
+      card: (data) => { setCards(prev => [...prev, {id: Date.now(), ...data, created_at: new Date().toISOString()}]); handleCloseAddModal('card'); },
+      article: (data) => { setArticles(prev => [...prev, {id: Date.now(), ...data, created_at: new Date().toISOString()}]); handleCloseAddModal('article'); },
+      video: (data) => { setVideos(prev => [...prev, {id: Date.now(), ...data, created_at: new Date().toISOString()}]); handleCloseAddModal('video'); }
   };
   
   const authorColumns = [ { label: 'ID', width: '60px' }, { label: 'Vārds', width: 'auto' }, { label: 'Izveidots', width: '180px' }, { label: 'Darbības', width: '120px' }];
@@ -146,11 +166,13 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
     <div className="admin-page-container">
       <h2 className="admin-page-title">Ierakstu pārvaldība</h2>
       
-      <AdminActionButtons onShow={(type) => openModal(null, type)} />
+      {/* JAUNS: onShow tagad izmanto pareizo funkciju */}
+      <AdminActionButtons onShow={handleShowAddModal} />
 
+      {/* JAUNS: AdminModals saņem pareizo stāvokli un aizvēršanas funkciju */}
       <AdminModals 
-        modalsState={{ author: false, theme: false, card: false, article: false, video: false }}
-        handlers={{ add: addHandlers, onClose: () => {} }}
+        modalsState={addModalsState}
+        handlers={{ add: addHandlers, onClose: handleCloseAddModal }}
         data={{ themes, authors }}
       />
       
