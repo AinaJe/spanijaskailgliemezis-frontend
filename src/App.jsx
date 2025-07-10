@@ -128,8 +128,13 @@ function App() {
 
   // useEffect hook, lai sinhronizētu filterTheme ar activeTheme, ja mainās activeTheme un sadaļa ir "Ieteikumi"
   useEffect(() => {
-    if (activeSection === 'recommendations' && activeTheme !== filterTheme) {
-      setFilterTheme(activeTheme);
+    if (activeSection === 'recommendations') { // Pārbaudām, vai esam "Ieteikumi" sadaļā
+      if (activeTheme !== filterTheme) {
+        setFilterTheme(activeTheme);
+        // JAUNS: Notīrām autoru un atlasītās kartītes, mainot tēmu "Ieteikumi" sadaļā
+        setFilterAuthors([]);
+        setSelectedFilteredCardIds([]);
+      }
     }
   }, [activeTheme, activeSection, filterTheme]);
 
