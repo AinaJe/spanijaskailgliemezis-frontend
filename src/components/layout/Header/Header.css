@@ -1,324 +1,290 @@
 /* src/components/layout/Header/Header.css */
 
-/* Aplikācijas galvenes stils */
 .app-header {
-    background-color: var(--primary-color); /* Fona krāsa no mainīgā */
-    color: var(--white-color); /* Teksta krāsa no mainīgā */
-    padding: 0; /* Noņem iekšējo atkāpi */
-    box-shadow: 0 2px 5px var(--shadow-medium); /* Ēna zem galvenes */
-    position: relative; /* Nepieciešams bērnu elementu pozicionēšanai */
-    z-index: 500; /* Augsts z-index, lai atrastos virs citiem elementiem */
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    padding: 0;
+    box-shadow: 0 2px 5px var(--shadow-medium);
+    position: relative;
+    z-index: 500;
 }
 
-/* Vietnes saukļa (tagline) stils */
 .site-tagline {
-    background-color: transparent; /* Caurspīdīgs fons */
-    color: var(--white-color); /* Teksta krāsa no mainīgā */
-    text-align: center; /* Teksta līdzināšana centrā */
-    padding: 10px 20px; /* Iekšējā atkāpe */
-    font-size: 1.6em; /* Fonta izmērs */
-    font-weight: bold; /* Fonta biezums */
-    letter-spacing: 1px; /* Atstarpe starp burtiem */
-    text-transform: uppercase; /* Visi burti lielie */
-    text-shadow: 1px 1px 3px var(--text-shadow); /* Teksta ēna no mainīgā */
-    position: absolute; /* Absolūta pozicionēšana */
-    top: 0; /* Pielīdzina augšējai malai */
-    left: 0; /* Pielīdzina kreisajai malai */
-    width: 100%; /* Aizņem visu platumu */
-    box-sizing: border-box; /* Nodrošina, ka padding ietilpst platumā */
-    z-index: 510; /* Atrodas virs galvenās galvenes, bet zem banera */
+    background-color: transparent;
+    color: var(--white-color);
+    text-align: center;
+    padding: 10px 20px;
+    font-size: 1.6em;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-shadow: 1px 1px 3px var(--text-shadow);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    box-sizing: border-box;
+    z-index: 510;
 }
 
-/* Galvenes banera (GIF) konteiners */
 .header-banner {
-    width: 100%; /* Aizņem visu platumu */
-    height: 100px; /* Fiksēts augstums */
-    overflow: hidden; /* Paslēpj pārpildīto saturu */
-    position: relative; /* Nepieciešams attēla pozicionēšanai */
-    background-color: var(--grey-200); /* Fona krāsa no mainīgā */
+    width: 100%;
+    height: 100px;
+    overflow: hidden;
+    position: relative;
+    background-color: var(--grey-200);
 }
 
-/* Galvenes GIF attēls */
 .header-gif {
-    width: 100%; /* Aizņem visu konteinera platumu */
-    object-fit: cover; /* Attēls aizpilda rāmi, apgriežot to, ja nepieciešams */
-    display: block; /* Nodrošina bloka elementa uzvedību */
+    width: 100%;
+    object-fit: cover;
+    display: block;
 }
 
-/* Galvenais galvenes satura bloks (logo, navigācija) */
 .main-header-content {
-    display: flex; /* Sakārto elementus rindā */
-    justify-content: space-between; /* Izplata elementus ar atstarpi starp tiem */
-    align-items: center; /* Vertikāli centrē elementus */
-    padding: 15px 20px; /* Iekšējā atkāpe */
-    max-width: var(--content-max-width); /* Maksimālais platums no mainīgā */
-    margin: 0 auto; /* Centrē horizontāli */
-    position: relative; /* Nepieciešams bērnu elementu pozicionēšanai */
-    z-index: 10; /* Zemāks z-index nekā tagline */
-    background-color: var(--primary-color); /* Fona krāsa (pārklāj tagline) */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+    background-color: var(--primary-color);
 }
 
-/* Vietnes nosaukuma (logo) stils */
-.site-title {
-    margin: 0; /* Noņem margas */
-    font-size: 2em; /* Fonta izmērs */
-    color: var(--white-color); /* Teksta krāsa */
-    cursor: pointer; /* Kursoru maina uz rādītāju */
-    transition: color 0.2s ease; /* Pārejas efekts */
-}
-
-/* Vietnes nosaukuma hover stāvoklis */
-.site-title:hover {
-    color: var(--info-color); /* Teksta krāsa, turot peli virs tā */
-}
-
-/* Vietnes logo viettura stils */
 .site-logo-placeholder {
-    color: var(--white-color); /* Teksta krāsa */
-    font-size: 1.1em; /* Fonta izmērs */
-    font-weight: bold; /* Fonta biezums */
-    cursor: pointer; /* Kursoru maina uz rādītāju */
-    text-decoration: none; /* Noņem pasvītrojumu */
-    white-space: nowrap; /* Novērš teksta aplūšanu jaunā rindā */
+    color: var(--white-color);
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
 }
 
-/* Vietnes logo viettura hover stāvoklis */
 .site-logo-placeholder:hover {
-    color: var(--grey-100); /* Teksta krāsa, turot peli virs tā */
+    color: var(--grey-100);
 }
 
-/* Galvenās navigācijas saraksts */
 .main-navigation ul {
-    list-style: none; /* Noņem saraksta punktus */
-    margin: 0; /* Noņem margas */
-    padding: 0; /* Noņem iekšējo atkāpi */
-    display: flex; /* Sakārto elementus rindā */
-    gap: 10px; /* Atstarpe starp elementiem */
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 10px;
 }
 
-/* Galvenās navigācijas saraksta elementu pogu stils */
+.main-navigation li {
+    position: relative;
+}
+
 .main-navigation li button {
-    background: none; /* Noņem fonu */
-    border: none; /* Noņem apmali */
-    color: var(--white-color); /* Teksta krāsa */
-    font-size: 1.1em; /* Fonta izmērs */
-    cursor: pointer; /* Kursoru maina uz rādītāju */
-    padding: 8px 12px; /* Iekšējā atkāpe */
-    border-radius: 5px; /* Noapaļoti stūri */
-    transition: background-color 0.2s ease, color 0.2s ease; /* Pārejas efekti */
+    background: none;
+    border: none;
+    color: var(--white-color);
+    font-size: 1.1em;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Galvenās navigācijas pogu hover un aktīvais stāvoklis */
-.main-navigation li button:hover,
+.main-navigation li button:hover {
+    background-color: var(--primary-hover);
+}
+
 .main-navigation li button.active {
-    background-color: var(--primary-color); /* Fona krāsa, turot peli virs pogas vai kad tā ir aktīva */
-    /* Izmantoju primāro krāsu, jo iepriekš bija caurspīdīga. Tas dos labāku vizuālo indikāciju. */
+    background-color: var(--secondary-color);
 }
 
-/* Navigācijas elementa ar nolaižamo izvēlni stils */
-.nav-item.dropdown {
-    position: relative; /* Nepieciešams nolaižamās izvēlnes pozicionēšanai */
-}
-
-/* Nolaižamās izvēlnes bultiņas ikona */
 .dropdown-arrow-icon {
-    margin-left: 8px; /* Atstarpe no teksta */
-    transition: transform 0.2s ease; /* Pārejas efekts rotācijai */
-    cursor: pointer; /* Kursoru maina uz rādītāju */
+    margin-left: 8px;
+    transition: transform 0.2s ease;
 }
 
-/* Nolaižamās izvēlnes bultiņas ikonas rotācija darbvirsmas režīmā, kad izvēlne ir atvērta */
 .nav-item.dropdown.open-desktop .dropdown-arrow-icon {
-    transform: rotate(180deg); /* Pagriež ikonu par 180 grādiem */
+    transform: rotate(180deg);
 }
 
-/* Nolaižamās izvēlnes satura konteiners */
 .dropdown-content {
-    display: none; /* Paslēpj pēc noklusējuma */
-    position: absolute; /* Absolūta pozicionēšana attiecībā pret parent (.nav-item.dropdown) */
-    background-color: var(--primary-color); /* Fona krāsa */
-    min-width: 160px; /* Minimālais platums */
-    box-shadow: 0px 8px 16px 0px var(--shadow-strong); /* Ēna */
-    z-index: 1; /* Z-index, lai atrastos virs citiem elementiem */
-    border-radius: 5px; /* Noapaļoti stūri */
-    overflow: hidden; /* Paslēpj pārpildīto saturu */
-    top: 100%; /* Pozicionē zem parent elementa */
-    left: 0; /* Pielīdzina pa kreisi */
+    display: none;
+    position: absolute;
+    background-color: var(--primary-color);
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px var(--shadow-strong);
+    z-index: 1;
+    border-radius: 5px;
+    overflow: hidden;
+    top: 100%;
+    left: 0;
 }
 
-/* Nolaižamās izvēlnes satura displejs darbvirsmas režīmā, kad izvēlne ir atvērta */
 .nav-item.dropdown.open-desktop .dropdown-content {
-    display: flex; /* Parāda saturu */
-    flex-direction: column; /* Elementi tiek izkārtoti vertikāli */
+    display: flex;
+    flex-direction: column;
 }
 
-/* Nolaižamās izvēlnes satura pogu stils */
 .dropdown-content button {
-    color: var(--white-color); /* Teksta krāsa */
-    padding: 12px 16px; /* Iekšējā atkāpe */
-    text-decoration: none; /* Noņem pasvītrojumu */
-    display: block; /* Nodrošina bloka elementa uzvedību */
-    width: 100%; /* Aizņem visu platumu */
-    text-align: left; /* Teksta līdzināšana pa kreisi */
-    border-bottom: 1px solid var(--primary-hover); /* Apakšējā apmale ar nedaudz tumšāku toni */
+    color: var(--white-color);
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    width: 100%;
+    text-align: left;
+    border-bottom: 1px solid var(--primary-hover);
 }
 
-/* Nolaižamās izvēlnes pēdējās pogas apakšējās apmales noņemšana */
 .dropdown-content button:last-child {
     border-bottom: none;
 }
 
-/* Nolaižamās izvēlnes satura pogas hover stāvoklis */
 .dropdown-content button:hover {
-    background-color: var(--primary-hover); /* Fona krāsa, turot peli virs pogas */
+    background-color: var(--primary-hover);
 }
 
-/* Hamburgera izvēlnes poga (mobilajām ierīcēm) */
+/* JAUNS: Papildu stils aktīvajam apakšizvēlnes punktam darbvirsmas skatā */
+.dropdown-content button.active {
+    background-color: var(--secondary-color);
+}
+
 .hamburger-menu-button {
-    display: none; /* Paslēpj pēc noklusējuma darbvirsmas režīmā */
-    background: none; /* Noņem fonu */
-    border: none; /* Noņem apmali */
-    cursor: pointer; /* Kursoru maina uz rādītāju */
-    padding: 10px; /* Iekšējā atkāpe */
-    position: absolute; /* Absolūta pozicionēšana */
-    right: 20px; /* Pozicionē no labās puses */
-    top: 50%; /* Vertikāli centrē */
-    transform: translateY(-50%); /* Precīza vertikālā centrēšana */
-    z-index: 600; /* Augsts z-index */
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 600;
 }
 
-/* Hamburgera ikonas svītras */
 .hamburger-icon {
-    display: block; /* Bloka elements */
-    width: 25px; /* Platums */
-    height: 3px; /* Augstums */
-    background-color: var(--white-color); /* Krāsa */
-    margin: 5px 0; /* Vertikālā atstarpe starp svītrām */
-    transition: all 0.3s ease-in-out; /* Pārejas efekts */
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: var(--white-color);
+    margin: 5px 0;
+    transition: all 0.3s ease-in-out;
 }
 
-/* Hamburgera ikonas animācija atvērtā stāvoklī (pirmā svītra) */
 .hamburger-menu-button.open .hamburger-icon:nth-child(1) {
-    transform: translateY(8px) rotate(45deg); /* Pārbīda un pagriež */
+    transform: translateY(8px) rotate(45deg);
 }
 
-/* Hamburgera ikonas animācija atvērtā stāvoklī (otrā svītra) */
 .hamburger-menu-button.open .hamburger-icon:nth-child(2) {
-    opacity: 0; /* Padara neredzamu */
+    opacity: 0;
 }
 
-/* Hamburgera ikonas animācija atvērtā stāvoklī (trešā svītra) */
 .hamburger-menu-button.open .hamburger-icon:nth-child(3) {
-    transform: translateY(-8px) rotate(-45deg); /* Pārbīda un pagriež */
+    transform: translateY(-8px) rotate(-45deg);
 }
 
-/* Responsīvās izmaiņas mazākiem ekrāniem */
-@media (max-width: 768px) {
-    /* Galvenais galvenes satura bloks mobilajās ierīcēs */
+@media (max-width: 1120px) {
     .main-header-content {
-        flex-direction: row; /* Elementi tiek sakārtoti rindā */
-        justify-content: space-between; /* Izplata elementus ar atstarpi starp tiem */
-        align-items: center; /* Vertikāli centrē elementus */
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
     }
 
-    /* Vietnes nosaukuma fonta izmērs mobilajās ierīcēs */
-    .site-title {
-        font-size: 2em;
-        margin-bottom: 0;
+    .site-logo-placeholder {
+        font-size: 1.1em;
     }
 
-    /* Vietnes saukļa stils mobilajās ierīcēs */
     .site-tagline {
         font-size: 1.2em;
         padding: 8px 10px;
-        position: static; /* Noņem absolūto pozicionēšanu */
-        background-color: var(--dark-color); /* Fona krāsa */
-        text-shadow: none; /* Noņem ēnu */
-        z-index: auto; /* Atjauno noklusējuma z-index */
+        position: static;
+        background-color: var(--dark-color);
+        text-shadow: none;
+        z-index: auto;
     }
 
-    /* Hamburgera izvēlnes poga parādās mobilajās ierīcēs */
     .hamburger-menu-button {
         display: block;
     }
 
-    /* Galvenā navigācija mobilajās ierīcēs */
     .main-navigation {
-        display: none; /* Paslēpj pēc noklusējuma */
-        flex-direction: column; /* Elementi tiek izkārtoti vertikāli */
-        width: 100%; /* Aizņem visu platumu */
-        background-color: var(--primary-color); /* Fona krāsa */
-        position: absolute; /* Absolūta pozicionēšana */
-        top: 100%; /* Pozicionē zem galvenes */
-        left: 0; /* Pielīdzina pa kreisi */
-        box-shadow: 0 5px 10px var(--shadow-medium); /* Ēna */
-        z-index: 550; /* Augsts z-index */
-        padding-bottom: 10px; /* Iekšējā atkāpe no apakšas */
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background-color: var(--primary-color);
+        position: absolute;
+        top: 100%;
+        left: 0;
+        box-shadow: 0 5px 10px var(--shadow-medium);
+        z-index: 550;
+        padding-bottom: 10px;
     }
 
-    /* Atvērtais mobilās navigācijas stāvoklis */
     .main-navigation.open {
-        display: flex; /* Parāda navigāciju */
+        display: flex;
     }
 
-    /* Galvenās navigācijas saraksts mobilajās ierīcēs */
     .main-navigation ul {
-        flex-direction: column; /* Elementi tiek izkārtoti vertikāli */
-        width: 100%; /* Aizņem visu platumu */
-        gap: 0; /* Noņem atstarpi starp elementiem */
+        flex-direction: column;
+        width: 100%;
+        gap: 0;
     }
 
-    /* Galvenās navigācijas saraksta elements mobilajās ierīcēs */
     .main-navigation li {
-        width: 100%; /* Aizņem visu platumu */
-        border-bottom: 1px solid var(--primary-hover); /* Apakšējā apmale */
-        position: relative; /* Nepieciešams nolaižamās izvēlnes pozicionēšanai */
+        width: 100%;
+        border-bottom: 1px solid var(--primary-hover);
+        position: relative;
     }
 
-    /* Pēdējā galvenās navigācijas elementa apakšējās apmales noņemšana */
     .main-navigation li:last-child {
         border-bottom: none;
     }
 
-    /* Galvenās navigācijas saraksta elementu pogu stils mobilajās ierīcēs */
     .main-navigation li button {
-        width: 100%; /* Aizņem visu platumu */
-        text-align: left; /* Teksta līdzināšana pa kreisi */
-        padding: 15px 20px; /* Iekšējā atkāpe */
-        border-radius: 0; /* Noņem noapaļotus stūrus */
-        display: flex; /* Sakārto tekstu un bultiņu rindā */
-        justify-content: space-between; /* Izplata tekstu un bultiņu */
-        align-items: center; /* Vertikāli centrē */
+        width: 100%;
+        text-align: left;
+        padding: 15px 20px;
+        border-radius: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
-
-    /* Nolaižamās izvēlnes bultiņas ikona parādās mobilajās ierīcēs */
-    .dropdown-arrow-icon {
+    
+    .nav-item.dropdown:hover .dropdown-content {
+        display: none;
+    }
+    
+    .nav-item.dropdown.open-desktop .dropdown-content {
+        display: none;
+    }
+    
+    .nav-item.dropdown .dropdown-content {
+        position: static;
+        width: 100%;
+        box-shadow: none;
+        border-radius: 0;
+        background-color: var(--primary-hover);
+        display: none; 
+    }
+    
+    .nav-item.dropdown.open-mobile-submenu .dropdown-content {
         display: block;
     }
-    /* Nolaižamās izvēlnes bultiņas ikonas rotācija mobilajās ierīcēs, kad izvēlne ir atvērta */
+    
+    .nav-item.dropdown .dropdown-content button {
+        padding-left: 40px;
+        border-bottom: 1px solid var(--primary-color);
+    }
+
     .nav-item.dropdown.open-mobile-submenu .dropdown-arrow-icon {
         transform: rotate(180deg);
     }
 
-    /* Nolaižamās izvēlnes satura stils mobilajās ierīcēs */
-    .nav-item.dropdown .dropdown-content {
-        position: static; /* Noņem absolūto pozicionēšanu */
-        width: 100%; /* Aizņem visu platumu */
-        box-shadow: none; /* Noņem ēnu */
-        border-radius: 0; /* Noņem noapaļotus stūrus */
-        background-color: var(--primary-hover); /* Nedaudz tumšāks fons */
-        display: none; /* Paslēpj pēc noklusējuma */
-        flex-direction: column; /* Elementi tiek izkārtoti vertikāli */
+    /* LABOJUMS: Pārdefinējam hover un active stāvokļus mobilajā skatā */
+    .nav-item.dropdown .dropdown-content button:hover,
+    .nav-item.dropdown .dropdown-content button:active {
+        background-color: var(--secondary-hover); /* Tumšāks zilganlillā, uzbraucot/uzspiežot */
     }
 
-    /* Nolaižamās izvēlnes satura displejs mobilajās ierīcēs, kad izvēlne ir atvērta */
-    .main-navigation.open .nav-item.dropdown.open-mobile-submenu .dropdown-content {
-        display: flex; /* Parāda saturu */
-    }
-
-    /* Nolaižamās izvēlnes satura pogas stils mobilajās ierīcēs */
-    .nav-item.dropdown .dropdown-content button {
-        padding-left: 40px; /* Iekšējā atkāpe no kreisās puses */
-        border-bottom: 1px solid var(--primary-color); /* Apakšējā apmale */
+    .nav-item.dropdown .dropdown-content button.active {
+        background-color: var(--secondary-color); /* Zilganlillā, ja ir aktīvais punkts */
     }
 }

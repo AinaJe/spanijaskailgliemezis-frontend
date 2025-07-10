@@ -1,12 +1,61 @@
-# React + Vite
+# Projekta komponentu struktūra
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Šis ir pārskats par visām projekta React komponentēm, to atrašanās vietu un funkcionalitāti.
 
-Currently, two official plugins are available:
+### `/src/pages` - Galvenās lapas
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **`AdminPage.jsx`**: Administratīvais panelis, kas apkopo visas datu pārvaldības sadaļas.
+- **`ArticlesPage.jsx`**: Lapa, kas attēlo rakstu sarakstu un lapošanu.
+- **`CardsPage.jsx`**: Lapa, kas attēlo kartīšu sarakstu ar filtriem un lapošanu. Izmanto `recommendations`, `association` u.c. sadaļām.
+- **`HomePage.jsx`**: Sākumlapa, kas attēlo galveno informāciju un sākumlapas kartītes.
+- **`VideosPage.jsx`**: Lapa, kas attēlo video sarakstu un lapošanu.
 
-## Expanding the ESLint configuration
+### `/src/components/layout` - Izkārtojuma komponentes
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **`Header.jsx`**: Vietnes galvene ar logo, navigāciju un meklēšanu.
+- **`Footer.jsx`**: Vietnes kājene ar autortiesību informāciju un saitēm.
+
+### `/src/components/cards` - Kartīšu komponentes
+
+- **`Card.jsx`**: Attēlo vienu kartīti ar kopsavilkumu un attēlu.
+- **`CardList.jsx`**: Attēlo kartīšu sarakstu.
+- **`CardFilter.jsx`**: Nodrošina filtrēšanas logu kartītēm (pēc autora, tēmas).
+- **`ActiveFiltersDisplay.jsx`**: Attēlo aktīvos filtrus virs kartīšu saraksta.
+- **`ImageCarousel.jsx`**: Attēlu karuselis, ko izmanto kartītes detalizētajā skatā.
+
+### `/src/components/forms` - Formu komponentes
+
+- **`AddAuthorForm.jsx`**: Forma jauna autora pievienošanai.
+- **`AddThemeForm.jsx`**: Forma jaunas tēmas pievienošanai.
+- **`AddArticleForm.jsx`**: Forma jauna raksta pievienošanai.
+- **`AddVideoForm.jsx`**: Forma jauna video pievienošanai.
+- **`CardForm.jsx`**: Sarežģīta forma jaunas kartītes izveidei ar vairākām cilnēm.
+- **`CardFormImageSection.jsx`**: `CardForm` apakškomponente, kas pārvalda attēlu pievienošanu.
+
+### `/src/components/lists` - Sarakstu komponentes
+
+- **`ArticleList.jsx`**: Attēlo rakstu sarakstu tabulas formā.
+- **`VideoList.jsx`**: Attēlo video sarakstu tabulas formā.
+
+### `/src/components/common` - Koplietojamās komponentes
+
+- **`Accordion.jsx`**: Atkārtoti lietojama akordeona komponente.
+- **`AdminActionButtons.jsx`**: Pogu grupa administratīvajā panelī jaunu ierakstu pievienošanai.
+- **`AdminModals.jsx`**: Komponente, kas satur visus administratīvā paneļa modālos logus.
+- **`AdminSection.jsx`**: Universāla sadaļa administratīvajam panelim, kas satur tabulu un lapošanu.
+- **`PageRenderer.jsx`**: Komponente, kas nosaka, kuru lapu attēlot, atkarībā no aktīvās sadaļas.
+- **`Pagination.jsx`**: Lapošanas komponente sarakstu navigācijai.
+- **`RichTextEditor.jsx`**: Teksta redaktors ar formatēšanas iespējām (`TipTap`).
+- **`ThemeDetailDisplay.jsx`**: Attēlo detalizētu informāciju par tēmu.
+
+### `/src/components/common/Modals` - Modālo logu komponentes
+
+- **`Modal.jsx`**: Universāla modālā loga komponente.
+- **`CardDetailModal.jsx`**: Modālais logs, kas attēlo pilnu informāciju par kartīti.
+- **`ImageFullscreenModal.jsx`**: Modālais logs attēla attēlošanai pilnekrāna režīmā.
+
+### `/src/hooks` - Pielāgotie āķi
+
+- **`useData.js`**: Pārvalda aplikācijas galveno datu ielādi un stāvokli.
+- **`useFilters.js`**: Pārvalda filtrēšanas stāvokli un loģiku.
+- **`usePagination.js`**: Pārvalda lapošanas stāvokli un loģiku.

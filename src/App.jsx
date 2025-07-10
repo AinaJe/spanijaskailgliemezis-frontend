@@ -2,12 +2,10 @@
 import React, { useState, useMemo, useEffect, lazy, Suspense, useCallback } from 'react';
 import './App.css';
 
-// Importējam izkārtojuma komponentes un jauno PageRenderer
 import Header from './components/layout/Header/Header';
 import Footer from './components/layout/Footer/Footer';
 import PageRenderer from './components/common/PageRenderer';
 
-// Importējam pielāgotos āķus
 import { useData } from './hooks/useData';
 import { useFilters } from './hooks/useFilters';
 import { usePagination } from './hooks/usePagination';
@@ -85,54 +83,26 @@ function App() {
     resetCardsPagination();
     resetArticlesPagination();
     resetVideosPagination();
-    
-    let newTheme;
-    switch (activeSection) {
-      case 'home': newTheme = 1; break;
-      case 'recommendations': newTheme = 'all'; break;
-      case 'association': newTheme = 104; break;
-      case 'trade': newTheme = 105; break;
-      case 'stories': newTheme = 106; break;
-      case 'prints': newTheme = 107; break;
-      case 'articles': newTheme = 108; break;
-      case 'videos': newTheme = 109; break;
-      default: newTheme = ''; break;
-    }
-    setActiveTheme(newTheme);
-    resetFilters(newTheme);
-
-  }, [activeSection, resetFilters, resetCardsPagination, resetArticlesPagination, resetVideosPagination]);
+    resetFilters(activeTheme);
+  }, [activeSection, resetFilters, resetCardsPagination, resetArticlesPagination, resetVideosPagination, activeTheme]);
 
   useEffect(() => {
-    if (activeSection === 'recommendations' && activeTheme !== filterTheme) {
+    if (activeTheme !== filterTheme) {
         setFilterTheme(activeTheme);
-        setFilterAuthors([]);
-        handleClearCardSelections();
     }
-  }, [activeSection, activeTheme, filterTheme, setFilterTheme, setFilterAuthors, handleClearCardSelections]);
+  }, [activeTheme, filterTheme, setFilterTheme]);
 
   const handleReadMore = useCallback((card) => {
     const safeAuthors = Array.isArray(authors) ? authors : [];
     const cardAuthor = safeAuthors.find(a => a.id === card.authorId);
     const updatedImages = card.images.map(img => {
         const imgAuthor = safeAuthors.find(a => a.id === img.authorId);
-        return {
-          ...img,
-          authorName: imgAuthor ? imgAuthor.name : 'Nezināms autors'
-        };
+        return { ...img, authorName: imgAuthor ? imgAuthor.name : 'Nezināms autors' };
     });
-
-    setSelectedCard({
-      ...card,
-      authorName: cardAuthor ? cardAuthor.name : 'Nezināms autors',
-      images: updatedImages,
-      allAuthors: safeAuthors
-    });
+    setSelectedCard({ ...card, authorName: cardAuthor ? cardAuthor.name : 'Nezināms autors', images: updatedImages, allAuthors: safeAuthors });
   }, [authors]);
 
-  const handleCloseModal = useCallback(() => {
-    setSelectedCard(null);
-  }, []);
+  const handleCloseModal = useCallback(() => setSelectedCard(null), []);
 
   const currentThemeDetail = useMemo(() => {
     const safeThemes = Array.isArray(themesData) ? themesData : [];
@@ -151,15 +121,8 @@ function App() {
     return themeId !== 'all' ? safeThemes.find(t => t.id === themeId) : null;
   }, [activeSection, themesData, filterTheme]);
   
-  // Sagatavojam `props` katrai lapai
   const pageProps = {
-    home: {
-      cards: paginatedCards,
-      onReadMore: handleReadMore,
-      availableAuthors: authors,
-      paginationProps: cardsPaginationProps,
-      homePageThemeDetail: currentThemeDetail,
-    },
+    home: { cards: paginatedCards, onReadMore: handleReadMore, availableAuthors: authors, paginationProps: cardsPaginationProps, homePageThemeDetail: currentThemeDetail },
     cards: {
       cards: {rawCards: filteredCardsBase, paginated: paginatedCards},
       authors: authors,
@@ -182,41 +145,14 @@ function App() {
       paginationProps: cardsPaginationProps,
       currentThemeDetail: currentThemeDetail,
     },
-    articles: {
-      articles: paginatedArticles,
-      availableAuthors: authors,
-      paginationProps: articlesPaginationProps,
-      pageThemeDetail: currentThemeDetail,
-    },
-    videos: {
-      videos: paginatedVideos,
-      availableAuthors: authors,
-      paginationProps: videosPaginationProps,
-      pageThemeDetail: currentThemeDetail,
-    },
-    admin: {
-      authors: authors,
-      themes: themesData,
-      cards: cards,
-      articles: articles,
-      videos: videos,
-      setAuthors: setAuthors,
-      setThemesData: setThemesData,
-      setCards: setCards,
-      setArticles: setArticles,
-      setVideos: setVideos,
-    }
+    articles: { articles: paginatedArticles, availableAuthors: authors, paginationProps: articlesPaginationProps, pageThemeDetail: currentThemeDetail },
+    videos: { videos: paginatedVideos, availableAuthors: authors, paginationProps: videosPaginationProps, pageThemeDetail: currentThemeDetail },
+    admin: { authors, themes: themesData, cards, articles, videos, setAuthors, setThemesData, setCards, setArticles, setVideos }
   };
 
   return (
     <div className="App">
-      <Header
-        themes={themesData}
-        activeTheme={activeTheme}
-        onThemeSelect={setActiveTheme}
-        onSectionSelect={setActiveSection}
-        activeSection={activeSection}
-      />
+      <Header themes={themesData} activeTheme={activeTheme} onThemeSelect={setActiveTheme} onSectionSelect={setActiveSection} activeSection={activeSection} />
       <main>
           <h2 className="section-title">
             {activeSection === 'home' && 'Sākums'}
@@ -229,19 +165,12 @@ function App() {
             {activeSection === 'videos' && 'Video'}
             {activeSection === 'admin' && 'Pārvaldība'}
           </h2>
-          
           <PageRenderer activeSection={activeSection} {...pageProps} />
-
       </main>
-
       <Footer />
-
       {selectedCard && (
-        <Suspense fallback={<div>Ielādē kartītes detaļas...</div>}>
-          <LazyCardDetailModal
-            card={selectedCard}
-            onClose={handleCloseModal}
-          />
+        <Suspense fallback={<div>Ielādē...</div>}>
+          <LazyCardDetailModal card={selectedCard} onClose={handleCloseModal} />
         </Suspense>
       )}
     </div>
