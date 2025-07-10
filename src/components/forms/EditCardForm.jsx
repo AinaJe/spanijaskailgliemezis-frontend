@@ -3,6 +3,9 @@ import React, { useState, useEffect } from 'react';
 import RichTextEditor from '../common/RichTextEditor/RichTextEditor';
 import CardFormImageSection from './CardForm/CardFormImageSection';
 import './CardForm/CardForm.css';
+// JAUNS: Importi priekš drag-and-drop
+import { DndContext, closestCenter } from '@dnd-kit/core';
+import { arrayMove } from '@dnd-kit/sortable';
 
 const EditCardForm = ({ card, onUpdateCard, availableThemes, availableAuthors, onClose }) => {
   const [activeTab, setActiveTab] = useState('theme');
@@ -24,6 +27,18 @@ const EditCardForm = ({ card, onUpdateCard, availableThemes, availableAuthors, o
       setImages(card.images.map(img => ({...img, id: img.id || Date.now(), sourceType: 'url', file: null, newImageAuthorNameInput: ''})));
     }
   }, [card]);
+
+  // JAUNS: Funkcija attēlu secības maiņai
+  const handleImageOrderChange = (event) => {
+    const { active, over } = event;
+    if (active.id !== over.id) {
+      setImages((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  };
 
   const handleImageChange = (index, field, value) => {
     const newImages = [...images];
@@ -136,19 +151,21 @@ const EditCardForm = ({ card, onUpdateCard, availableThemes, availableAuthors, o
             </div>
           )}
           {activeTab === 'images' && (
-            <div className="tab-pane">
-              <CardFormImageSection 
-                images={images} 
-                onImageChange={handleImageChange} 
-                onImageFileChange={handleImageFileChange} 
-                onImageSourceTypeChange={handleImageSourceTypeChange} 
-                handleAddImage={handleAddImage} 
-                handleRemoveImage={handleRemoveImage}
-                handleImageAuthorSelectChange={handleImageAuthorSelectChange} 
-                handleNewImageAuthorNameInputChange={handleNewImageAuthorNameInputChange} 
-                availableAuthors={availableAuthors} 
-              />
-            </div>
+            <DndContext collisionDetection={closestCenter} onDragEnd={handleImageOrderChange}>
+                <div className="tab-pane">
+                <CardFormImageSection 
+                    images={images} 
+                    onImageChange={handleImageChange} 
+                    onImageFileChange={handleImageFileChange} 
+                    onImageSourceTypeChange={handleImageSourceTypeChange} 
+                    handleAddImage={handleAddImage} 
+                    handleRemoveImage={handleRemoveImage}
+                    handleImageAuthorSelectChange={handleImageAuthorSelectChange} 
+                    handleNewImageAuthorNameInputChange={handleNewImageAuthorNameInputChange} 
+                    availableAuthors={availableAuthors} 
+                />
+                </div>
+            </DndContext>
           )}
         </div>
         <div style={{display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px'}}>

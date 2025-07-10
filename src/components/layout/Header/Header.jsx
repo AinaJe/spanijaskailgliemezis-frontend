@@ -21,13 +21,11 @@ const Header = ({ themes, activeTheme, onThemeSelect, activeSection, onSectionSe
         closeMenus();
     };
 
-    // LABOJUMS: Šī funkcija tagad aizver tikai apakšizvēlni, nevis visu navigāciju
+    // LABOJUMS: Tagad šī funkcija izsauc closeMenus(), lai aizvērtu visu.
     const handleThemeClick = (themeId) => {
         onThemeSelect(themeId);
         onSectionSelect('recommendations');
-        setIsDesktopCardsDropdownOpen(false); // Aizver desktop dropdown
-        setIsMobileSubMenuOpen(false);      // Aizver mobilo apakšizvēlni
-        // Mēs apzināti neaizveram galveno mobilo izvēlni (isMobileMenuOpen paliek true)
+        closeMenus(); // Aizveram visu vaļā esošo navigāciju
     };
     
     const toggleMobileMenu = () => {

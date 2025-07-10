@@ -251,6 +251,28 @@
   background-color: var(--success-hover);
 }
 
+
+/* Pievienojiet šo kodu beigās src/components/forms/CardForm/CardForm.css failam */
+
+.drag-handle-images {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  cursor: grab;
+  color: #ccc;
+  font-size: 1.2em;
+}
+
+.drag-handle-images:active {
+  cursor: grabbing;
+}
+
+/* Nedaudz pabīdām noņemšanas pogu, lai tā nepārklājas ar vilkšanas ikonu */
+.image-remove-button {
+  top: 10px;
+  right: 10px;
+}
+
 @media (max-width: 768px) {
   .image-form-item {
     flex: 0 0 calc(50% - 7.5px);

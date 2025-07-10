@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 import RichTextEditor from '../../common/RichTextEditor/RichTextEditor';
 import CardFormImageSection from './CardFormImageSection';
 import './CardForm.css';
+// JAUNS: Importi priekš drag-and-drop
+import { DndContext, closestCenter } from '@dnd-kit/core';
+import { arrayMove } from '@dnd-kit/sortable';
 
 const CardForm = ({ onAddCard, availableThemes, availableAuthors }) => {
   const [activeTab, setActiveTab] = useState('theme');
@@ -18,6 +21,18 @@ const CardForm = ({ onAddCard, availableThemes, availableAuthors }) => {
   const [newCardAuthorName, setNewCardAuthorName] = useState('');
   const [isNewCardAuthorSelected, setIsNewCardAuthorSelected] = useState(false);
   const [images, setImages] = useState([{ id: Date.now(), url: '', description: '', authorId: '', newImageAuthorNameInput: '', sourceType: 'url', file: null }]);
+
+  // JAUNS: Funkcija attēlu secības maiņai
+  const handleImageOrderChange = (event) => {
+    const { active, over } = event;
+    if (active.id !== over.id) {
+      setImages((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  };
 
   const handleImageChange = (index, field, value) => {
     const newImages = [...images];
@@ -209,7 +224,6 @@ const CardForm = ({ onAddCard, availableThemes, availableAuthors }) => {
                 <label htmlFor="theme-select" className="card-form-label">Tēma:</label>
                 <select id="theme-select" value={isNewThemeSelected ? 'new-theme-option' : theme} onChange={handleThemeChange} className="card-form-select">
                   <option value="">-- Izvēlēties tēmu --</option>
-                  {/* LABOJUMS: Izmantojam theme.id kā key un theme.name kā value */}
                   {availableThemes.map((theme) => <option key={theme.id} value={theme.name}>{theme.name}</option>)}
                   <option key="new-theme" value="new-theme-option">Cita tēma / Jauna tēma</option>
                 </select>
@@ -242,9 +256,22 @@ const CardForm = ({ onAddCard, availableThemes, availableAuthors }) => {
             </div>
           )}
           {activeTab === 'images' && (
-            <div className="tab-pane">
-              <CardFormImageSection images={images} onImageChange={handleImageChange} onImageFileChange={handleImageFileChange} onImageSourceTypeChange={handleImageSourceTypeChange} handleAddImage={handleAddImage} handleRemoveImage={handleRemoveImage} handleImageAuthorSelectChange={handleImageAuthorSelectChange} handleNewImageAuthorNameInputChange={handleNewImageAuthorNameInputChange} availableAuthors={availableAuthors} />
-            </div>
+            // JAUNS: Ietveram attēlu sadaļu DndContext
+            <DndContext collisionDetection={closestCenter} onDragEnd={handleImageOrderChange}>
+                <div className="tab-pane">
+                <CardFormImageSection 
+                    images={images} 
+                    onImageChange={handleImageChange} 
+                    onImageFileChange={handleImageFileChange} 
+                    onImageSourceTypeChange={handleImageSourceTypeChange} 
+                    handleAddImage={handleAddImage} 
+                    handleRemoveImage={handleRemoveImage}
+                    handleImageAuthorSelectChange={handleImageAuthorSelectChange} 
+                    handleNewImageAuthorNameInputChange={handleNewImageAuthorNameInputChange} 
+                    availableAuthors={availableAuthors} 
+                />
+                </div>
+            </DndContext>
           )}
         </div>
         <button type="submit" className="card-form-submit-button">Izveidot kartīti</button>
