@@ -13,130 +13,110 @@ import AdminPage from './pages/AdminPage';
 import Header from './components/layout/Header/Header';
 import Footer from './components/layout/Footer/Footer';
 
-// Importējam simulētos datus (VISI dati tagad nāk no simulācijām)
-import { simulatedAuthors } from './data/simulatedAuthors';
-import { simulatedThemesData } from './data/simulatedThemesData';
-import { simulatedCards } from './data/simulatedCards';
-import { simulatedArticles } from './data/simulatedArticles';
-import { simulatedVideos } from './data/simulatedVideos';
+// Importējam pielāgotos āķus
+import { useData } from './hooks/useData';
+import { useFilters } from './hooks/useFilters';
+import { usePagination } from './hooks/usePagination';
 
-// Dinamiski ielādējam CardDetailModal
 const LazyCardDetailModal = lazy(() => import('/src/components/common/Modals/CardDetailModal/CardDetailModal'));
 
-// Lapošanas opcijas
-const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20, 50, 100, Infinity];
-
 function App() {
-  const [authors, setAuthors] = useState([]);
-  const [themesData, setThemesData] = useState([]);
-  const [cards, setCards] = useState([]);
-  const [articles, setArticles] = useState([]);
-  const [videos, setVideos] = useState([]);
-
+  const { authors, setAuthors, themesData, setThemesData, cards, setCards, articles, setArticles, videos, setVideos } = useData();
+  
   const [selectedCard, setSelectedCard] = useState(null);
   const [activeSection, setActiveSection] = useState('home');
+  const [activeTheme, setActiveTheme] = useState(1);
 
-  // Filtru stāvokļi
-  const [activeTheme, setActiveTheme] = useState(1); // ID 1 ir "Sākums"
-  const [filterTheme, setFilterTheme] = useState(1); // ID 1 ir "Sākums"
-  const [filterAuthors, setFilterAuthors] = useState([]);
-  const [selectedFilteredCardIds, setSelectedFilteredCardIds] = useState([]);
+  const {
+    filterTheme,
+    setFilterTheme,
+    filterAuthors,
+    setFilterAuthors,
+    selectedFilteredCardIds,
+    isFilterModalOpen,
+    setIsFilterModalOpen,
+    handleToggleCardSelectionInFilter,
+    handleClearCardSelections,
+    handleRemoveFilter,
+    handleClearAllActiveFilters,
+    activeFiltersList,
+    resetFilters,
+  } = useFilters(activeTheme);
+  
+  const filteredCardsBase = useMemo(() => {
+    const safeCards = Array.isArray(cards) ? cards : [];
+    const safeAuthors = Array.isArray(authors) ? authors : [];
+    const safeThemes = Array.isArray(themesData) ? themesData : [];
+    return safeCards.filter(card => {
+      let themeId;
+      switch (activeSection) {
+        case 'home': themeId = 1; break;
+        case 'recommendations': themeId = filterTheme; break;
+        case 'association': themeId = 104; break;
+        case 'trade': themeId = 105; break;
+        case 'stories': themeId = 106; break;
+        case 'prints': themeId = 107; break;
+        default: return false;
+      }
+      
+      const matchesTheme = (themeId === 'all') ? [100, 101, 102, 103].includes(card.theme) : card.theme === themeId;
+      const matchesAuthors = filterAuthors.length === 0 || filterAuthors.includes(card.authorId);
+      
+      return matchesTheme && matchesAuthors;
+    })
+    .map(card => {
+      const cardAuthor = safeAuthors.find(a => a.id === card.authorId);
+      const cardThemeData = safeThemes.find(t => t.id === card.theme);
+      return {
+        ...card,
+        authorName: cardAuthor ? cardAuthor.name : 'Nezināms autors',
+        themeSummary: cardThemeData ? cardThemeData.summary : 'Nav kopsavilkuma',
+        themeName: cardThemeData ? cardThemeData.name : 'Nezināma tēma',
+      };
+    });
+  }, [cards, activeSection, filterTheme, filterAuthors, authors, themesData]);
 
-  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
-
-  // Lapošanas stāvokļi
-  const [cardsCurrentPage, setCardsCurrentPage] = useState(1);
-  const [cardsItemsPerPage, setCardsItemsPerPage] = useState(ITEMS_PER_PAGE_OPTIONS[2]);
-
-  const [articlesCurrentPage, setArticlesCurrentPage] = useState(1);
-  const [articlesItemsPerPage, setArticlesItemsPerPage] = useState(ITEMS_PER_PAGE_OPTIONS[2]);
-
-  const [videosCurrentPage, setVideosCurrentPage] = useState(1);
-  const [videosItemsPerPage, setVideosItemsPerPage] = useState(ITEMS_PER_PAGE_OPTIONS[2]);
-
-
-  // Sākotnējā datu ielāde no simulētajiem failiem
-  useEffect(() => {
-    console.log('Simulē datu ielādi...');
-    
-    setAuthors(simulatedAuthors);
-    
-    const initialThemes = [
-        { id: 1, name: 'Sākums', summary: 'Laipni lūdzam mūsu mājaslapā! Šeit atradīsiet jaunāko un aktuālāko informāciju.', description: '<p>Esiet sveicināti mūsu digitālajā centrā! Mēs esam priecīgi dalīties ar jums jaunākajām <b>kartītēm</b>, <b>rakstiem</b> un <b>video</b>, kas aptver dažādas aizraujošas tēmas. Izpētiet mūsu saturu un atklājiet jaunas zināšanas!</p>' },
-        { id: 'all', name: 'Visas', summary: 'Visas kartītes kopā, neatkarīgi no tēmas.', description: '<p>Šeit ir redzami visi mūsu pieejamie kartīšu ieraksti, neatkarīgi no tēmas.</p>' },
-        ...(Array.isArray(simulatedThemesData) ? simulatedThemesData : [])
-    ];
-    setThemesData(initialThemes);
-
-    setCards(simulatedCards);
-    setArticles(simulatedArticles);
-    setVideos(simulatedVideos);
-    console.log('Dati veiksmīgi ielādēti (simulācija)!');
-  }, []);
-
-
-  // useEffect hook, lai atiestatītu filtrus un lapošanu, mainot sadaļu
-  useEffect(() => {
-    setCardsCurrentPage(1);
-    setArticlesCurrentPage(1);
-    setVideosCurrentPage(1);
-
-    setFilterAuthors([]);
-    setSelectedFilteredCardIds([]);
-
-    switch (activeSection) {
-      case 'home':
-        setActiveTheme(1);
-        setFilterTheme(1);
-        break;
-      // LABOJUMS: Noņemam tēmas atiestatīšanu šeit, jo to pārvalda klikšķu apstrādes funkcijas
-      case 'recommendations':
-        break;
-      case 'association':
-        setActiveTheme(104);
-        setFilterTheme(104);
-        break;
-      case 'trade':
-        setActiveTheme(105);
-        setFilterTheme(105);
-        break;
-      case 'stories':
-        setActiveTheme(106);
-        setFilterTheme(106);
-        break;
-      case 'prints':
-        setActiveTheme(107);
-        setFilterTheme(107);
-        break;
-      case 'articles':
-        setActiveTheme(108);
-        setFilterTheme(108);
-        break;
-      case 'videos':
-        setActiveTheme(109);
-        setFilterTheme(109);
-        break;
-      case 'admin':
-      default:
-        setActiveTheme('');
-        setFilterTheme('');
-        break;
+  const finalFilteredCards = useMemo(() => {
+    if (selectedFilteredCardIds.length > 0) {
+      return filteredCardsBase.filter(card => selectedFilteredCardIds.includes(card.id));
     }
-  }, [activeSection]);
+    return filteredCardsBase;
+  }, [filteredCardsBase, selectedFilteredCardIds]);
+  
+  const { paginatedData: paginatedCards, paginationProps: cardsPaginationProps, resetPagination: resetCardsPagination } = usePagination(finalFilteredCards);
+  const { paginatedData: paginatedArticles, paginationProps: articlesPaginationProps, resetPagination: resetArticlesPagination } = usePagination(articles);
+  const { paginatedData: paginatedVideos, paginationProps: videosPaginationProps, resetPagination: resetVideosPagination } = usePagination(videos);
 
-  // useEffect hook, lai sinhronizētu filterTheme ar activeTheme, ja mainās activeTheme un sadaļa ir "Ieteikumi"
   useEffect(() => {
-    if (activeSection === 'recommendations') {
-      if (activeTheme !== filterTheme) {
+    resetCardsPagination();
+    resetArticlesPagination();
+    resetVideosPagination();
+    
+    let newTheme;
+    switch (activeSection) {
+      case 'home': newTheme = 1; break;
+      case 'recommendations': newTheme = 'all'; break;
+      case 'association': newTheme = 104; break;
+      case 'trade': newTheme = 105; break;
+      case 'stories': newTheme = 106; break;
+      case 'prints': newTheme = 107; break;
+      case 'articles': newTheme = 108; break;
+      case 'videos': newTheme = 109; break;
+      default: newTheme = ''; break;
+    }
+    setActiveTheme(newTheme);
+    resetFilters(newTheme);
+
+  }, [activeSection, resetFilters, resetCardsPagination, resetArticlesPagination, resetVideosPagination]);
+
+  useEffect(() => {
+    if (activeSection === 'recommendations' && activeTheme !== filterTheme) {
         setFilterTheme(activeTheme);
         setFilterAuthors([]);
-        setSelectedFilteredCardIds([]);
-      }
+        handleClearCardSelections();
     }
-  }, [activeTheme, activeSection, filterTheme]);
+  }, [activeSection, activeTheme, filterTheme, setFilterTheme, setFilterAuthors, handleClearCardSelections]);
 
-
-  // handleReadMore funkcija
   const handleReadMore = useCallback((card) => {
     const safeAuthors = Array.isArray(authors) ? authors : [];
     const cardAuthor = safeAuthors.find(a => a.id === card.authorId);
@@ -156,179 +136,27 @@ function App() {
     });
   }, [authors]);
 
-  // handleCloseModal funkcija
   const handleCloseModal = useCallback(() => {
     setSelectedCard(null);
   }, []);
 
-  // handleToggleCardSelectionInFilter funkcija
-  const handleToggleCardSelectionInFilter = useCallback((cardId) => {
-    setSelectedFilteredCardIds(prevSelected =>
-      prevSelected.includes(cardId)
-        ? prevSelected.filter(id => id !== cardId)
-        : [...prevSelected, cardId]
-    );
-  }, []);
-
-  // currentThemeDetail useMemo
   const currentThemeDetail = useMemo(() => {
     const safeThemes = Array.isArray(themesData) ? themesData : [];
+    let themeId;
     switch (activeSection) {
-      case 'home': {
-        return safeThemes.find(t => t.id === 1);
-      }
-      case 'recommendations': {
-        return filterTheme !== 'all' ? safeThemes.find(theme => theme.id === filterTheme) : null;
-      }
-      case 'association': {
-        return safeThemes.find(t => t.id === 104);
-      }
-      case 'trade': {
-        return safeThemes.find(t => t.id === 105);
-      }
-      case 'stories': {
-        return safeThemes.find(t => t.id === 106);
-      }
-      case 'prints': {
-        return safeThemes.find(t => t.id === 107);
-      }
-      case 'articles': {
-        return safeThemes.find(t => t.id === 108);
-      }
-      case 'videos': {
-        return safeThemes.find(t => t.id === 109);
-      }
-      default: {
-        return null;
-      }
+        case 'home': themeId = 1; break;
+        case 'recommendations': themeId = filterTheme; break;
+        case 'association': themeId = 104; break;
+        case 'trade': themeId = 105; break;
+        case 'stories': themeId = 106; break;
+        case 'prints': themeId = 107; break;
+        case 'articles': themeId = 108; break;
+        case 'videos': themeId = 109; break;
+        default: return null;
     }
+    return themeId !== 'all' ? safeThemes.find(t => t.id === themeId) : null;
   }, [activeSection, themesData, filterTheme]);
-
-  // filteredCardsBase useMemo
-  const filteredCardsBase = useMemo(() => {
-    const safeCards = Array.isArray(cards) ? cards : [];
-    const safeAuthors = Array.isArray(authors) ? authors : [];
-    const safeThemes = Array.isArray(themesData) ? themesData : [];
-    return safeCards.filter(card => {
-      switch (activeSection) {
-        case 'home': {
-          return card.theme === 1;
-        }
-        case 'recommendations': {
-          const recommendationsSectionThemeIds = [100, 101, 102, 103];
-          const isCardInRecommendationsSectionThemes = recommendationsSectionThemeIds.includes(card.theme);
-
-          const matchesTheme = (filterTheme === 'all' && isCardInRecommendationsSectionThemes) ||
-                                 (filterTheme !== 'all' && card.theme === filterTheme);
-
-          const matchesAuthors = filterAuthors.length === 0 || filterAuthors.includes(card.authorId);
-          return matchesTheme && matchesAuthors;
-        }
-        case 'association': {
-          return card.theme === 104;
-        }
-        case 'trade': {
-          return card.theme === 105;
-        }
-        case 'stories': {
-          return card.theme === 106;
-        }
-        case 'prints': {
-          return card.theme === 107;
-        }
-        default: {
-          return false;
-        }
-      }
-    })
-    .map(card => {
-      const cardAuthor = safeAuthors.find(a => a.id === card.authorId);
-      const cardThemeData = safeThemes.find(t => t.id === card.theme);
-      return {
-        ...card,
-        authorName: cardAuthor ? cardAuthor.name : 'Nezināms autors',
-        themeSummary: cardThemeData ? cardThemeData.summary : 'Nav kopsavilkuma',
-        themeName: cardThemeData ? cardThemeData.name : 'Nezināma tēma',
-      };
-    });
-  }, [cards, activeSection, filterTheme, filterAuthors, authors, themesData]);
-
-  // finalFilteredCards useMemo
-  const finalFilteredCards = useMemo(() => {
-    if (selectedFilteredCardIds.length > 0) {
-      return filteredCardsBase.filter(card => selectedFilteredCardIds.includes(card.id));
-    }
-    return filteredCardsBase;
-  }, [filteredCardsBase, selectedFilteredCardIds]);
-
-  // Lapošanas loģika kartītēm
-  const paginatedCards = useMemo(() => {
-    if (cardsItemsPerPage === Infinity) return finalFilteredCards;
-    const startIndex = (cardsCurrentPage - 1) * cardsItemsPerPage;
-    const endIndex = startIndex + cardsItemsPerPage;
-    return finalFilteredCards.slice(startIndex, endIndex);
-  }, [finalFilteredCards, cardsCurrentPage, cardsItemsPerPage]);
-
-  // Lapošanas loģika rakstiem
-  const paginatedArticles = useMemo(() => {
-    const safeArticles = Array.isArray(articles) ? articles : [];
-    if (articlesItemsPerPage === Infinity) return safeArticles;
-    const startIndex = (articlesCurrentPage - 1) * articlesItemsPerPage;
-    const endIndex = startIndex + articlesItemsPerPage;
-    return safeArticles.slice(startIndex, endIndex);
-  }, [articles, articlesCurrentPage, articlesItemsPerPage]);
-
-  // Lapošanas loģika video
-  const paginatedVideos = useMemo(() => {
-    const safeVideos = Array.isArray(videos) ? videos : [];
-    if (videosItemsPerPage === Infinity) return safeVideos;
-    const startIndex = (videosCurrentPage - 1) * videosItemsPerPage;
-    const endIndex = startIndex + videosItemsPerPage;
-    return safeVideos.slice(startIndex, endIndex);
-  }, [videos, videosCurrentPage, videosItemsPerPage]);
-
-
-  // activeFiltersList useMemo
-  const activeFiltersList = useMemo(() => {
-    const filters = [];
-    const safeThemes = Array.isArray(themesData) ? themesData : [];
-    const safeAuthors = Array.isArray(authors) ? authors : [];
-    if (activeSection === 'recommendations') {
-      if (filterTheme !== 'all') {
-        const themeName = safeThemes.find(t => t.id === filterTheme)?.name || filterTheme;
-        filters.push({ type: 'theme', value: themeName, id: filterTheme });
-      }
-      filterAuthors.forEach(authorId => {
-          const authorName = safeAuthors.find(a => a.id === authorId)?.name || authorId;
-          filters.push({ type: 'author', value: authorName, id: authorId });
-      });
-      if (selectedFilteredCardIds.length > 0) {
-          filters.push({ type: 'selectedCards', value: `${selectedFilteredCardIds.length} kartītes`, id: 'selectedCards' });
-      }
-    }
-    return filters;
-  }, [filterTheme, filterAuthors, selectedFilteredCardIds, themesData, authors, activeSection]);
-
-  // handleRemoveFilter funkcija
-  const handleRemoveFilter = useCallback((filter) => {
-    if (filter.type === 'theme') {
-      setFilterTheme('all');
-      setActiveTheme('all');
-    } else if (filter.type === 'author') {
-      setFilterAuthors(prev => prev.filter(id => id !== filter.id));
-    } else if (filter.type === 'selectedCards') {
-        setSelectedFilteredCardIds([]);
-    }
-  }, []);
-
-  // handleClearAllActiveFilters funkcija
-  const handleClearAllActiveFilters = useCallback(() => {
-    setFilterTheme('all');
-    setFilterAuthors([]);
-    setSelectedFilteredCardIds([]);
-    setActiveTheme('all');
-  }, []);
-
+  
   return (
     <div className="App">
       <Header
@@ -356,19 +184,12 @@ function App() {
               cards={paginatedCards}
               onReadMore={handleReadMore}
               availableAuthors={authors}
-              paginationProps={{
-                totalItems: finalFilteredCards.length,
-                itemsPerPage: cardsItemsPerPage,
-                currentPage: cardsCurrentPage,
-                onPageChange: setCardsCurrentPage,
-                onItemsPerPageChange: setCardsItemsPerPage,
-                itemsPerPageOptions: ITEMS_PER_PAGE_OPTIONS,
-              }}
+              paginationProps={cardsPaginationProps}
               homePageThemeDetail={currentThemeDetail}
             />
           )}
 
-          {activeSection === 'recommendations' && (
+          {(activeSection === 'recommendations' || activeSection === 'association' || activeSection === 'trade' || activeSection === 'stories' || activeSection === 'prints') && (
             <CardsPage
               cards={{rawCards: filteredCardsBase, paginated: paginatedCards}}
               authors={authors}
@@ -380,167 +201,24 @@ function App() {
               setFilterAuthors={setFilterAuthors}
               selectedFilteredCardIds={selectedFilteredCardIds}
               onToggleCardSelectionInFilter={handleToggleCardSelectionInFilter}
-              onClearCardSelections={() => setSelectedFilteredCardIds([])}
+              onClearCardSelections={handleClearCardSelections}
               currentThemeSummary={currentThemeDetail?.summary || null}
               allThemesData={themesData.filter(t => ![1, 'all', 104, 105, 106, 107, 108, 109].includes(t.id))}
               isFilterModalOpen={isFilterModalOpen}
               setIsFilterModalOpen={setIsFilterModalOpen}
-              activeFiltersList={activeFiltersList}
-              handleRemoveFilter={handleRemoveFilter}
-              handleClearAllActiveFilters={handleClearAllActiveFilters}
-              paginationProps={{
-                totalItems: finalFilteredCards.length,
-                itemsPerPage: cardsItemsPerPage,
-                currentPage: cardsCurrentPage,
-                onPageChange: setCardsCurrentPage,
-                onItemsPerPageChange: setCardsItemsPerPage,
-                itemsPerPageOptions: ITEMS_PER_PAGE_OPTIONS,
-              }}
+              activeFiltersList={activeFiltersList(themesData, authors, activeSection)}
+              handleRemoveFilter={(filter) => handleRemoveFilter(filter, setActiveTheme)}
+              handleClearAllActiveFilters={() => handleClearAllActiveFilters(setActiveTheme)}
+              paginationProps={cardsPaginationProps}
               currentThemeDetail={currentThemeDetail}
             />
           )}
-
-          {activeSection === 'association' && (
-            <CardsPage
-              cards={{rawCards: filteredCardsBase, paginated: paginatedCards}}
-              authors={authors}
-              themesData={themesData}
-              onReadMore={handleReadMore}
-              filterTheme={104}
-              setFilterTheme={setFilterTheme}
-              filterAuthors={filterAuthors}
-              setFilterAuthors={setFilterAuthors}
-              selectedFilteredCardIds={selectedFilteredCardIds}
-              onToggleCardSelectionInFilter={handleToggleCardSelectionInFilter}
-              onClearCardSelections={() => setSelectedFilteredCardIds([])}
-              currentThemeSummary={currentThemeDetail?.summary || null}
-              allThemesData={[]}
-              isFilterModalOpen={isFilterModalOpen}
-              setIsFilterModalOpen={setIsFilterModalOpen}
-              activeFiltersList={activeFiltersList}
-              handleRemoveFilter={handleRemoveFilter}
-              handleClearAllActiveFilters={handleClearAllActiveFilters}
-              paginationProps={{
-                totalItems: finalFilteredCards.length,
-                itemsPerPage: cardsItemsPerPage,
-                currentPage: cardsCurrentPage,
-                onPageChange: setCardsCurrentPage,
-                onItemsPerPageChange: setCardsItemsPerPage,
-                itemsPerPageOptions: ITEMS_PER_PAGE_OPTIONS,
-              }}
-              currentThemeDetail={currentThemeDetail}
-            />
-          )}
-
-          {activeSection === 'trade' && (
-            <CardsPage
-              cards={{rawCards: filteredCardsBase, paginated: paginatedCards}}
-              authors={authors}
-              themesData={themesData}
-              onReadMore={handleReadMore}
-              filterTheme={105}
-              setFilterTheme={setFilterTheme}
-              filterAuthors={filterAuthors}
-              setFilterAuthors={setFilterAuthors}
-              selectedFilteredCardIds={selectedFilteredCardIds}
-              onToggleCardSelectionInFilter={handleToggleCardSelectionInFilter}
-              onClearCardSelections={() => setSelectedFilteredCardIds([])}
-              currentThemeSummary={currentThemeDetail?.summary || null}
-              allThemesData={[]}
-              isFilterModalOpen={isFilterModalOpen}
-              setIsFilterModalOpen={setIsFilterModalOpen}
-              activeFiltersList={activeFiltersList}
-              handleRemoveFilter={handleRemoveFilter}
-              handleClearAllActiveFilters={handleClearAllActiveFilters}
-              paginationProps={{
-                totalItems: finalFilteredCards.length,
-                itemsPerPage: cardsItemsPerPage,
-                currentPage: cardsCurrentPage,
-                onPageChange: setCardsCurrentPage,
-                onItemsPerPageChange: setCardsItemsPerPage,
-                itemsPerPageOptions: ITEMS_PER_PAGE_OPTIONS,
-              }}
-              currentThemeDetail={currentThemeDetail}
-            />
-          )}
-
-          {activeSection === 'stories' && (
-            <CardsPage
-              cards={{rawCards: filteredCardsBase, paginated: paginatedCards}}
-              authors={authors}
-              themesData={themesData}
-              onReadMore={handleReadMore}
-              filterTheme={106}
-              setFilterTheme={setFilterTheme}
-              filterAuthors={filterAuthors}
-              setFilterAuthors={setFilterAuthors}
-              selectedFilteredCardIds={selectedFilteredCardIds}
-              onToggleCardSelectionInFilter={handleToggleCardSelectionInFilter}
-              onClearCardSelections={() => setSelectedFilteredCardIds([])}
-              currentThemeSummary={currentThemeDetail?.summary || null}
-              allThemesData={[]}
-              isFilterModalOpen={isFilterModalOpen}
-              setIsFilterModalOpen={setIsFilterModalOpen}
-              activeFiltersList={activeFiltersList}
-              handleRemoveFilter={handleRemoveFilter}
-              handleClearAllActiveFilters={handleClearAllActiveFilters}
-              paginationProps={{
-                totalItems: finalFilteredCards.length,
-                itemsPerPage: cardsItemsPerPage,
-                currentPage: cardsCurrentPage,
-                onPageChange: setCardsCurrentPage,
-                onItemsPerPageChange: setCardsItemsPerPage,
-                itemsPerPageOptions: ITEMS_PER_PAGE_OPTIONS,
-              }}
-              currentThemeDetail={currentThemeDetail}
-            />
-          )}
-
-          {activeSection === 'prints' && (
-            <CardsPage
-              cards={{rawCards: filteredCardsBase, paginated: paginatedCards}}
-              authors={authors}
-              themesData={themesData}
-              onReadMore={handleReadMore}
-              filterTheme={107}
-              setFilterTheme={setFilterTheme}
-              filterAuthors={filterAuthors}
-              setFilterAuthors={setFilterAuthors}
-              selectedFilteredCardIds={selectedFilteredCardIds}
-              onToggleCardSelectionInFilter={handleToggleCardSelectionInFilter}
-              onClearCardSelections={() => setSelectedFilteredCardIds([])}
-              currentThemeSummary={currentThemeDetail?.summary || null}
-              allThemesData={[]}
-              isFilterModalOpen={isFilterModalOpen}
-              setIsFilterModalOpen={setIsFilterModalOpen}
-              activeFiltersList={activeFiltersList}
-              handleRemoveFilter={handleRemoveFilter}
-              handleClearAllActiveFilters={handleClearAllActiveFilters}
-              paginationProps={{
-                totalItems: finalFilteredCards.length,
-                itemsPerPage: cardsItemsPerPage,
-                currentPage: cardsCurrentPage,
-                onPageChange: setCardsCurrentPage,
-                onItemsPerPageChange: setCardsItemsPerPage,
-                itemsPerPageOptions: ITEMS_PER_PAGE_OPTIONS,
-              }}
-              currentThemeDetail={currentThemeDetail}
-            />
-          )}
-
 
           {activeSection === 'articles' && (
             <ArticlesPage
               articles={paginatedArticles}
               availableAuthors={authors}
-              paginationProps={{
-                totalItems: articles.length,
-                itemsPerPage: articlesItemsPerPage,
-                currentPage: articlesCurrentPage,
-                onPageChange: setArticlesCurrentPage,
-                onItemsPerPageChange: setArticlesItemsPerPage,
-                itemsPerPageOptions: ITEMS_PER_PAGE_OPTIONS,
-              }}
+              paginationProps={articlesPaginationProps}
               pageThemeDetail={currentThemeDetail}
             />
           )}
@@ -549,14 +227,7 @@ function App() {
             <VideosPage
               videos={paginatedVideos}
               availableAuthors={authors}
-              paginationProps={{
-                totalItems: videos.length,
-                itemsPerPage: videosItemsPerPage,
-                currentPage: videosCurrentPage,
-                onPageChange: setVideosCurrentPage,
-                onItemsPerPageChange: setVideosItemsPerPage,
-                itemsPerPageOptions: ITEMS_PER_PAGE_OPTIONS,
-              }}
+              paginationProps={videosPaginationProps}
               pageThemeDetail={currentThemeDetail}
             />
           )}
