@@ -7,6 +7,7 @@ import AdminActionButtons from '../components/common/AdminActionButtons';
 import AdminModals from '../components/common/AdminModals';
 import Modal from '../components/common/Modals/Modal';
 import EditAuthorForm from '../components/forms/EditAuthorForm';
+import EditThemeForm from '../components/forms/EditThemeForm';
 import InfoModal from '../components/common/Modals/InfoModal';
 import ConfirmDeleteModal from '../components/common/Modals/ConfirmDeleteModal';
 const CardDetailModal = lazy(() => import('../components/common/Modals/CardDetailModal/CardDetailModal'));
@@ -14,7 +15,6 @@ const CardDetailModal = lazy(() => import('../components/common/Modals/CardDetai
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt, faEye, faGripVertical } from '@fortawesome/free-solid-svg-icons';
 import { formatDateTimeToDDMMYYYYHHMM, formatDateToDDMMYYYY } from '../utils/dateUtils';
-import config from '/src/config';
 
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -41,6 +41,7 @@ const SortableCardRow = ({ card, authors, handleView, handleEdit, handleDelete }
         </tr>
     );
 };
+
 
 const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setThemesData, setCards, setArticles, setVideos }) => {
   const [openAccordionId, setOpenAccordionId] = useState(null);
@@ -101,7 +102,6 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
   const handleShowModal = (modal) => setModalsState(prev => ({...prev, [modal]: true}));
   const handleCloseModal = (modal) => setModalsState(prev => ({...prev, [modal]: false}));
 
-  // Vienkāršota funkcija, kas izmanto jau sagatavotus datus
   const findItem = (type, id) => {
     const dataMap = { 'kartīti': cards, 'rakstu': articles, 'video': videos, 'autoru': authors, 'tēmu': themes };
     return dataMap[type]?.find(item => item.id === id);
@@ -148,14 +148,19 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
       setAuthors(prev => prev.map(author => author.id === id ? { ...author, ...updatedData } : author));
       setIsEditModalOpen(false);
       setSelectedItem(null);
-      alert('Autors veiksmīgi atjaunināts!');
   };
 
-  const addAuthor = (newAuthorData) => { setAuthors(prev => [...prev, {id: Date.now(), ...newAuthorData}]); handleCloseModal('author'); };
-  const addTheme = (newThemeData) => { setThemesData(prev => [...prev, {id: Date.now(), ...newThemeData}]); handleCloseModal('theme'); };
-  const addCard = (newCardData) => { setCards(prev => [...prev, {id: Date.now(), ...newCardData}]); handleCloseModal('card'); };
-  const addArticle = (newArticleData) => { setArticles(prev => [...prev, {id: Date.now(), ...newArticleData}]); handleCloseModal('article'); };
-  const addVideo = (newVideoData) => { setVideos(prev => [...prev, {id: Date.now(), ...newVideoData}]); handleCloseModal('video'); };
+  const handleUpdateTheme = (id, updatedData) => {
+      setThemesData(prev => prev.map(theme => theme.id === id ? { ...theme, ...updatedData } : theme));
+      setIsEditModalOpen(false);
+      setSelectedItem(null);
+  };
+
+  const addAuthor = (newAuthorData) => { setAuthors(prev => [...prev, {id: Date.now(), created_at: new Date().toISOString(), ...newAuthorData}]); handleCloseModal('author'); };
+  const addTheme = (newThemeData) => { setThemesData(prev => [...prev, {id: Date.now(), created_at: new Date().toISOString(), ...newThemeData}]); handleCloseModal('theme'); };
+  const addCard = (newCardData) => { setCards(prev => [...prev, {id: Date.now(), created_at: new Date().toISOString(), ...newCardData}]); handleCloseModal('card'); };
+  const addArticle = (newArticleData) => { setArticles(prev => [...prev, {id: Date.now(), created_at: new Date().toISOString(), ...newArticleData}]); handleCloseModal('article'); };
+  const addVideo = (newVideoData) => { setVideos(prev => [...prev, {id: Date.now(), created_at: new Date().toISOString(), ...newVideoData}]); handleCloseModal('video'); };
   
   const authorColumns = [ { label: 'ID', width: '60px' }, { label: 'Vārds', width: 'auto' }, { label: 'Izveidots', width: '180px' }, { label: 'Darbības', width: '120px' }];
   const themeColumns = [ { label: 'ID', width: '60px' }, { label: 'Nosaukums', width: '150px' }, { label: 'Kopsavilkums', width: 'auto' }, { label: 'Izveidots', width: '180px' }, { label: 'Darbības', width: '120px' }];
@@ -169,7 +174,7 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
 
       <AdminModals 
         modalsState={modalsState}
-        handlers={{ add: { onAddAuthor, onAddTheme, onAddCard, onAddArticle, onAddVideo }, onClose: handleCloseModal }}
+        handlers={{ add: { onAddAuthor: addAuthor, onAddTheme: addTheme, onAddCard: addCard, onAddArticle: addArticle, onAddVideo: addVideo }, onClose: handleCloseModal }}
         data={{ themes, authors }}
       />
       
@@ -195,6 +200,9 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
       {isEditModalOpen && selectedItem && (
           <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} title={`Rediģēt: ${selectedItem.name || selectedItem.title}`}>
               {selectedItemType === 'autoru' && <EditAuthorForm author={selectedItem} onUpdateAuthor={handleUpdateAuthor} onClose={() => setIsEditModalOpen(false)} />}
+              {selectedItemType === 'tēmu' && <EditThemeForm theme={selectedItem} onUpdateTheme={handleUpdateTheme} onClose={() => setIsEditModalOpen(false)} />}
+              {/* Paziņojums, ja forma vēl nav izveidota */}
+              {['rakstu', 'video', 'kartīti'].includes(selectedItemType) && <p>Šī ieraksta rediģēšanas forma vēl nav ieviesta.</p>}
           </Modal>
       )}
       
