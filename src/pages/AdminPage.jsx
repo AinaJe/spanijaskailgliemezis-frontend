@@ -1,5 +1,5 @@
 // src/pages/AdminPage.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import './AdminPage.css';
 import Accordion from '../components/common/Accordion/Accordion';
 import Pagination from '../components/common/Pagination/Pagination';
@@ -70,6 +70,7 @@ const SortableCardRow = ({ card, themes, authors, handleView, handleEdit, handle
 
 const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setThemesData, setCards, setArticles, setVideos }) => {
   const [openAccordionId, setOpenAccordionId] = useState(null);
+  const [openCardThemeAccordionId, setOpenCardThemeAccordionId] = useState(null);
 
   const [isAddAuthorModalOpen, setIsAddAuthorModalOpen] = useState(false);
   const [isAddThemeModalOpen, setIsAddThemeModalOpen] = useState(false);
@@ -105,7 +106,6 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
         const oldIndex = items.findIndex((item) => item.id === active.id);
         const newIndex = items.findIndex((item) => item.id === over.id);
         const newOrder = arrayMove(items, oldIndex, newIndex);
-        // Šeit vairs nav setCards(newOrder), kas izraisīja kļūdu
         return newOrder;
       });
     }
@@ -140,13 +140,23 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
     (videosCurrentPage - 1) * videosItemsPerPage + videosItemsPerPage
   ) : [];
 
-  const paginatedCards = Array.isArray(sortedCards) ? sortedCards.slice(
-    (cardsCurrentPage - 1) * cardsItemsPerPage,
-    (cardsCurrentPage - 1) * cardsItemsPerPage + cardsItemsPerPage
-  ) : [];
+  const groupedCardsByTheme = useMemo(() => {
+    return sortedCards.reduce((acc, card) => {
+      const themeId = card.theme;
+      if (!acc[themeId]) {
+        acc[themeId] = [];
+      }
+      acc[themeId].push(card);
+      return acc;
+    }, {});
+  }, [sortedCards]);
 
   const handleToggleAccordion = (id) => {
     setOpenAccordionId(prevId => (prevId === id ? null : id));
+  };
+  
+  const handleToggleCardThemeAccordion = (id) => {
+    setOpenCardThemeAccordionId(prevId => (prevId === id ? null : id));
   };
 
   const handleView = (type, id) => {
@@ -638,56 +648,70 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
           onToggle={() => handleToggleAccordion('cards')}
           content={
             <>
-              {paginatedCards.length === 0 ? (
+              {Object.keys(groupedCardsByTheme).length === 0 ? (
                 <p>Nav nevienas kartītes.</p>
               ) : (
-                <DndContext
-                  collisionDetection={closestCenter}
-                  onDragEnd={handleDragEnd}
-                >
-                  <div className="admin-table-wrapper">
-                    <table className="admin-data-table">
-                        <colgroup>
-                          <col style={{ width: '40px' }} />
-                          <col style={{ width: '60px' }} />
-                          <col style={{ width: 'auto' }} />
-                          <col style={{ width: '150px' }} />
-                          <col style={{ width: '195px' }} />
-                          <col style={{ width: '180px' }} />
-                          <col style={{ width: '120px' }} />
-                        </colgroup>
-                        <thead>
-                          <tr>
-                            <th />
-                            <th data-label="ID">ID</th>
-                            <th data-label="Nosaukums">Nosaukums</th>
-                            <th data-label="Tēma">Tēma</th>
-                            <th data-label="Autors">Autors</th>
-                            <th data-label="Izveidots">Izveidots</th>
-                            <th data-label="Darbības">Darbības</th>
-                          </tr>
-                        </thead>
-                        <SortableContext
-                            items={sortedCards.map(c => c.id)}
-                            strategy={verticalListSortingStrategy}
+                Object.keys(groupedCardsByTheme).map(themeId => {
+                  const themeCards = groupedCardsByTheme[themeId];
+                  const theme = themes.find(t => t.id === parseInt(themeId, 10));
+                  return (
+                    <Accordion
+                      key={themeId}
+                      title={`${theme ? theme.name : 'Nezināma tēma'} (${themeCards.length})`}
+                      isOpen={openCardThemeAccordionId === themeId}
+                      onToggle={() => handleToggleCardThemeAccordion(themeId)}
+                      content={
+                        <DndContext
+                          collisionDetection={closestCenter}
+                          onDragEnd={handleDragEnd}
                         >
-                            <tbody>
-                              {paginatedCards.map((card) => (
-                                <SortableCardRow 
-                                    key={card.id} 
-                                    card={card} 
-                                    themes={themes} 
-                                    authors={authors}
-                                    handleView={handleView}
-                                    handleEdit={handleEdit}
-                                    handleDelete={handleDelete}
-                                />
-                              ))}
-                            </tbody>
-                        </SortableContext>
-                    </table>
-                  </div>
-                </DndContext>
+                          <div className="admin-table-wrapper">
+                            <table className="admin-data-table">
+                                <colgroup>
+                                  <col style={{ width: '40px' }} />
+                                  <col style={{ width: '60px' }} />
+                                  <col style={{ width: 'auto' }} />
+                                  <col style={{ width: '150px' }} />
+                                  <col style={{ width: '195px' }} />
+                                  <col style={{ width: '180px' }} />
+                                  <col style={{ width: '120px' }} />
+                                </colgroup>
+                                <thead>
+                                  <tr>
+                                    <th />
+                                    <th data-label="ID">ID</th>
+                                    <th data-label="Nosaukums">Nosaukums</th>
+                                    <th data-label="Tēma">Tēma</th>
+                                    <th data-label="Autors">Autors</th>
+                                    <th data-label="Izveidots">Izveidots</th>
+                                    <th data-label="Darbības">Darbības</th>
+                                  </tr>
+                                </thead>
+                                <SortableContext
+                                    items={themeCards.map(c => c.id)}
+                                    strategy={verticalListSortingStrategy}
+                                >
+                                    <tbody>
+                                      {themeCards.map((card) => (
+                                        <SortableCardRow 
+                                            key={card.id} 
+                                            card={card} 
+                                            themes={themes} 
+                                            authors={authors}
+                                            handleView={handleView}
+                                            handleEdit={handleEdit}
+                                            handleDelete={handleDelete}
+                                        />
+                                      ))}
+                                    </tbody>
+                                </SortableContext>
+                            </table>
+                          </div>
+                        </DndContext>
+                      }
+                    />
+                  )
+                })
               )}
               <Pagination
                 totalItems={Array.isArray(cards) ? cards.length : 0}
