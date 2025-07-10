@@ -8,6 +8,8 @@ import AdminModals from '../components/common/AdminModals';
 import Modal from '../components/common/Modals/Modal';
 import EditAuthorForm from '../components/forms/EditAuthorForm';
 import EditThemeForm from '../components/forms/EditThemeForm';
+import EditArticleForm from '../components/forms/EditArticleForm';
+import EditVideoForm from '../components/forms/EditVideoForm';
 import InfoModal from '../components/common/Modals/InfoModal';
 import ConfirmDeleteModal from '../components/common/Modals/ConfirmDeleteModal';
 const CardDetailModal = lazy(() => import('../components/common/Modals/CardDetailModal/CardDetailModal'));
@@ -22,7 +24,7 @@ import { CSS } from '@dnd-kit/utilities';
 
 const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20, 50, 100, Infinity];
 
-const SortableCardRow = ({ card, authors, handleView, handleEdit, handleDelete }) => {
+const SortableCardRow = ({ card, handleView, handleEdit, handleDelete }) => {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: card.id });
     const style = { transform: CSS.Transform.toString(transform), transition };
 
@@ -34,26 +36,21 @@ const SortableCardRow = ({ card, authors, handleView, handleEdit, handleDelete }
             <td data-label="Autors">{card.authorName}</td>
             <td data-label="Izveidots">{formatDateTimeToDDMMYYYYHHMM(card.created_at)}</td>
             <td data-label="Darbības" className="admin-table-actions">
-                <button onClick={() => handleView('kartīti', card.id)} className="admin-table-button view-button"><FontAwesomeIcon icon={faEye} /></button>
-                <button onClick={() => handleEdit('kartīti', card.id)} className="admin-table-button edit-button"><FontAwesomeIcon icon={faEdit} /></button>
-                <button onClick={() => handleDelete('kartīti', card.id)} className="admin-table-button delete-button"><FontAwesomeIcon icon={faTrashAlt} /></button>
+                <button onClick={() => handleView('kartīti', card)} className="admin-table-button view-button"><FontAwesomeIcon icon={faEye} /></button>
+                <button onClick={() => handleEdit('kartīti', card)} className="admin-table-button edit-button"><FontAwesomeIcon icon={faEdit} /></button>
+                <button onClick={() => handleDelete('kartīti', card)} className="admin-table-button delete-button"><FontAwesomeIcon icon={faTrashAlt} /></button>
             </td>
         </tr>
     );
 };
 
-
 const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setThemesData, setCards, setArticles, setVideos }) => {
   const [openAccordionId, setOpenAccordionId] = useState(null);
   const [openCardThemeAccordionId, setOpenCardThemeAccordionId] = useState(null);
 
-  const [modalsState, setModalsState] = useState({ author: false, theme: false, card: false, article: false, video: false });
+  const [modalsState, setModalsState] = useState({ add: null, view: null, edit: null, delete: null });
   const [selectedItem, setSelectedItem] = useState(null);
-  const [selectedItemType, setSelectedItemType] = useState('');
-  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-
+  
   const [authorsCurrentPage, setAuthorsCurrentPage] = useState(1);
   const [authorsItemsPerPage, setAuthorsItemsPerPage] = useState(ITEMS_PER_PAGE_OPTIONS[0]);
 
@@ -99,39 +96,22 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
   const handleToggleAccordion = (id) => setOpenAccordionId(prevId => (prevId === id ? null : id));
   const handleToggleCardThemeAccordion = (id) => setOpenCardThemeAccordionId(prevId => (prevId === id ? null : id));
   
-  const handleShowModal = (modal) => setModalsState(prev => ({...prev, [modal]: true}));
-  const handleCloseModal = (modal) => setModalsState(prev => ({...prev, [modal]: false}));
-
-  const findItem = (type, id) => {
-    const dataMap = { 'kartīti': cards, 'rakstu': articles, 'video': videos, 'autoru': authors, 'tēmu': themes };
-    return dataMap[type]?.find(item => item.id === id);
+  const openModal = (type, itemType, item = null) => {
+    setSelectedItem(item);
+    setModalsState(prev => ({ ...prev, [type]: itemType }));
   };
-
-  const handleView = (type, id) => {
-    const item = findItem(type, id);
-    if (item) {
-      setSelectedItem(item);
-      setSelectedItemType(type);
-      setIsViewModalOpen(true);
-    }
+  
+  const closeModal = () => {
+    setModalsState({ add: null, view: null, edit: null, delete: null });
+    setSelectedItem(null);
   };
-
-  const handleEdit = (type, id) => {
-    const item = findItem(type, id);
-    if (item) {
-        setSelectedItem(item);
-        setSelectedItemType(type);
-        setIsEditModalOpen(true);
+  
+  const handleUpdate = (type, id, data) => {
+    const settersMap = { 'autoru': setAuthors, 'tēmu': setThemesData, 'rakstu': setArticles, 'video': setVideos, 'kartīti': setCards };
+    if (settersMap[type]) {
+      settersMap[type](prev => prev.map(item => item.id === id ? { ...item, ...data } : item));
     }
-  };
-
-  const handleDelete = (type, id) => {
-    const item = findItem(type, id);
-    if (item) {
-      setSelectedItem(item);
-      setSelectedItemType(type);
-      setIsDeleteModalOpen(true);
-    }
+    closeModal();
   };
 
   const confirmDelete = (type, id) => {
@@ -140,27 +120,16 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
       settersMap[type](prev => prev.filter(item => item.id !== id));
       alert(`Dzēsts: ${type} ar ID ${id}`);
     }
-    setIsDeleteModalOpen(false);
-    setSelectedItem(null);
+    closeModal();
   };
   
-  const handleUpdateAuthor = (id, updatedData) => {
-      setAuthors(prev => prev.map(author => author.id === id ? { ...author, ...updatedData } : author));
-      setIsEditModalOpen(false);
-      setSelectedItem(null);
+  const addHandlers = {
+      author: (data) => { setAuthors(prev => [...prev, {id: Date.now(), ...data, created_at: new Date().toISOString()}]); closeModal(); },
+      theme: (data) => { setThemesData(prev => [...prev, {id: Date.now(), ...data, created_at: new Date().toISOString()}]); closeModal(); },
+      card: (data) => { setCards(prev => [...prev, {id: Date.now(), ...data, created_at: new Date().toISOString()}]); closeModal(); },
+      article: (data) => { setArticles(prev => [...prev, {id: Date.now(), ...data, created_at: new Date().toISOString()}]); closeModal(); },
+      video: (data) => { setVideos(prev => [...prev, {id: Date.now(), ...data, created_at: new Date().toISOString()}]); closeModal(); }
   };
-
-  const handleUpdateTheme = (id, updatedData) => {
-      setThemesData(prev => prev.map(theme => theme.id === id ? { ...theme, ...updatedData } : theme));
-      setIsEditModalOpen(false);
-      setSelectedItem(null);
-  };
-
-  const addAuthor = (newAuthorData) => { setAuthors(prev => [...prev, {id: Date.now(), created_at: new Date().toISOString(), ...newAuthorData}]); handleCloseModal('author'); };
-  const addTheme = (newThemeData) => { setThemesData(prev => [...prev, {id: Date.now(), created_at: new Date().toISOString(), ...newThemeData}]); handleCloseModal('theme'); };
-  const addCard = (newCardData) => { setCards(prev => [...prev, {id: Date.now(), created_at: new Date().toISOString(), ...newCardData}]); handleCloseModal('card'); };
-  const addArticle = (newArticleData) => { setArticles(prev => [...prev, {id: Date.now(), created_at: new Date().toISOString(), ...newArticleData}]); handleCloseModal('article'); };
-  const addVideo = (newVideoData) => { setVideos(prev => [...prev, {id: Date.now(), created_at: new Date().toISOString(), ...newVideoData}]); handleCloseModal('video'); };
   
   const authorColumns = [ { label: 'ID', width: '60px' }, { label: 'Vārds', width: 'auto' }, { label: 'Izveidots', width: '180px' }, { label: 'Darbības', width: '120px' }];
   const themeColumns = [ { label: 'ID', width: '60px' }, { label: 'Nosaukums', width: '150px' }, { label: 'Kopsavilkums', width: 'auto' }, { label: 'Izveidots', width: '180px' }, { label: 'Darbības', width: '120px' }];
@@ -170,39 +139,40 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
     <div className="admin-page-container">
       <h2 className="admin-page-title">Ierakstu pārvaldība</h2>
       
-      <AdminActionButtons onShow={handleShowModal} />
+      <AdminActionButtons onShow={(type) => openModal('add', type)} />
 
       <AdminModals 
-        modalsState={modalsState}
-        handlers={{ add: { onAddAuthor: addAuthor, onAddTheme: addTheme, onAddCard: addCard, onAddArticle: addArticle, onAddVideo: addVideo }, onClose: handleCloseModal }}
+        modalsState={{ author: modalsState.add === 'author', theme: modalsState.add === 'theme', card: modalsState.add === 'card', article: modalsState.add === 'article', video: modalsState.add === 'video' }}
+        handlers={{ add: addHandlers, onClose: closeModal }}
         data={{ themes, authors }}
       />
       
-      {isViewModalOpen && (
-        selectedItemType === 'kartīti' ? (
+      {modalsState.view && (
+        modalsState.view === 'kartīti' ? (
           <Suspense fallback={<div>Ielādē...</div>}>
-            <CardDetailModal card={selectedItem} onClose={() => setIsViewModalOpen(false)} />
+            <CardDetailModal card={selectedItem} onClose={closeModal} />
           </Suspense>
         ) : (
-          <InfoModal item={selectedItem} type={selectedItemType} onClose={() => setIsViewModalOpen(false)} />
+          <InfoModal item={selectedItem} type={modalsState.view} onClose={closeModal} />
         )
       )}
 
-      {isDeleteModalOpen && (
+      {modalsState.delete && (
         <ConfirmDeleteModal 
             item={selectedItem}
-            itemType={selectedItemType}
-            onClose={() => setIsDeleteModalOpen(false)}
+            itemType={modalsState.delete}
+            onClose={closeModal}
             onConfirm={confirmDelete}
         />
       )}
       
-      {isEditModalOpen && selectedItem && (
-          <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} title={`Rediģēt: ${selectedItem.name || selectedItem.title}`}>
-              {selectedItemType === 'autoru' && <EditAuthorForm author={selectedItem} onUpdateAuthor={handleUpdateAuthor} onClose={() => setIsEditModalOpen(false)} />}
-              {selectedItemType === 'tēmu' && <EditThemeForm theme={selectedItem} onUpdateTheme={handleUpdateTheme} onClose={() => setIsEditModalOpen(false)} />}
-              {/* Paziņojums, ja forma vēl nav izveidota */}
-              {['rakstu', 'video', 'kartīti'].includes(selectedItemType) && <p>Šī ieraksta rediģēšanas forma vēl nav ieviesta.</p>}
+      {modalsState.edit && selectedItem && (
+          <Modal isOpen={true} onClose={closeModal} title={`Rediģēt: ${selectedItem.name || selectedItem.title}`}>
+              {modalsState.edit === 'autoru' && <EditAuthorForm author={selectedItem} onUpdateAuthor={(id, data) => handleUpdate('autoru', id, data)} onClose={closeModal} />}
+              {modalsState.edit === 'tēmu' && <EditThemeForm theme={selectedItem} onUpdateTheme={(id, data) => handleUpdate('tēmu', id, data)} onClose={closeModal} />}
+              {modalsState.edit === 'rakstu' && <EditArticleForm item={selectedItem} availableAuthors={authors} onUpdate={handleUpdate} onClose={closeModal} />}
+              {modalsState.edit === 'video' && <EditVideoForm item={selectedItem} availableAuthors={authors} onUpdate={handleUpdate} onClose={closeModal} />}
+              {modalsState.edit === 'kartīti' && <p>Kartīšu rediģēšanas forma vēl nav ieviesta.</p>}
           </Modal>
       )}
       
@@ -212,9 +182,9 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
             renderRow={(author) => (
                 <tr key={author.id}>
                     <td data-label="ID">{author.id}</td><td data-label="Vārds">{author.name}</td><td data-label="Izveidots">{formatDateTimeToDDMMYYYYHHMM(author.created_at)}</td><td data-label="Darbības" className="admin-table-actions">
-                        <button onClick={() => handleView('autoru', author.id)} className="admin-table-button view-button"><FontAwesomeIcon icon={faEye} /></button>
-                        <button onClick={() => handleEdit('autoru', author.id)} className="admin-table-button edit-button"><FontAwesomeIcon icon={faEdit} /></button>
-                        <button onClick={() => handleDelete('autoru', author.id)} className="admin-table-button delete-button"><FontAwesomeIcon icon={faTrashAlt} /></button>
+                        <button onClick={() => openModal('view', 'autoru', author)} className="admin-table-button view-button"><FontAwesomeIcon icon={faEye} /></button>
+                        <button onClick={() => openModal('edit', 'autoru', author)} className="admin-table-button edit-button"><FontAwesomeIcon icon={faEdit} /></button>
+                        <button onClick={() => openModal('delete', 'autoru', author)} className="admin-table-button delete-button"><FontAwesomeIcon icon={faTrashAlt} /></button>
                     </td>
                 </tr>
             )}
@@ -227,9 +197,9 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
             renderRow={(theme) => (
                 <tr key={theme.id}>
                     <td data-label="ID">{theme.id}</td><td data-label="Nosaukums">{theme.name}</td><td data-label="Kopsavilkums">{theme.summary || 'Nav kopsavilkuma'}</td><td data-label="Izveidots">{formatDateTimeToDDMMYYYYHHMM(theme.created_at)}</td><td data-label="Darbības" className="admin-table-actions">
-                         <button onClick={() => handleView('tēmu', theme.id)} className="admin-table-button view-button"><FontAwesomeIcon icon={faEye} /></button>
-                         <button onClick={() => handleEdit('tēmu', theme.id)} className="admin-table-button edit-button"><FontAwesomeIcon icon={faEdit} /></button>
-                         <button onClick={() => handleDelete('tēmu', theme.id)} className="admin-table-button delete-button"><FontAwesomeIcon icon={faTrashAlt} /></button>
+                         <button onClick={() => openModal('view', 'tēmu', theme)} className="admin-table-button view-button"><FontAwesomeIcon icon={faEye} /></button>
+                         <button onClick={() => openModal('edit', 'tēmu', theme)} className="admin-table-button edit-button"><FontAwesomeIcon icon={faEdit} /></button>
+                         <button onClick={() => openModal('delete', 'tēmu', theme)} className="admin-table-button delete-button"><FontAwesomeIcon icon={faTrashAlt} /></button>
                     </td>
                 </tr>
             )}
@@ -242,9 +212,9 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
             renderRow={(article) => (
                  <tr key={article.id}>
                     <td data-label="ID">{article.id}</td><td data-label="Datums">{formatDateToDDMMYYYY(article.date)}</td><td data-label="Nosaukums">{article.title}</td><td data-label="Autors">{article.authorName}</td><td data-label="Izveidots">{formatDateTimeToDDMMYYYYHHMM(article.created_at)}</td><td data-label="Darbības" className="admin-table-actions">
-                        <button onClick={() => handleView('rakstu', article.id)} className="admin-table-button view-button"><FontAwesomeIcon icon={faEye} /></button>
-                        <button onClick={() => handleEdit('rakstu', article.id)} className="admin-table-button edit-button"><FontAwesomeIcon icon={faEdit} /></button>
-                        <button onClick={() => handleDelete('rakstu', article.id)} className="admin-table-button delete-button"><FontAwesomeIcon icon={faTrashAlt} /></button>
+                        <button onClick={() => openModal('view', 'rakstu', article)} className="admin-table-button view-button"><FontAwesomeIcon icon={faEye} /></button>
+                        <button onClick={() => openModal('edit', 'rakstu', article)} className="admin-table-button edit-button"><FontAwesomeIcon icon={faEdit} /></button>
+                        <button onClick={() => openModal('delete', 'rakstu', article)} className="admin-table-button delete-button"><FontAwesomeIcon icon={faTrashAlt} /></button>
                     </td>
                 </tr>
             )}
@@ -257,9 +227,9 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
             renderRow={(video) => (
                 <tr key={video.id}>
                     <td data-label="ID">{video.id}</td><td data-label="Datums">{formatDateToDDMMYYYY(video.date)}</td><td data-label="Nosaukums">{video.title}</td><td data-label="Autors">{video.authorName}</td><td data-label="Izveidots">{formatDateTimeToDDMMYYYYHHMM(video.created_at)}</td><td data-label="Darbības" className="admin-table-actions">
-                        <button onClick={() => handleView('video', video.id)} className="admin-table-button view-button"><FontAwesomeIcon icon={faEye} /></button>
-                        <button onClick={() => handleEdit('video', video.id)} className="admin-table-button edit-button"><FontAwesomeIcon icon={faEdit} /></button>
-                        <button onClick={() => handleDelete('video', video.id)} className="admin-table-button delete-button"><FontAwesomeIcon icon={faTrashAlt} /></button>
+                        <button onClick={() => openModal('view', 'video', video)} className="admin-table-button view-button"><FontAwesomeIcon icon={faEye} /></button>
+                        <button onClick={() => openModal('edit', 'video', video)} className="admin-table-button edit-button"><FontAwesomeIcon icon={faEdit} /></button>
+                        <button onClick={() => openModal('delete', 'video', video)} className="admin-table-button delete-button"><FontAwesomeIcon icon={faTrashAlt} /></button>
                     </td>
                 </tr>
             )}
@@ -268,7 +238,7 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
         />
 
         <Accordion
-          title="Kartītes" isOpen={openAccordionId === 'cards'} onToggle={() => handleToggleAccordion('cards')}
+          title="Ieteikumi (Kartītes)" isOpen={openAccordionId === 'cards'} onToggle={() => handleToggleAccordion('cards')}
           content={
             <>
               {Object.keys(groupedCardsByTheme).length === 0 ? <p>Nav nevienas kartītes.</p> : 
@@ -292,7 +262,7 @@ const AdminPage = ({ authors, themes, articles, videos, cards, setAuthors, setTh
                                 </thead>
                                 <SortableContext items={themeCards.map(c => c.id)} strategy={verticalListSortingStrategy}>
                                     <tbody>
-                                      {themeCards.map((card) => <SortableCardRow key={card.id} card={card} authors={authors} handleView={handleView} handleEdit={handleEdit} handleDelete={handleDelete} />)}
+                                      {themeCards.map((card) => <SortableCardRow key={card.id} card={card} handleView={openModal} handleEdit={openModal} handleDelete={openModal} />)}
                                     </tbody>
                                 </SortableContext>
                             </table>

@@ -1,7 +1,6 @@
 // src/components/common/Modals/ConfirmDeleteModal.jsx
 import React from 'react';
 import Modal from './Modal';
-// LABOJUMS: Pareizais ceļš uz CSS failu
 import './CardDetailModal/CardDetailModal.css';
 
 const ConfirmDeleteModal = ({ item, itemType, onClose, onConfirm }) => {
@@ -18,8 +17,29 @@ const ConfirmDeleteModal = ({ item, itemType, onClose, onConfirm }) => {
             <p><strong>Kopsavilkums:</strong> {item.summary}</p>
           </>
         );
+      case 'rakstu':
+        return (
+            <>
+                <p><strong>Nosaukums:</strong> {item.title}</p>
+                {item.link && <p><strong>Saite:</strong> <a href={item.link} target="_blank" rel="noopener noreferrer">{item.link}</a></p>}
+            </>
+        );
+      case 'video':
+        return (
+            <>
+                <p><strong>Nosaukums:</strong> {item.title}</p>
+                {item.videoLink && <p><strong>Saite:</strong> <a href={item.videoLink} target="_blank" rel="noopener noreferrer">{item.videoLink}</a></p>}
+            </>
+        );
+      case 'kartīti':
+        return (
+            <>
+                <p><strong>Nosaukums:</strong> {item.title}</p>
+                <p><strong>Autors:</strong> {item.authorName}</p>
+            </>
+        );
       default:
-        return <p><strong>Nosaukums:</strong> {item.title}</p>;
+        return <p>Nezināms ieraksta veids.</p>;
     }
   };
 
@@ -27,12 +47,12 @@ const ConfirmDeleteModal = ({ item, itemType, onClose, onConfirm }) => {
     <Modal isOpen={true} onClose={onClose} title="Apstiprināt dzēšanu">
       <div className="modal-body">
         <p>Vai tiešām vēlaties dzēst šo ierakstu?</p>
-        <div className="item-to-delete-info">
+        <div className="item-to-delete-info" style={{ padding: '10px', border: '1px solid #eee', borderRadius: '4px', marginTop: '10px', marginBottom: '20px' }}>
           {renderItemDetails()}
         </div>
         <div className="card-detail-modal-actions">
           <button onClick={() => onConfirm(itemType, item.id)} className="action-button delete-button">
-            Dzēst
+            Jā, dzēst
           </button>
           <button onClick={onClose} className="action-button cancel-button">
             Atcelt
