@@ -3,26 +3,18 @@ import React, { useState } from 'react';
 import RichTextEditor from '../../common/RichTextEditor/RichTextEditor';
 import CardFormImageSection from './CardFormImageSection';
 import './CardForm.css';
-// JAUNS: Importi priekš drag-and-drop
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 
 const CardForm = ({ onAddCard, availableThemes, availableAuthors }) => {
   const [activeTab, setActiveTab] = useState('theme');
   const [theme, setTheme] = useState('');
-  const [newThemeInput, setNewThemeInput] = useState('');
-  const [isNewThemeSelected, setIsNewThemeSelected] = useState(false);
-  const [newThemeSummary, setNewThemeSummary] = useState('');
-  const [newThemeDescription, setNewThemeDescription] = useState('');
   const [title, setTitle] = useState('');
   const [summary, setSummary] = useState('');
   const [description, setDescription] = useState('');
   const [cardAuthorId, setCardAuthorId] = useState('');
-  const [newCardAuthorName, setNewCardAuthorName] = useState('');
-  const [isNewCardAuthorSelected, setIsNewCardAuthorSelected] = useState(false);
   const [images, setImages] = useState([{ id: Date.now(), url: '', description: '', authorId: '', newImageAuthorNameInput: '', sourceType: 'url', file: null }]);
 
-  // JAUNS: Funkcija attēlu secības maiņai
   const handleImageOrderChange = (event) => {
     const { active, over } = event;
     if (active.id !== over.id) {
@@ -93,50 +85,11 @@ const CardForm = ({ onAddCard, availableThemes, availableAuthors }) => {
       setImages(newImages);
   };
 
-  const handleThemeChange = (e) => {
-    const selectedValue = e.target.value;
-    if (selectedValue === 'new-theme-option') {
-      setIsNewThemeSelected(true);
-      setTheme('');
-      setNewThemeSummary('');
-      setNewThemeDescription('');
-    } else {
-      setIsNewThemeSelected(false);
-      setNewThemeInput('');
-      setNewThemeSummary('');
-      setNewThemeDescription('');
-      setTheme(selectedValue);
-    }
-  };
-
-  const handleCardAuthorChange = (e) => {
-    const selectedValue = e.target.value;
-    if (selectedValue === 'new-author-option') {
-      setIsNewCardAuthorSelected(true);
-      setCardAuthorId('');
-      setNewCardAuthorName('');
-    } else {
-      setIsNewCardAuthorSelected(false);
-      setCardAuthorId(selectedValue);
-      setNewCardAuthorName('');
-    }
-  };
-
-  const handleDescriptionChange = (newDescription) => setDescription(newDescription);
-  const handleNewThemeDescriptionChange = (newDesc) => setNewThemeDescription(newDesc);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const finalCardAuthorId = isNewCardAuthorSelected ? `new-author-${newCardAuthorName.trim()}` : cardAuthorId;
-
-    if ((!isNewThemeSelected && !theme.trim()) ||
-        (isNewThemeSelected && !newThemeInput.trim()) ||
-        !title.trim() || !summary.trim() ||
-        !description.trim() || description.trim() === '<p></p>' ||
-        !finalCardAuthorId || (isNewCardAuthorSelected && !newCardAuthorName.trim()) ||
-        (isNewThemeSelected && (!newThemeSummary.trim() || !newThemeDescription.trim() || newThemeDescription.trim() === '<p></p>'))) {
-      alert('Lūdzu, aizpildiet visus obligātos laukus visās cilnēs: Tēma, Nosaukums, Kopsavilkums, Apraksts un Autors. Ja pievienojat jaunu tēmu vai autoru, aizpildiet arī to informāciju.');
+    if (!theme.trim() || !title.trim() || !summary.trim() || !description.trim() || description.trim() === '<p></p>' || !cardAuthorId) {
+      alert('Lūdzu, aizpildiet visus obligātos laukus: Tēma, Nosaukums, Kopsavilkums, Apraksts un Autors.');
       return;
     }
 
@@ -182,28 +135,20 @@ const CardForm = ({ onAddCard, availableThemes, availableAuthors }) => {
     }));
 
     onAddCard({
-      theme: isNewThemeSelected ? newThemeInput.trim() : theme.trim(),
+      theme,
       title,
       summary,
       description,
       images: processedImages,
-      authorId: finalCardAuthorId,
-      isNewTheme: isNewThemeSelected,
-      newThemeName: isNewThemeSelected ? newThemeInput.trim() : null,
-      newThemeSummary: isNewThemeSelected ? newThemeSummary.trim() : null,
-      newThemeDescription: isNewThemeSelected ? newThemeDescription : null
+      authorId: cardAuthorId,
     });
 
+    // Notīrām formas laukus
     setTheme('');
-    setNewThemeInput('');
-    setIsNewThemeSelected(false);
-    setNewThemeSummary('');
-    setNewThemeDescription('');
     setTitle('');
     setSummary('');
+    setDescription('');
     setCardAuthorId('');
-    setNewCardAuthorName('');
-    setIsNewCardAuthorSelected(false);
     setImages([{ id: Date.now(), url: '', description: '', authorId: '', newImageAuthorNameInput: '', sourceType: 'url', file: null }]);
     setActiveTab('theme');
   };
@@ -222,20 +167,10 @@ const CardForm = ({ onAddCard, availableThemes, availableAuthors }) => {
             <div className="tab-pane">
               <div className="card-form-group">
                 <label htmlFor="theme-select" className="card-form-label">Tēma:</label>
-                <select id="theme-select" value={isNewThemeSelected ? 'new-theme-option' : theme} onChange={handleThemeChange} className="card-form-select">
+                <select id="theme-select" value={theme} onChange={(e) => setTheme(e.target.value)} className="card-form-select">
                   <option value="">-- Izvēlēties tēmu --</option>
-                  {availableThemes.map((theme) => <option key={theme.id} value={theme.name}>{theme.name}</option>)}
-                  <option key="new-theme" value="new-theme-option">Cita tēma / Jauna tēma</option>
+                  {availableThemes.map((theme) => <option key={theme.id} value={theme.id}>{theme.name}</option>)}
                 </select>
-                {isNewThemeSelected && (
-                  <>
-                    <input type="text" id="new-theme-input" value={newThemeInput} onChange={(e) => setNewThemeInput(e.target.value)} placeholder="Ievadiet jaunu tēmu" className="card-form-input new-theme" />
-                    <label htmlFor="new-theme-summary" className="card-form-label">Jaunās tēmas kopsavilkums:</label>
-                    <textarea id="new-theme-summary" value={newThemeSummary} onChange={(e) => setNewThemeSummary(e.target.value)} rows="2" placeholder="Īss kopsavilkums jaunajai tēmai" className="card-form-textarea"></textarea>
-                    <label htmlFor="new-theme-description" className="card-form-label">Jaunās tēmas apraksts:</label>
-                    <RichTextEditor content={newThemeDescription} onContentChange={handleNewThemeDescriptionChange} />
-                  </>
-                )}
               </div>
             </div>
           )}
@@ -243,20 +178,17 @@ const CardForm = ({ onAddCard, availableThemes, availableAuthors }) => {
             <div className="tab-pane">
               <div className="card-form-group">
                 <label htmlFor="author-select" className="card-form-label">Autors:</label>
-                <select id="author-select" value={isNewCardAuthorSelected ? 'new-author-option' : cardAuthorId} onChange={handleCardAuthorChange} className="card-form-select">
+                <select id="author-select" value={cardAuthorId} onChange={(e) => setCardAuthorId(e.target.value)} className="card-form-select">
                   <option value="">-- Izvēlēties autoru --</option>
                   {availableAuthors.map((author) => <option key={author.id} value={author.id}>{author.name}</option>)}
-                  <option value="new-author-option">Jauns autors</option>
                 </select>
-                {isNewCardAuthorSelected && (<input type="text" id="new-author-input" value={newCardAuthorName} onChange={(e) => setNewCardAuthorName(e.target.value)} placeholder="Ievadiet jauna autora vārdu" className="card-form-input new-theme" />)}
               </div>
               <div className="card-form-group"><label htmlFor="title" className="card-form-label">Nosaukums:</label><input type="text" id="title" value={title} onChange={(e) => setTitle(e.target.value)} className="card-form-input" /></div>
               <div className="card-form-group"><label htmlFor="summary" className="card-form-label">Kopsavilkums:</label><textarea id="summary" value={summary} onChange={(e) => setSummary(e.target.value)} rows="3" className="card-form-textarea"></textarea></div>
-              <div className="form-group"><label htmlFor="description" className="card-form-label">Apraksts:</label><RichTextEditor content={description} onContentChange={handleDescriptionChange} /></div>
+              <div className="form-group"><label htmlFor="description" className="card-form-label">Apraksts:</label><RichTextEditor content={description} onContentChange={setDescription} /></div>
             </div>
           )}
           {activeTab === 'images' && (
-            // JAUNS: Ietveram attēlu sadaļu DndContext
             <DndContext collisionDetection={closestCenter} onDragEnd={handleImageOrderChange}>
                 <div className="tab-pane">
                 <CardFormImageSection 
