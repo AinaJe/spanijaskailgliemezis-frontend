@@ -36,6 +36,10 @@ function App() {
   } = useFilters(activeTheme);
   
   const filteredCardsBase = useMemo(() => {
+    if (activeSection === 'admin') {
+        return cards;
+    }
+
     return cards.filter(card => {
       let themeId;
       switch (activeSection) {
@@ -45,13 +49,13 @@ function App() {
         case 'trade': themeId = 105; break;
         case 'stories': themeId = 106; break;
         case 'prints': themeId = 107; break;
-        default: return true; // Admin sadaļai rādām visas
+        default: return false; 
       }
       
       const matchesTheme = (themeId === 'all') ? [100, 101, 102, 103].includes(card.theme) : card.theme === themeId;
       const matchesAuthors = filterAuthors.length === 0 || filterAuthors.includes(card.authorId);
       
-      return activeSection === 'admin' || (matchesTheme && matchesAuthors);
+      return matchesTheme && matchesAuthors;
     });
   }, [cards, activeSection, filterTheme, filterAuthors]);
 
@@ -142,8 +146,8 @@ function App() {
       paginationProps: cardsPaginationProps,
       currentThemeDetail: currentThemeDetail,
     },
-    articles: { articles: paginatedArticles, availableAuthors: authors, paginationProps: articlesPaginationProps, pageThemeDetail: currentThemeDetail },
-    videos: { videos: paginatedVideos, availableAuthors: authors, paginationProps: videosPaginationProps, pageThemeDetail: currentThemeDetail },
+    articles: { articles: paginatedArticles, availableAuthors: authors, paginationProps: articlesPaginationProps, pageThemeDetail: currentThemeDetail, onReadMore: handleReadMore },
+    videos: { videos: paginatedVideos, availableAuthors: authors, paginationProps: videosPaginationProps, pageThemeDetail: currentThemeDetail, onReadMore: handleReadMore },
     admin: { authors, themes: themesData, cards, articles, videos, setAuthors, setThemesData, setCards, setArticles, setVideos, handleReadMore }
   };
 

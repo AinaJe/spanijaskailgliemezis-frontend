@@ -11,7 +11,6 @@ import EditThemeForm from '../components/forms/EditThemeForm';
 import EditArticleForm from '../components/forms/EditArticleForm';
 import EditVideoForm from '../components/forms/EditVideoForm';
 import EditCardForm from '../components/forms/EditCardForm';
-import InfoModal from '../components/common/Modals/InfoModal';
 import ConfirmDeleteModal from '../components/common/Modals/ConfirmDeleteModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt, faEye, faGripVertical } from '@fortawesome/free-solid-svg-icons';

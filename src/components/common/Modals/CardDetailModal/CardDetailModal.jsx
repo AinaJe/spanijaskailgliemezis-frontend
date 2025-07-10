@@ -1,9 +1,9 @@
 // src/components/common/Modals/CardDetailModal/CardDetailModal.jsx
 import React, { lazy, Suspense } from 'react';
-// LABOJUMS: Pareizais ceļš uz CSS failu
 import './CardDetailModal.css';
 
-const CardDetailModalContent = lazy(() => import('../CardDetailModalContent'));
+// LABOJUMS: Pareizais ceļš uz komponenti, kas tagad atrodas tajā pašā mapē
+const CardDetailModalContent = lazy(() => import('./CardDetailModalContent'));
 
 const CardDetailModal = ({ card, onClose }) => {
   if (!card) return null;

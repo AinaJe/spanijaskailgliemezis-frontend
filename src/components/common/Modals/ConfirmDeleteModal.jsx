@@ -3,7 +3,7 @@ import React, { Suspense, lazy } from 'react';
 import Modal from './Modal';
 import './CardDetailModal/CardDetailModal.css';
 
-const CardDetailModalContent = lazy(() => import('./CardDetailModalContent'));
+const CardDetailModalContent = lazy(() => import('./CardDetailModal/CardDetailModalContent'));
 
 const ConfirmDeleteModal = ({ item, itemType, onClose, onConfirm }) => {
   if (!item) return null;
