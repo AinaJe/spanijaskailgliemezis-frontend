@@ -2,16 +2,10 @@
 import React, { useState, useMemo, useEffect, lazy, Suspense, useCallback } from 'react';
 import './App.css';
 
-// Importējam lapu komponentes
-import HomePage from './pages/HomePage';
-import CardsPage from './pages/CardsPage';
-import ArticlesPage from './pages/ArticlesPage';
-import VideosPage from './pages/VideosPage';
-import AdminPage from './pages/AdminPage';
-
-// Importējam izkārtojuma komponentes
+// Importējam izkārtojuma komponentes un jauno PageRenderer
 import Header from './components/layout/Header/Header';
 import Footer from './components/layout/Footer/Footer';
+import PageRenderer from './components/common/PageRenderer';
 
 // Importējam pielāgotos āķus
 import { useData } from './hooks/useData';
@@ -157,6 +151,63 @@ function App() {
     return themeId !== 'all' ? safeThemes.find(t => t.id === themeId) : null;
   }, [activeSection, themesData, filterTheme]);
   
+  // Sagatavojam `props` katrai lapai
+  const pageProps = {
+    home: {
+      cards: paginatedCards,
+      onReadMore: handleReadMore,
+      availableAuthors: authors,
+      paginationProps: cardsPaginationProps,
+      homePageThemeDetail: currentThemeDetail,
+    },
+    cards: {
+      cards: {rawCards: filteredCardsBase, paginated: paginatedCards},
+      authors: authors,
+      themesData: themesData,
+      onReadMore: handleReadMore,
+      filterTheme: filterTheme,
+      setFilterTheme: setFilterTheme,
+      filterAuthors: filterAuthors,
+      setFilterAuthors: setFilterAuthors,
+      selectedFilteredCardIds: selectedFilteredCardIds,
+      onToggleCardSelectionInFilter: handleToggleCardSelectionInFilter,
+      onClearCardSelections: handleClearCardSelections,
+      currentThemeSummary: currentThemeDetail?.summary || null,
+      allThemesData: themesData.filter(t => ![1, 'all', 104, 105, 106, 107, 108, 109].includes(t.id)),
+      isFilterModalOpen: isFilterModalOpen,
+      setIsFilterModalOpen: setIsFilterModalOpen,
+      activeFiltersList: activeFiltersList(themesData, authors, activeSection),
+      handleRemoveFilter: (filter) => handleRemoveFilter(filter, setActiveTheme),
+      handleClearAllActiveFilters: () => handleClearAllActiveFilters(setActiveTheme),
+      paginationProps: cardsPaginationProps,
+      currentThemeDetail: currentThemeDetail,
+    },
+    articles: {
+      articles: paginatedArticles,
+      availableAuthors: authors,
+      paginationProps: articlesPaginationProps,
+      pageThemeDetail: currentThemeDetail,
+    },
+    videos: {
+      videos: paginatedVideos,
+      availableAuthors: authors,
+      paginationProps: videosPaginationProps,
+      pageThemeDetail: currentThemeDetail,
+    },
+    admin: {
+      authors: authors,
+      themes: themesData,
+      cards: cards,
+      articles: articles,
+      videos: videos,
+      setAuthors: setAuthors,
+      setThemesData: setThemesData,
+      setCards: setCards,
+      setArticles: setArticles,
+      setVideos: setVideos,
+    }
+  };
+
   return (
     <div className="App">
       <Header
@@ -178,74 +229,8 @@ function App() {
             {activeSection === 'videos' && 'Video'}
             {activeSection === 'admin' && 'Pārvaldība'}
           </h2>
-
-          {activeSection === 'home' && (
-            <HomePage
-              cards={paginatedCards}
-              onReadMore={handleReadMore}
-              availableAuthors={authors}
-              paginationProps={cardsPaginationProps}
-              homePageThemeDetail={currentThemeDetail}
-            />
-          )}
-
-          {(activeSection === 'recommendations' || activeSection === 'association' || activeSection === 'trade' || activeSection === 'stories' || activeSection === 'prints') && (
-            <CardsPage
-              cards={{rawCards: filteredCardsBase, paginated: paginatedCards}}
-              authors={authors}
-              themesData={themesData}
-              onReadMore={handleReadMore}
-              filterTheme={filterTheme}
-              setFilterTheme={setFilterTheme}
-              filterAuthors={filterAuthors}
-              setFilterAuthors={setFilterAuthors}
-              selectedFilteredCardIds={selectedFilteredCardIds}
-              onToggleCardSelectionInFilter={handleToggleCardSelectionInFilter}
-              onClearCardSelections={handleClearCardSelections}
-              currentThemeSummary={currentThemeDetail?.summary || null}
-              allThemesData={themesData.filter(t => ![1, 'all', 104, 105, 106, 107, 108, 109].includes(t.id))}
-              isFilterModalOpen={isFilterModalOpen}
-              setIsFilterModalOpen={setIsFilterModalOpen}
-              activeFiltersList={activeFiltersList(themesData, authors, activeSection)}
-              handleRemoveFilter={(filter) => handleRemoveFilter(filter, setActiveTheme)}
-              handleClearAllActiveFilters={() => handleClearAllActiveFilters(setActiveTheme)}
-              paginationProps={cardsPaginationProps}
-              currentThemeDetail={currentThemeDetail}
-            />
-          )}
-
-          {activeSection === 'articles' && (
-            <ArticlesPage
-              articles={paginatedArticles}
-              availableAuthors={authors}
-              paginationProps={articlesPaginationProps}
-              pageThemeDetail={currentThemeDetail}
-            />
-          )}
-
-          {activeSection === 'videos' && (
-            <VideosPage
-              videos={paginatedVideos}
-              availableAuthors={authors}
-              paginationProps={videosPaginationProps}
-              pageThemeDetail={currentThemeDetail}
-            />
-          )}
-
-          {activeSection === 'admin' && (
-            <AdminPage
-                authors={authors}
-                themes={themesData}
-                cards={cards}
-                articles={articles}
-                videos={videos}
-                setAuthors={setAuthors}
-                setThemesData={setThemesData}
-                setCards={setCards}
-                setArticles={setArticles}
-                setVideos={setVideos}
-            />
-          )}
+          
+          <PageRenderer activeSection={activeSection} {...pageProps} />
 
       </main>
 
