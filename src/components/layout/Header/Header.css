@@ -55,6 +55,9 @@
     background-size: cover; /* Aizpilda visu zonu */
     background-position: center; /* Centrē fonu */
     background-repeat: no-repeat; /* Neatkartojas */
+
+    /* JAUNS: Diagnostikas fona krāsa, lai redzētu, vai josla parādās */
+    /* background-color: yellow !important; */ /* Izkomentēts diagnostikas nolūkos */
 }
 
 .header-gif {
@@ -101,38 +104,44 @@
     position: relative;
 }
 
+/* LABOJUMS: Mainām hover efektu galvenās izvēlnes pogām tikai uz teksta krāsas maiņu */
 .main-navigation li button {
     background: none;
     border: none;
-    color: var(--white-color);
+    color: var(--grey-200);
     font-size: 1.1em;
     cursor: pointer;
     padding: 8px 12px;
     border-radius: 5px;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease; /* Pievienojam transform pāreju */
 }
 
 .main-navigation li button:hover {
-    background-color: var(--primary-hover);
+    background-color: transparent; /* Noņemam fona krāsas maiņu */
+    color: var(--white-color); /* Teksta krāsa mainās uz sekundāro krāsu */
+    transform: translateY(-2px); /* Neliels pacelšanās efekts */
 }
 
 .main-navigation li button.active {
-    background-color: var(--secondary-color);
+    background-color: var(--secondary-color); /* Saglabājam fona krāsas maiņu aktīvajam stāvoklim */
+    color: var(--white-color); /* Teksta krāsa */
 }
+
 
 .dropdown-arrow-icon {
     margin-left: 8px;
     transition: transform 0.2s ease;
 }
 
-.nav-item.dropdown.open-desktop .dropdown-arrow-icon {
-    transform: rotate(180deg);
+.nav-item.dropdown.open-desktop .dropdown-content {
+    display: flex;
+    flex-direction: column;
 }
 
 .dropdown-content {
-    display: none;
+    display: none; /* Apakšizvēlnes saturs noklusējumā paslēpts */
     position: absolute;
-    background-color: var(--primary-color);
+    background-color: var(--primary-color); /* Apakšizvēlnes fona krāsa */
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px var(--shadow-strong);
     z-index: 1;
@@ -142,22 +151,34 @@
     left: 0;
 }
 
-/* LABOJUMS: Samazinām padding-left apakšizvēlnes pogām desktopā */
+/* LABOJUMS: Apakšizvēlnes pogu stils - mainām hover efektu un pievienojam atkāpi */
 .dropdown-content button {
-    color: var(--white-color);
-    padding: 12px 5px; /* Samazināts padding-left */
+    /* Normālie stili */
+    color: var(--grey-200); /* Teksta krāsa */
+    padding: 12px 20px; /* JAUNS: Palielināta atkāpe */
     text-decoration: none;
     display: block;
     width: 100%;
     text-align: left;
-    border-bottom: 1px solid var(--primary-hover);
+    border-bottom: 1px solid var(--primary-hover); /* Apmales krāsa */
+    background-color: transparent; /* Nodrošina, ka nav noklusējuma fona */
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease; /* Pievienojam transform pāreju */
 }
 
-
-.nav-item.dropdown.open-desktop .dropdown-content {
-    display: flex;
-    flex-direction: column;
+/* LABOJUMS: Apakšizvēlnes pogu hover stāvoklis - skaidri pamanāms un konsekvents */
+.dropdown-content button:hover {
+    background-color: transparent; /* Noņemam fona krāsas maiņu */
+    color: var(--secondary-color); /* JAUNS: Teksta krāsa mainās uz sekundāro krāsu */
+    transform: translateX(5px); /* Neliela kustība pa labi */
+    text-shadow: 0 0 5px var(--button-dark-hover); /* Neliela ēna hover */
 }
+
+/* JAUNS: Apakšizvēlnes pogu aktīvais stāvoklis - skaidri pamanāms */
+.dropdown-content button.active {
+    background-color: var(--secondary-color); /* Sekundārā krāsa aktīvajam stāvoklim */
+    color: var(--white-color); /* Teksta krāsa */
+}
+
 
 .hamburger-menu-button {
     display: none; /* Sākotnēji slēpts, parādās tikai mobilajā skatā */
@@ -251,8 +272,12 @@
 
     /* LABOJUMS: Samazinām padding-left apakšizvēlnes pogām mobilajā versijā */
     .nav-item.dropdown .dropdown-content button {
-        padding-left: 10px; /* Samazināts padding-left */
+        padding-left: 25px; /* JAUNS: Palielināta atkāpe mobilajā versijā */
         border-bottom: 1px solid var(--primary-color);
+        /* JAUNS: Mobilās apakšizvēlnes pogu hover stāvoklis */
+        &:hover { /* Nested selektors priekš hover */
+            color: var(--white-color); /* Teksts mainās uz sekundāro krāsu (konsekventi) */
+        }
     }
 
     .nav-item.dropdown .dropdown-content {
