@@ -10,6 +10,11 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest # Darbinās uz jaunākās Ubuntu versijas
+    # JAUNS: Pievienojam atļaujas
+    permissions:
+      contents: write # Nepieciešams, lai actions/checkout varētu rakstīt darba direktorijā
+      pages: write    # Nepieciešams, lai izvietotu lapas (push to gh-pages branch)
+      id-token: write # Nepieciešams, ja izmanto OIDC (OpenID Connect) ar Pages
 
     steps:
       - name: Checkout repository # Izņem repozitorija kodu
@@ -31,6 +36,4 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }} # Izmanto GitHub nodrošināto tokenu
           publish_dir: ./dist # Norāda, no kuras mapes izvietot (Vite noklusējums ir 'dist')
-          # JAUNS: Ieslēdz force_orphan, lai nodrošinātu tīru izvietošanu
-          # Izmantojiet tikai, ja rodas problēmas ar veciem failiem, kas netiek izdzēsti
-          # force_orphan: true
+          # force_orphan: true # Izmantojiet tikai, ja rodas problēmas ar veciem failiem, kas netiek izdzēsti
