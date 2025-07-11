@@ -16,9 +16,10 @@
   box-shadow: 0 2px 4px var(--shadow-light);
   transition: background-color 0.2s, box-shadow 0.2s, border-color 0.2s;
   position: relative;
-  
-  /* Atgriežam fiksētu platumu */
-  width: 320px;
+
+  /* Atgriežam fiksētu platumu - pielāgojam flex-basis */
+  flex: 0 0 320px; /* Fiksēts platums, lai atbilstu trīs kolonnām desktopā */
+  max-width: 320px; /* Nodrošina, ka nekļūst platāks */
 }
 
 /* Kartītes virsraksts */
@@ -115,10 +116,28 @@
 /* Responsīvais dizains mobilajām ierīcēm */
 @media (max-width: 768px) {
   .card {
-    width: 100%; 
-    max-width: 768px; 
-    height: auto;
-    margin:0;
+    width: 100%;
+    max-width: 100%; /* Nodrošina, ka mobilajā izmanto visu pieejamo platumu */
+    flex: 0 0 100%; /* Viena kolonna */
+    height: auto; /* Augstums pielāgojas saturam */
+    margin:0; /* Noņem margas, ko var pievienot CardList */
+  }
+}
 
+/* JAUNS: Planšetes izmēri (no 769px līdz 1139px) - divas kartītes blakus */
+@media (min-width: 769px) and (max-width: 1139px) {
+  .card {
+    flex: 0 0 calc(50% - 10px); /* Divas kartītes ar 20px atstarpi starp tām */
+    max-width: calc(50% - 10px); /* Nodrošina, ka nepārsniedz pusi no platuma */
+    height: auto; /* Pielāgo augstumu */
+  }
+}
+
+/* Desktop izmēri (virs 1140px) */
+@media (min-width: 1140px) {
+  .card {
+    flex: 0 0 320px; /* Atjaunojam fiksētu platumu desktopā */
+    max-width: 320px;
+    height: 420px; /* Atjaunojam fiksētu augstumu desktopā */
   }
 }

@@ -26,7 +26,7 @@ const Header = ({ themes, activeTheme, onThemeSelect, activeSection, onSectionSe
         onThemeSelect(themeId);
         closeMenus();
     };
-    
+
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(prev => !prev);
         setIsDesktopCardsDropdownOpen(false);
@@ -37,7 +37,13 @@ const Header = ({ themes, activeTheme, onThemeSelect, activeSection, onSectionSe
         setIsMobileSubMenuOpen(prev => !prev);
     };
 
-    const headerGifUrl = "/images/img_1920.gif";
+    // LABOJUMS: Definējam vairākus GIF attēlus, lai demonstrētu "dažāda platuma gif attēliem"
+    // Jums vajadzēs tos aizvietot ar reālām GIFu URL adresēm.
+    const headerGifs = [
+        { url: "/images/img_1920.gif", alt: "Header Banner GIF 1", width: "auto" }, // Pielāgosies platumam
+        // { url: "/images/your_second_gif.gif", alt: "Header Banner GIF 2", width: "300px" }, // Piemērs ar fiksētu platumu
+        // { url: "/images/your_third_gif.gif", alt: "Header Banner GIF 3", width: "200px" }, // Cits piemērs
+    ];
 
     const recommendationsThemes = [
         { id: 'all', name: 'Visas' },
@@ -52,8 +58,11 @@ const Header = ({ themes, activeTheme, onThemeSelect, activeSection, onSectionSe
                 Brīvprātīgā kustība pret Spānijas kailgliemezi
             </div>
 
+            {/* LABOJUMS: Ietveram header-banner ar dinamiskajiem GIFiem */}
             <div className="header-banner">
-                <img src={headerGifUrl} alt="Header Banner GIF" className="header-gif" />
+                {headerGifs.map((gif, index) => (
+                    <img key={index} src={gif.url} alt={gif.alt} className="header-gif" style={{ width: gif.width }} />
+                ))}
             </div>
 
             <div className="main-header-content">
@@ -78,16 +87,16 @@ const Header = ({ themes, activeTheme, onThemeSelect, activeSection, onSectionSe
                         <li><button type="button" onClick={() => handleSectionClick('home', 1)} className={activeSection === 'home' ? 'active' : ''}>Sākums</button></li>
                         <li><button type="button" onClick={() => handleSectionClick('association', 104)} className={activeSection === 'association' ? 'active' : ''}>Biedrība</button></li>
                         <li><button type="button" onClick={() => handleSectionClick('stories', 106)} className={activeSection === 'stories' ? 'active' : ''}>Stāsti</button></li>
-                        
-                        <li 
-                            className={`nav-item dropdown ${isDesktopCardsDropdownOpen ? 'open-desktop' : ''} ${isMobileSubMenuOpen ? 'open-mobile-submenu' : ''}`} 
+
+                        <li
+                            className={`nav-item dropdown ${isDesktopCardsDropdownOpen ? 'open-desktop' : ''} ${isMobileSubMenuOpen ? 'open-mobile-submenu' : ''}`}
                             onMouseEnter={() => window.innerWidth > 1120 && setIsDesktopCardsDropdownOpen(true)}
                             onMouseLeave={() => window.innerWidth > 1120 && setIsDesktopCardsDropdownOpen(false)}
                         >
-                            <button 
-                                type="button" 
-                                onClick={(e) => window.innerWidth <= 1120 ? toggleMobileSubMenu(e) : handleSectionClick('recommendations', 'all')} 
-                                className={`dropbtn ${activeSection === 'recommendations' ? 'active' : ''}`} 
+                            <button
+                                type="button"
+                                onClick={(e) => window.innerWidth <= 1120 ? toggleMobileSubMenu(e) : handleSectionClick('recommendations', 'all')}
+                                className={`dropbtn ${activeSection === 'recommendations' ? 'active' : ''}`}
                             >
                                 Ieteikumi
                                 <FontAwesomeIcon icon={faChevronDown} className="dropdown-arrow-icon" />
@@ -100,7 +109,7 @@ const Header = ({ themes, activeTheme, onThemeSelect, activeSection, onSectionSe
                                 ))}
                             </div>
                         </li>
-                        
+
                         <li><button type="button" onClick={() => handleSectionClick('trade', 105)} className={activeSection === 'trade' ? 'active' : ''}>Tirdzniecība</button></li>
                         <li><button type="button" onClick={() => handleSectionClick('prints', 107)} className={activeSection === 'prints' ? 'active' : ''}>Izdrukām</button></li>
                         <li><button type="button" onClick={() => handleSectionClick('articles', 108)} className={activeSection === 'articles' ? 'active' : ''}>Raksti</button></li>

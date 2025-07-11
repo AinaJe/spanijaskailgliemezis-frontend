@@ -52,8 +52,10 @@
 }
 
 /* Vispārīgi ķermeņa stili */
-body {
+html, body {
+    height: 100%;
     margin: 0;
+    padding: 0; /* JAUNS: Papildus nodrošina, ka nav noklusējuma padding */
     font-family: var(--font-family);
     background-color: var(--light-bg);
     color: var(--text-color);

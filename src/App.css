@@ -7,8 +7,8 @@
     min-height: 100vh;
     text-align: center;
     /* LABOJUMS: Pievienojam padding-top, lai kompensētu fiksēto galveni */
-    /* Vērtība atkarīga no jūsu galvenes augstuma, šeit aptuveni */
-    padding-top: 56px; 
+    /* Noklusējums mobilajām ierīcēm (tikai navigācijas josla ir redzama) */
+    padding-top: 56px; /* Apmēram main-header-content augstums mobilajā ierīcē */
 }
 
 /* Galvenā satura zona */
@@ -17,7 +17,7 @@ main {
     padding: 20px;
     max-width: var(--content-max-width);
     margin: 0 auto;
-    width: 100%; 
+    width: 100%;
     box-sizing: border-box;
 }
 
@@ -27,4 +27,14 @@ main {
   margin-bottom: 30px;
   font-size: 2.2em;
   text-align: center;
+}
+
+/* MEDIJU VAIJĀJUMI PRIEKŠ APP.CSS */
+
+/* Desktop (lielāks par 1140px) - pielāgojam padding-top, lai ņemtu vērā visu fiksēto galveni */
+@media (min-width: 1140px) {
+    .App {
+        /* Kopējais fiksētās galvenes augstums: 200px (banneris) + apm. 56px (navigācija) */
+        padding-top: 256px;
+    }
 }

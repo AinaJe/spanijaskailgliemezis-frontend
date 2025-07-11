@@ -5,7 +5,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  justify-content: center; /* Šī īpašība nodrošina, ka kartīšu grupa ir centrēta */
+  justify-content: center; /* Šī īpašība nodrošina, ka kartīšu grupa ir centrēta pēc noklusējuma */
   padding: 20px;
   background-color: transparent;
   border-radius: 8px;
@@ -27,12 +27,30 @@
 /* Responsīvais dizains mobilajām ierīcēm */
 @media (max-width: 768px) {
   .card-list-container {
-    display: flex;
-    width: 100%; 
-    max-width: 768px; 
+    flex-direction: column; /* Vienā kolonnā */
+    align-items: center; /* Centrē kartītes */
+    width: 100%;
+    max-width: 768px;
     height: auto;
     margin:0 auto;
     padding: 0;
-
   }
+}
+
+/* JAUNS: Planšetes izmēri (no 769px līdz 1139px) - divas kartītes blakus */
+@media (min-width: 769px) and (max-width: 1139px) {
+  .card-list-container {
+    justify-content: center; /* Centrē divas kartītes */
+    padding: 20px; /* Atgriež padding */
+    gap: 20px; /* Atgriež atstarpi */
+  }
+}
+
+/* Desktop izmēri (virs 1140px) */
+@media (min-width: 1140px) {
+    .card-list-container {
+        justify-content: flex-start; /* Sākot ar 3 vai vairāk kartītēm rindā, pielīdzina pa kreisi */
+        padding: 20px;
+        gap: 20px;
+    }
 }
