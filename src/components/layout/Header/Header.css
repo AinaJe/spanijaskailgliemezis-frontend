@@ -8,32 +8,58 @@
     background-color: var(--primary-color);
     color: var(--white-color);
     box-shadow: 0 2px 5px var(--shadow-medium);
-    z-index: 1000; /* LABOJUMS: Palielinām z-index, lai nodrošinātu, ka galvene ir virs visiem elementiem */
+    z-index: 1000;
 }
 
-/* Slēpjam šos elementus, jo tie nav daļa no fiksētās joslas */
+/* LABOJUMS: Uzraksts "Brīvprātīgā kustība pret Spānijas kailgliemezi" */
+/* Šis tags tagad ir PĀRVIETOTS HTML (Header.jsx) iekšpusē header-banner. */
+/* Tas tiks pozicionēts absolūti virs banera attēla. */
 .site-tagline {
-    display: none;
+    /* JAUNS: Vispārīgie stili taglinam (attiecas uz mobilajām ierīcēm un kā noklusējums) */
+    position: absolute; /* Absolūti pozicionēts virs banera */
+    top: 50%; /* Vertikāli centrēts */
+    left: 50%; /* Horizontāli centrēts */
+    transform: translate(-50%, -50%); /* Precīza centrēšana */
+    z-index: 2; /* Nodrošina, ka teksts ir virs GIF */
+    width: 100%; /* Aizņem visu banera platumu tekstam */
+    text-align: center; /* Centru tekstu */
+    background-color: transparent; /* Uzrakstam nav sava fona */
+    padding: 0 10px; /* Neliela horizontāla atkāpe tekstam */
+    font-family: 'Montserrat', sans-serif; /* JAUNS: Piesakām fontu */
+    font-size: 1.1em; /* Fonts mobilajā ierīcē */
+    color: var(--white-color); /* JAUNS: Uzraksta krāsa ir gaiša */
+    box-sizing: border-box; /* Lai padding ietilptu platumā */
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.7); /* Papildus ēna, lai izceltos uz gaiša fona */
+    font-weight: 700; /* Biezāks fonts */
 }
+
 
 /* Banera josla */
 .header-banner {
-    display: none; /* Noklusējums: paslēpts mobilajās ierīcēs */
-    background-color: var(--grey-900);
-    height: 200px; /* Banera augstums */
-    overflow: hidden;
-    position: relative;
-    width: 100%;
-    display: flex;
+    position: relative; /* Svarīgi priekš site-tagline absolūtās pozicionēšanas */
+
+    /* JAUNS: Tagad baneris ir redzams arī mobilajās ierīcēs */
+    display: flex; /* Būs redzams mobilajās ierīcēs */
     justify-content: center;
     align-items: center;
+
+    background-color: var(--white-color); /* Banera fons ir balts */
+    height: 120px; /* JAUNS: Mazāks augstums mobilajām ierīcēm */
+    overflow: hidden;
+    width: 100%;
     gap: 10px;
+    
+    /* Fona attēls mobilajā versijā */
+    /* LABOJUMS: Pareizs ceļš CSS failā, bez JS mainīgā */
+    background-image: url('/images/img_1920.gif'); /* JAUNS: GIF kā fons */
+    background-size: cover; /* Aizpilda visu zonu */
+    background-position: center; /* Centrē fonu */
+    background-repeat: no-repeat; /* Neatkartojas */
 }
 
 .header-gif {
-    max-height: 100%;
-    object-fit: contain;
-    width: auto;
+    /* JAUNS: Paslēpjam <img> tagu mobilajā versijā, jo izmantojam fona attēlu */
+    display: none; /* Paslēpj <img> tagu mobilajā, jo attēls ir kā fons */
 }
 
 /* Navigācijas josla */
@@ -45,9 +71,8 @@
     width: 100%;
     box-sizing: border-box;
     background-color: var(--primary-color);
-    /* LABOJUMS: Nodrošinām, ka main-header-content ir virs visa, ja tam ir absolūti pozicionēti bērni */
-    position: relative; /* Nepieciešams hamburgera pogas absolūtai pozicionēšanai */
-    z-index: 1001; /* Papildu z-index pārliecībai, ka nav. josla ir virs citiem, ja vajadzētu */
+    position: relative;
+    z-index: 1001;
 }
 
 
@@ -117,6 +142,18 @@
     left: 0;
 }
 
+/* LABOJUMS: Samazinām padding-left apakšizvēlnes pogām desktopā */
+.dropdown-content button {
+    color: var(--white-color);
+    padding: 12px 5px; /* Samazināts padding-left */
+    text-decoration: none;
+    display: block;
+    width: 100%;
+    text-align: left;
+    border-bottom: 1px solid var(--primary-hover);
+}
+
+
 .nav-item.dropdown.open-desktop .dropdown-content {
     display: flex;
     flex-direction: column;
@@ -174,15 +211,15 @@
     }
 
     .main-header-content {
-        justify-content: flex-start; /* Logo kreisajā pusē */
-        /* position: relative; paliek no vispārīgā stila */
+        justify-content: flex-start;
+        position: relative;
     }
 
     /* Parādām mobilo navigāciju, kad tā ir atvērta */
     .main-navigation.open ul {
         display: flex;
         flex-direction: column;
-        position: absolute; /* Tagad tas ir absolūts attiecībā pret main-header-content */
+        position: absolute;
         top: 100%;
         left: 0;
         width: 100%;
@@ -212,6 +249,12 @@
         align-items: center;
     }
 
+    /* LABOJUMS: Samazinām padding-left apakšizvēlnes pogām mobilajā versijā */
+    .nav-item.dropdown .dropdown-content button {
+        padding-left: 10px; /* Samazināts padding-left */
+        border-bottom: 1px solid var(--primary-color);
+    }
+
     .nav-item.dropdown .dropdown-content {
         position: static;
         width: 100%;
@@ -223,11 +266,6 @@
 
     .nav-item.dropdown.open-mobile-submenu .dropdown-content {
         display: block;
-    }
-
-    .nav-item.dropdown .dropdown-content button {
-        padding-left: 40px;
-        border-bottom: 1px solid var(--primary-color);
     }
 
     .nav-item.dropdown.open-mobile-submenu .dropdown-arrow-icon {
@@ -248,6 +286,25 @@
 
 /* Paslēpjam hamburgera pogu uz lieliem ekrāniem */
 @media (min-width: 1140px) {
+    /* LABOJUMS: site-tagline stili desktopā (absolūta pozīcija virs banera) */
+    .site-tagline {
+        font-size: 1.8em; /* Lielāks fonts desktopam */
+        color: var(--white-color); /* Teksts gaišs */
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.7); /* Ēna, lai izceltos uz gaiša fona */
+        /* background-color: transparent; un padding: 0; jau ir vispārīgajā stilā */
+    }
+
+    /* LABOJUMS: Rādām <img> tagu datora versijā */
+    .header-gif {
+        display: block; /* Parāda <img> tagu desktopā */
+        /* Background-image tiks ignorēts, jo <img> ir klātesošs */
+    }
+
+    /* Noņemam fona attēlu no banera desktopā */
+    .header-banner {
+        background-image: none;
+    }
+
     .hamburger-menu-button {
         display: none;
     }
@@ -258,7 +315,7 @@
     }
 
     .main-header-content {
-        position: relative; /* Atjaunojam relatīvo pozīciju desktopam, jo tā vairs nav sticky */
+        position: relative;
         justify-content: space-between;
     }
 }

@@ -6,8 +6,7 @@
     flex-direction: column;
     min-height: 100vh;
     text-align: center;
-    /* LABOJUMS: Noņemam padding-top no App, jo tas netiek galā ar satura izstumšanu zem fixed header */
-    /* padding-top: 56px; (vai citas vērtības) — NOŅEMTS */
+    /* Noņemam padding-top no App, jo to apstrādās main elements */
 }
 
 /* Galvenā satura zona */
@@ -20,7 +19,8 @@ main {
     box-sizing: border-box;
     /* JAUNS: Pievienojam margin-top, lai izstumtu saturu zem fiksētās galvenes */
     /* Noklusējums mobilajām ierīcēm */
-    margin-top: 70px; /* Atbilst aptuvenam mobilās navigācijas augstumam ar rezervi */
+    /* Aprēķins: header-banner (120px) + main-header-content (aptuveni 56px) = ~176px */
+    margin-top: 180px; /* Atbilst mobilās galvenes (ar baneri) augstumam ar rezervi */
 }
 
 /* Vispārīgs sadaļas virsraksts */
@@ -36,14 +36,14 @@ main {
 /* Desktop (lielāks par 1140px) - pielāgojam margin-top, lai ņemtu vērā visu fiksēto galveni */
 @media (min-width: 1140px) {
     main {
-        /* Kopējais fiksētās galvenes augstums: 200px (banneris) + apm. 56px (navigācija) = 256px. Pievienojam rezervi. */
-        margin-top: 270px; /* Atbilst fiksētās galvenes augstumam ar rezervi */
+        /* Aprēķins: banner (200px) + main-header-content (aptuveni 56px) = ~256px */
+        margin-top: 150px; /* Atbilst fiksētās galvenes augstumam ar rezervi */
     }
 }
 
 @media (max-width: 1140px) {
     main {
-        /* Kopējais fiksētās galvenes augstums: 200px (banneris) + apm. 56px (navigācija) = 256px. Pievienojam rezervi. */
-        margin-top: 220px; /* Atbilst fiksētās galvenes augstumam ar rezervi */
+        /* Aprēķins: banner (200px) + main-header-content (aptuveni 56px) = ~256px */
+        margin-top: 140px; /* Atbilst fiksētās galvenes augstumam ar rezervi */
     }
 }

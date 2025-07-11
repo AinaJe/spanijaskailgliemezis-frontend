@@ -37,13 +37,8 @@ const Header = ({ themes, activeTheme, onThemeSelect, activeSection, onSectionSe
         setIsMobileSubMenuOpen(prev => !prev);
     };
 
-    // LABOJUMS: Definējam vairākus GIF attēlus, lai demonstrētu "dažāda platuma gif attēliem"
-    // Jums vajadzēs tos aizvietot ar reālām GIFu URL adresēm.
     const headerGifs = [
-        // JAUNS: izmanto import.meta.env.BASE_URL
-        { url: import.meta.env.BASE_URL + "images/img_1920.gif", alt: "Header Banner GIF 1", width: "auto" }, // Pielāgosies platumam
-        // { url: import.meta.env.BASE_URL + "images/your_second_gif.gif", alt: "Header Banner GIF 2", width: "300px" }, // Piemērs ar fiksētu platumu
-        // { url: import.meta.env.BASE_URL + "images/your_third_gif.gif", alt: "Header Banner GIF 3", width: "200px" }, // Cits piemērs
+        { url: import.meta.env.BASE_URL + "images/img_1920.gif", alt: "Header Banner GIF 1", width: "auto" },
     ];
 
     const recommendationsThemes = [
@@ -55,12 +50,12 @@ const Header = ({ themes, activeTheme, onThemeSelect, activeSection, onSectionSe
 
     return (
         <header className="app-header">
-            <div className="site-tagline">
-                Brīvprātīgā kustība pret Spānijas kailgliemezi
-            </div>
-
-            {/* LABOJUMS: Ietveram header-banner ar dinamiskajiem GIFiem */}
+            {/* Šis elements tagad ir pārvietots uz header-banner iekšpusi (ja nav vēl izdarīts) */}
+            {/* Ja jūsu Header.jsx jau izskatās šādi, tad nemainiet */}
             <div className="header-banner">
+                <div className="site-tagline">
+                    Brīvprātīgā kustība pret Spānijas kailgliemezi
+                </div>
                 {headerGifs.map((gif, index) => (
                     <img key={index} src={gif.url} alt={gif.alt} className="header-gif" style={{ width: gif.width }} />
                 ))}
@@ -74,7 +69,6 @@ const Header = ({ themes, activeTheme, onThemeSelect, activeSection, onSectionSe
                     onClick={toggleMobileMenu}
                     aria-label="Atvērt navigācijas izvēlni"
                 >
-                    {/* JAUNS: Teksts blakus ikonai */}
                     <span className="hamburger-label">Izvēlne</span>
                     <div className="hamburger-icon-wrapper">
                         <span className="hamburger-icon"></span>
