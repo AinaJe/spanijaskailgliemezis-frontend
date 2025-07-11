@@ -56,6 +56,10 @@
     background-position: center; /* Centrē fonu */
     background-repeat: no-repeat; /* Neatkartojas */
 
+    /* JAUNAS RINDAS: Stili dubultklikšķa funkcionalitātei */
+    cursor: pointer; /* Piešķir peles kursoram rādītāja izskatu, norādot, ka elements ir interaktīvs */
+    user-select: none; /* Novērš teksta iezīmēšanu, veicot ātru dubultklikšķi */
+
     /* JAUNS: Diagnostikas fona krāsa, lai redzētu, vai josla parādās */
     /* background-color: yellow !important; */ /* Izkomentēts diagnostikas nolūkos */
 }
@@ -309,7 +313,7 @@
     }
 }
 
-/* Paslēpjam hamburgera pogu uz lieliem ekrāniem */
+/* Media vaicājumi */
 @media (min-width: 1140px) {
     /* LABOJUMS: site-tagline stili desktopā (absolūta pozīcija virs banera) */
     .site-tagline {

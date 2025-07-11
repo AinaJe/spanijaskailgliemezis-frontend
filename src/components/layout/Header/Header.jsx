@@ -1,5 +1,6 @@
 // src/components/layout/Header/Header.jsx
 import React, { useState } from 'react';
+import AdminLoginModal from '../../common/Modals/AdminLoginModal'; // Precīzs imports
 import './Header.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
@@ -8,6 +9,27 @@ const Header = ({ themes, activeTheme, onThemeSelect, activeSection, onSectionSe
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isDesktopCardsDropdownOpen, setIsDesktopCardsDropdownOpen] = useState(false);
     const [isMobileSubMenuOpen, setIsMobileSubMenuOpen] = useState(false);
+    const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); // Stāvoklis pieteikšanās modālajam logam
+    
+    // Uzlabota dubultklikšķa notikumu apstrāde
+    const DCLICK_THRESHOLD = 300; // Milisekundes: Maksimālais laiks starp klikšķiem, lai to uzskatītu par dubultklikšķi
+    let clickTimeout = null; // Taimauts, lai atšķirtu vienu klikšķi no dubultklikšķa
+
+    const handleBannerClick = () => {
+        // Notīrīt iepriekšējo taimautu, ja tas ir aktīvs
+        if (clickTimeout) {
+            clearTimeout(clickTimeout);
+            clickTimeout = null;
+            // Šis ir otrais klikšķis pietiekami ātri, lai būtu dubultklikšķis
+            setIsLoginModalOpen(true);
+        } else {
+            // Šis ir pirmais klikšķis. Iestatiet taimautu, lai gaidītu otru klikšķi.
+            clickTimeout = setTimeout(() => {
+                clickTimeout = null; // Notīrīt taimautu, ja otrais klikšķis nenotiek laikā
+            }, DCLICK_THRESHOLD);
+        }
+    };
+
 
     const closeMenus = () => {
         setIsMobileMenuOpen(false);
@@ -37,6 +59,14 @@ const Header = ({ themes, activeTheme, onThemeSelect, activeSection, onSectionSe
         setIsMobileSubMenuOpen(prev => !prev);
     };
 
+    // Funkcija, kas tiek izsaukta pēc veiksmīgas administratora pieteikšanās
+    const handleLoginSuccess = () => {
+        console.log('Administratora pieteikšanās veiksmīga!');
+        // Novirzīt uz 'admin' sadaļu
+        onSectionSelect('admin');
+        setIsLoginModalOpen(false); // Aizver modālo logu
+    };
+
     const headerGifs = [
         { url: import.meta.env.BASE_URL + "images/img_1920.gif", alt: "Header Banner GIF 1", width: "auto" },
     ];
@@ -50,9 +80,8 @@ const Header = ({ themes, activeTheme, onThemeSelect, activeSection, onSectionSe
 
     return (
         <header className="app-header">
-            {/* Šis elements tagad ir pārvietots uz header-banner iekšpusi (ja nav vēl izdarīts) */}
-            {/* Ja jūsu Header.jsx jau izskatās šādi, tad nemainiet */}
-            <div className="header-banner">
+            {/* Banera josla, tagad ar vienu klikšķa apstrādātāju */}
+            <div className="header-banner" onClick={handleBannerClick}>
                 <div className="site-tagline">
                     Brīvprātīgā kustība pret Spānijas kailgliemezi
                 </div>
@@ -62,8 +91,10 @@ const Header = ({ themes, activeTheme, onThemeSelect, activeSection, onSectionSe
             </div>
 
             <div className="main-header-content">
+                {/* Logo / Vietnes nosaukums - izmanto `onClick` ar `onSectionSelect` */}
                 <span className="site-logo-placeholder" onClick={() => handleSectionClick('home', 1)} aria-label="Sākumlapa"><i>Arion vulgaris</i></span>
 
+                {/* Hamburgera izvēlne mobilajām ierīcēm */}
                 <button
                     className={`hamburger-menu-button ${isMobileMenuOpen ? 'open' : ''}`}
                     onClick={toggleMobileMenu}
@@ -77,6 +108,7 @@ const Header = ({ themes, activeTheme, onThemeSelect, activeSection, onSectionSe
                     </div>
                 </button>
 
+                {/* Galvenā navigācija */}
                 <nav className={`main-navigation ${isMobileMenuOpen ? 'open' : ''}`}>
                     <ul>
                         <li><button type="button" onClick={() => handleSectionClick('home', 1)} className={activeSection === 'home' ? 'active' : ''}>Sākums</button></li>
@@ -113,6 +145,13 @@ const Header = ({ themes, activeTheme, onThemeSelect, activeSection, onSectionSe
                     </ul>
                 </nav>
             </div>
+
+            {/* Administratora pieteikšanās modālais logs */}
+            <AdminLoginModal
+                isOpen={isLoginModalOpen}
+                onClose={() => setIsLoginModalOpen(false)}
+                onLoginSuccess={handleLoginSuccess}
+            />
         </header>
     );
 };
