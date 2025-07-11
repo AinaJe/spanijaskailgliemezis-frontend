@@ -28,6 +28,8 @@ src/
 ├── main.jsx         # React aplikācijas sākumpunkts
 └── index.css        # Globālie stili un CSS mainīgie
 
+
+```text
 ## 3. Komponentu uzskaitījums un funkcijas
 
 Projektā ir daudzfunkcionālas un atkārtoti izmantojamas komponentes, kas nodrošina moduļu veidošanu.
