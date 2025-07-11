@@ -14,7 +14,7 @@ export default defineConfig({
     // Nodrošina, ka izvades mape ir 'dist' (noklusējuma vērtība)
     outDir: 'dist',
 
-    // Šīs opcijas palīdz kontrolēt ģenerēto failu nosaukumus,
+    // Šīs opcijas palīdz kontrolēt ģenerēto failu nosaukumus, 
     // nodrošinot, ka resursu ceļi ir pareizi pat apakšceļos.
     rollupOptions: {
       output: {
