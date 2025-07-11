@@ -28,7 +28,7 @@ src/
 ├── config.js        # Aplikācijas konfigurācijas mainīgie (piem., API URL)
 ├── main.jsx         # React aplikācijas sākumpunkts
 └── index.css        # Globālie stili un CSS mainīgie
-
+```
 
 
 ## 3. Komponentu uzskaitījums un funkcijas
