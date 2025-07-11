@@ -115,8 +115,10 @@
 /* Responsīvais dizains mobilajām ierīcēm */
 @media (max-width: 768px) {
   .card {
-    width: 95%; /* Kartīte aizņem 95% no ekrāna platuma */
-    max-width: 400px; /* Bet ne platāka par 400px, lai izskatās labi uz planšetēm */
+    width: 100%; 
+    max-width: 768px; 
     height: auto;
+    margin:0;
+
   }
 }

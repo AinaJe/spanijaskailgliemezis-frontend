@@ -19,9 +19,9 @@ const Footer = () => {
             <div className="footer-content-wrapper">
                 {/* Autortiesību sadaļa */}
                 <div className="footer-section copyright">
-                    <p>© Brīvprātīgā kustība pret Spānijas kailgliemezi {startYear}-{currentYear}</p>
-                    <p>© Biedrība "Pret Spānijas kailgliemezi" {startYearBiedriba}-{currentYear}</p>
-                    <p>© Mājaslapas izveide: Aina Jēkabsone</p>
+                    <div><p>© Brīvprātīgā kustība pret Spānijas kailgliemezi {startYear}-{currentYear}</p></div>
+                    <div><p>© Biedrība "Pret Spānijas kailgliemezi" {startYearBiedriba}-{currentYear}</p></div>
+                    <div><p>© Mājaslapas izveide: Aina Jēkabsone</p></div>
                 </div>
 
                 {/* Sociālo tīklu saites sadaļa */}

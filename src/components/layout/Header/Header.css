@@ -1,56 +1,30 @@
 /* src/components/layout/Header/Header.css */
 
 .app-header {
-    background-color: var(--primary-color);
-    color: var(--white-color);
-    padding: 0;
-    box-shadow: 0 2px 5px var(--shadow-medium);
-    position: relative;
-    z-index: 500;
-}
-
-.site-tagline {
-    background-color: transparent;
-    color: var(--white-color);
-    text-align: center;
-    padding: 10px 20px;
-    font-size: 1.6em;
-    font-weight: bold;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    text-shadow: 1px 1px 3px var(--text-shadow);
-    position: absolute;
+    /* LABOJUMS: Mainām pozīciju uz fixed, lai galvene būtu piefiksēta */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    box-sizing: border-box;
-    z-index: 510;
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    box-shadow: 0 2px 5px var(--shadow-medium);
+    z-index: 1000; /* Nodrošinām, ka galvene ir virs visa pārējā */
 }
 
+/* Slēpjam šos elementus, jo tie nav daļa no fiksētās joslas */
+.site-tagline,
 .header-banner {
-    width: 100%;
-    height: 100px;
-    overflow: hidden;
-    position: relative;
-    background-color: var(--grey-200);
-}
-
-.header-gif {
-    width: 100%;
-    object-fit: cover;
-    display: block;
+    display: none;
 }
 
 .main-header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 20px;
-    max-width: var(--content-max-width);
-    margin: 0 auto;
-    position: relative;
-    z-index: 10;
-    background-color: var(--primary-color);
+    padding: 10px 20px; /* Nedaudz samazinām polsterējumu */
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .site-logo-placeholder {
@@ -142,22 +116,31 @@
     background-color: var(--primary-hover);
 }
 
-/* JAUNS: Papildu stils aktīvajam apakšizvēlnes punktam darbvirsmas skatā */
 .dropdown-content button.active {
     background-color: var(--secondary-color);
 }
 
 .hamburger-menu-button {
-    display: none;
+    display: none; /* Sākotnēji slēpts, parādās tikai mobilajā skatā */
     background: none;
     border: none;
     cursor: pointer;
     padding: 10px;
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 600;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.hamburger-label {
+    color: var(--white-color);
+    font-weight: bold;
+    display: none; 
+}
+
+.hamburger-icon-wrapper {
+    display: flex;
+    flex-direction: column;
 }
 
 .hamburger-icon {
@@ -165,12 +148,12 @@
     width: 25px;
     height: 3px;
     background-color: var(--white-color);
-    margin: 5px 0;
+    margin: 2px 0;
     transition: all 0.3s ease-in-out;
 }
 
 .hamburger-menu-button.open .hamburger-icon:nth-child(1) {
-    transform: translateY(8px) rotate(45deg);
+    transform: translateY(5px) rotate(45deg);
 }
 
 .hamburger-menu-button.open .hamburger-icon:nth-child(2) {
@@ -178,66 +161,40 @@
 }
 
 .hamburger-menu-button.open .hamburger-icon:nth-child(3) {
-    transform: translateY(-8px) rotate(-45deg);
+    transform: translateY(-5px) rotate(-45deg);
 }
 
-@media (max-width: 1120px) {
-    .main-header-content {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .site-logo-placeholder {
-        font-size: 1.1em;
-    }
-
-    .site-tagline {
-        font-size: 1.2em;
-        padding: 8px 10px;
-        position: static;
-        background-color: var(--dark-color);
-        text-shadow: none;
-        z-index: auto;
-    }
-
-    .hamburger-menu-button {
-        display: block;
-    }
-
-    .main-navigation {
+/* Media vaicājumi */
+@media (max-width: 1140px) {
+    /* Slēpjam desktop navigāciju */
+    .main-navigation ul {
         display: none;
+    }
+
+    /* Parādām mobilo navigāciju, kad tā ir atvērta */
+    .main-navigation.open ul {
+        display: flex;
         flex-direction: column;
-        width: 100%;
-        background-color: var(--primary-color);
         position: absolute;
         top: 100%;
         left: 0;
+        width: 100%;
+        background-color: var(--primary-color);
         box-shadow: 0 5px 10px var(--shadow-medium);
-        z-index: 550;
         padding-bottom: 10px;
     }
 
-    .main-navigation.open {
-        display: flex;
-    }
-
-    .main-navigation ul {
-        flex-direction: column;
-        width: 100%;
-        gap: 0;
+    .hamburger-label {
+        display: block;
     }
 
     .main-navigation li {
         width: 100%;
         border-bottom: 1px solid var(--primary-hover);
-        position: relative;
     }
-
     .main-navigation li:last-child {
         border-bottom: none;
     }
-
     .main-navigation li button {
         width: 100%;
         text-align: left;
@@ -246,14 +203,6 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-    }
-    
-    .nav-item.dropdown:hover .dropdown-content {
-        display: none;
-    }
-    
-    .nav-item.dropdown.open-desktop .dropdown-content {
-        display: none;
     }
     
     .nav-item.dropdown .dropdown-content {
@@ -277,14 +226,11 @@
     .nav-item.dropdown.open-mobile-submenu .dropdown-arrow-icon {
         transform: rotate(180deg);
     }
+}
 
-    /* LABOJUMS: Pārdefinējam hover un active stāvokļus mobilajā skatā */
-    .nav-item.dropdown .dropdown-content button:hover,
-    .nav-item.dropdown .dropdown-content button:active {
-        background-color: var(--secondary-hover); /* Tumšāks zilganlillā, uzbraucot/uzspiežot */
-    }
-
-    .nav-item.dropdown .dropdown-content button.active {
-        background-color: var(--secondary-color); /* Zilganlillā, ja ir aktīvais punkts */
+/* Paslēpjam hamburgera pogu uz lieliem ekrāniem */
+@media (min-width: 1140px) {
+    .hamburger-menu-button {
+        display: none;
     }
 }

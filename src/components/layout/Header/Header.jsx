@@ -21,11 +21,10 @@ const Header = ({ themes, activeTheme, onThemeSelect, activeSection, onSectionSe
         closeMenus();
     };
 
-    // LABOJUMS: Tagad šī funkcija izsauc closeMenus(), lai aizvērtu visu.
     const handleThemeClick = (themeId) => {
-        onThemeSelect(themeId);
         onSectionSelect('recommendations');
-        closeMenus(); // Aizveram visu vaļā esošo navigāciju
+        onThemeSelect(themeId);
+        closeMenus();
     };
     
     const toggleMobileMenu = () => {
@@ -65,9 +64,13 @@ const Header = ({ themes, activeTheme, onThemeSelect, activeSection, onSectionSe
                     onClick={toggleMobileMenu}
                     aria-label="Atvērt navigācijas izvēlni"
                 >
-                    <span className="hamburger-icon"></span>
-                    <span className="hamburger-icon"></span>
-                    <span className="hamburger-icon"></span>
+                    {/* JAUNS: Teksts blakus ikonai */}
+                    <span className="hamburger-label">Izvēlne</span>
+                    <div className="hamburger-icon-wrapper">
+                        <span className="hamburger-icon"></span>
+                        <span className="hamburger-icon"></span>
+                        <span className="hamburger-icon"></span>
+                    </div>
                 </button>
 
                 <nav className={`main-navigation ${isMobileMenuOpen ? 'open' : ''}`}>

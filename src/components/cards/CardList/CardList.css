@@ -20,4 +20,19 @@
   text-align: center;
   color: var(--grey-500);
   width: 100%;
+  margin:0;
+}
+
+
+/* Responsīvais dizains mobilajām ierīcēm */
+@media (max-width: 768px) {
+  .card-list-container {
+    display: flex;
+    width: 100%; 
+    max-width: 768px; 
+    height: auto;
+    margin:0 auto;
+    padding: 0;
+
+  }
 }

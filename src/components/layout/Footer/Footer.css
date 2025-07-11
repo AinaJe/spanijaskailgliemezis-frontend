@@ -121,14 +121,15 @@
 @media (max-width: 768px) {
     /* Kājenes iekšējās atkāpes un atstarpes */
     .app-footer {
-        padding: 15px 5px;
-        gap: 20px;
+        padding: 0;
+        gap: 0px;
     }
 
     /* Kājenes sadaļu izkārtojums */
     .footer-section {
         flex-basis: 45%; /* Platums, lai divas sadaļas ietilptu rindā */
-        padding: 10px;
+        padding: 10px 20px 40px 0px;
+
     }
     
     /* Copyright, sociālo un ārējo saišu sadaļas mobilajās ierīcēs */
@@ -144,14 +145,19 @@
 
     /* Copyright sadaļas specifiskie stili mobilajās ierīcēs */
     .footer-section.copyright {
-        text-align: center;
         align-items: center;
     }
     .footer-section.copyright p {
+        display: block;
         white-space: normal; /* Atļauj teksta aplūšanu jaunā rindā */
         overflow: visible; /* Padara pārpildīto saturu redzamu */
         text-overflow: clip; /* Noņem elipses */
+        max-width: 295px;
+        text-align: center;
+        margin: 0 auto;
+        font-size: 0.7rem;
     }
+
 }
 
 @media (max-width: 480px) {
