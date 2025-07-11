@@ -49,7 +49,8 @@
 /* Desktop izmēri (virs 1140px) */
 @media (min-width: 1140px) {
     .card-list-container {
-        justify-content: flex-start; /* Sākot ar 3 vai vairāk kartītēm rindā, pielīdzina pa kreisi */
+        /* LABOJUMS: Nomainām uz justify-content: center, lai kartītes tiktu centrētas */
+        justify-content: center; /* Mainīts no flex-start */
         padding: 20px;
         gap: 20px;
     }
