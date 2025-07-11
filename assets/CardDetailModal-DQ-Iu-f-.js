@@ -1,0 +1,1 @@
+import{j as r,M as s,r as a}from"./index-RMLcE2NV.js";import l from"./CardDetailModalContent-B0hfiP3C.js";const i=({card:e,onClose:t})=>e?r.jsx(s,{isOpen:!0,onClose:t,children:r.jsx(a.Suspense,{fallback:r.jsx("div",{children:"Ielādē..."}),children:r.jsx(l,{card:e})})}):null;export{i as default};
