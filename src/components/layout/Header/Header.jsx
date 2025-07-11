@@ -40,9 +40,10 @@ const Header = ({ themes, activeTheme, onThemeSelect, activeSection, onSectionSe
     // LABOJUMS: Definējam vairākus GIF attēlus, lai demonstrētu "dažāda platuma gif attēliem"
     // Jums vajadzēs tos aizvietot ar reālām GIFu URL adresēm.
     const headerGifs = [
-        { url: "/images/img_1920.gif", alt: "Header Banner GIF 1", width: "auto" }, // Pielāgosies platumam
-        // { url: "/images/your_second_gif.gif", alt: "Header Banner GIF 2", width: "300px" }, // Piemērs ar fiksētu platumu
-        // { url: "/images/your_third_gif.gif", alt: "Header Banner GIF 3", width: "200px" }, // Cits piemērs
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        { url: import.meta.env.BASE_URL + "images/img_1920.gif", alt: "Header Banner GIF 1", width: "auto" }, // Pielāgosies platumam
+        // { url: import.meta.env.BASE_URL + "images/your_second_gif.gif", alt: "Header Banner GIF 2", width: "300px" }, // Piemērs ar fiksētu platumu
+        // { url: import.meta.env.BASE_URL + "images/your_third_gif.gif", alt: "Header Banner GIF 3", width: "200px" }, // Cits piemērs
     ];
 
     const recommendationsThemes = [

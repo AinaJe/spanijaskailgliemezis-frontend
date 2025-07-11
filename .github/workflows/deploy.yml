@@ -1,0 +1,36 @@
+# .github/workflows/deploy.yml
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # Darbplūsma tiks palaista, veicot push uz 'main' atzaru
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest # Darbinās uz jaunākās Ubuntu versijas
+
+    steps:
+      - name: Checkout repository # Izņem repozitorija kodu
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js # Iestata Node.js vidi
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Var izvēlēties jebkuru LTS versiju, piem. '18' vai '20'
+
+      - name: Install dependencies # Instalē projekta atkarības
+        run: npm install # Ja izmantojat Yarn, nomainiet uz 'yarn install'
+
+      - name: Build project # Kompilē (būvē) Vite projektu
+        run: npm run build # Ja izmantojat Yarn, nomainiet uz 'yarn build'
+
+      - name: Deploy to GitHub Pages # Izvieto kompilētos failus GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3 # Izmanto populāru darbību GitHub Pages izvietošanai
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }} # Izmanto GitHub nodrošināto tokenu
+          publish_dir: ./dist # Norāda, no kuras mapes izvietot (Vite noklusējums ir 'dist')
+          # JAUNS: Ieslēdz force_orphan, lai nodrošinātu tīru izvietošanu
+          # Izmantojiet tikai, ja rodas problēmas ar veciem failiem, kas netiek izdzēsti
+          # force_orphan: true

@@ -188,6 +188,9 @@
   font-size: 1em; /* Fonta izmērs */
   transition: background-color 0.3s ease; /* Pārejas efekts */
   padding: 10px 20px; /* Iekšējā atkāpe */
+  /* JAUNS: Augsts z-index, lai nodrošinātu, ka poga ir virs visiem elementiem */
+  position: relative; /* Nepieciešams z-index, lai darbotos */
+  z-index: 100; /* Jābūt virs visām lapas pamatdaļām, bet zem modālajiem logiem */
 }
 
 /* Filru modālā loga atvēršanas pogas hover stāvoklis */

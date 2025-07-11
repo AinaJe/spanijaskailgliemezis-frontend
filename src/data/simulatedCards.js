@@ -11,7 +11,8 @@ export const simulatedCards = [
       "<p>Spānijas kailgliemezis (<i>Arion vulgaris</i>) ir nopietns drauds Latvijas dārzniekiem un lauksaimniekiem. Šī kartīte sniedz ieskatu par tā izplatību un to, kāpēc tas ir tik bīstams.</p>",
     images: [
       {
-        url: "/images/img_1.jpg", // Relatīvs ceļš
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_1.jpg", // Relatīvs ceļš
         description: "Spānijas kailgliemezis uz auga lapas",
         authorId: 6, // Autors: Latvijas Dabas aizsardzības pārvalde
       },
@@ -28,7 +29,8 @@ export const simulatedCards = [
       "<p>Jūsu ziņojumi ir ārkārtīgi svarīgi! Lūdzam ziņot par katru pamanīto <b>Spānijas kailgliemeža</b> atradni, lai varētu efektīvāk kartēt tā izplatību un koordinēt apkarošanas pasākumus. Izmantojiet zemāk norādītās kartes un Dabas aizsardzības pārvaldes e-pastu.</p>",
     images: [
       {
-        url: "/images/img_2.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_2.jpg",
         description: "Spānijas kailgliemezis uz auga lapas",
         authorId: 1, // Autors: Aina Jēkabsone
       },
@@ -44,7 +46,8 @@ export const simulatedCards = [
       "<p>Apmeklējiet <u>ozols.gov.lv</u>, lai atzīmētu Spānijas kailgliemežu atradnes un sekotu līdzi to izplatības dinamikai visā Latvijā. Jūsu ieguldījums ir būtisks.</p>",
     images: [
       {
-        url: "/images/img_3.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_3.jpg",
         description: "Ozols.gov.lv kartes ekrānuzņēmums",
         authorId: 1, // Autors: Aina Jēkabsone
       },
@@ -60,7 +63,8 @@ export const simulatedCards = [
       "<p>Izmantojiet <a href='https://www.dabasdati.lv/'>Dabasdati.lv</a> platformu, lai ziņotu par invazīvās sugas novērojumiem. Tas palīdzēs zinātniekiem un dabas aizsardzības speciālistiem iegūt precīzākus datus.</p>",
     images: [
       {
-        url: "/images/img_4.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_4.jpg",
         description: "Spānijas kailgliemeži spainī",
         authorId: 2, // Autors: Haralds Jēkabsons
       },
@@ -76,7 +80,8 @@ export const simulatedCards = [
       "<p>Sazinieties ar Dabas aizsardzības pārvaldi (DAP), rakstot uz e-pastu <b>invazivs@daba.gov.lv</b>, lai ziņotu par atradnēm vai saņemtu papildu informāciju par rīcību ar Spānijas kailgliemezi.</p>",
     images: [
       {
-        url: "/images/img_5.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_5.jpg",
         description: "Spānijas kailgliemeži spainī",
         authorId: 3, // Autors: Ilze Mājeniece
       },
@@ -92,7 +97,8 @@ export const simulatedCards = [
       "<p>Uzziniet par Spānijas kailgliemeža raksturīgajām pazīmēm: tā krāsu (no oranži brūnas līdz tumši brūnai), izmēru (līdz 15 cm) un gļotu daudzumu. Svarīgi atšķirt to no citiem kailgliemežiem, piemēram, meža kailgliemeža.</p>",
     images: [
       {
-        url: "/images/img_6.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_6.jpg",
         description: "Oranži brūns kailgliemezis uz zemes",
         authorId: 4, // Autors: Ieva Krotova
       },
@@ -108,7 +114,8 @@ export const simulatedCards = [
       "<p>Spānijas kailgliemezis ir hermafrodīts un ļoti ātri vairojas. Uzziniet par tā dzīves ciklu, oliņu dēšanas periodiem un to, kā tas ietekmē tā izplatību.</p>",
     images: [
       {
-        url: "/images/img_7.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_7.jpg",
         description: "Kailgliemežu oliņas",
         authorId: 1, // Autors: Aina Jēkabsone
       },
@@ -124,7 +131,8 @@ export const simulatedCards = [
       "<p>Šie gliemeži ir nakts aktīvi un patversmi meklē mitrās, tumšās vietās. Izpētiet to barošanās paradumus un pārvietošanās veidus.</p>",
     images: [
       {
-        url: "/images/img_8.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_8.jpg",
         description: "Kailgliemezis ēd augu",
         authorId: 2, // Autors: Haralds Jēkabsons
       },
@@ -140,7 +148,8 @@ export const simulatedCards = [
       "<p>Viens no galvenajiem <b>Spānijas kailgliemeža</b> izplatības veidiem ir ar inficētiem stādiem un augsnes substrātu, kas tiek ievests no citām valstīm.</p>",
     images: [
       {
-        url: "/images/img_9.png",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_9.png",
         description: "Podiņos augu stādi",
         authorId: 3, // Autors: Ilze Mājeniece
       },
@@ -151,12 +160,13 @@ export const simulatedCards = [
     id: 1010,
     theme: 101, // "Cēloņi" tēmas ID
     title: "Nekoptas teritorijas un atkritumi",
-    summary: "Mitras un nekoptas vietas kā ideāla vide gliemežiem.",
+    summary: "Mitrās un nekoptas vietas kā ideāla vide gliemežiem.",
     description:
       "<p>Nekoptas teritorijas, atkritumu kaudzes un celtniecības atliekas nodrošina ideālas slēptuves un vairošanās vietas Spānijas kailgliemežiem. Šo vietu sakopšana ir būtiska to ierobežošanai.</p>",
     images: [
       {
-        url: "/images/img_10.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_10.jpg",
         description: "Atkritumu kaudze",
         authorId: 4, // Autors: Ieva Krotova
       },
@@ -172,7 +182,8 @@ export const simulatedCards = [
       "<p>Spānijas kailgliemeži un to oliņas bieži slēpjas zem dēļiem, akmeņiem, plēvēm un citiem materiāliem, kas nodrošina mitru un tumšu vidi.</p>",
     images: [
       {
-        url: "/images/img_11.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_11.jpg",
         description: "Gliemezis zem dēļa",
         authorId: 5, // Autors: Jānis Ozols
       },
@@ -188,7 +199,8 @@ export const simulatedCards = [
       "<p>Blīvi apstādījumi, krūmi un augsta zāle nodrošina lielisku patvērumu Spānijas kailgliemežiem. Regulāra zāles pļaušana un dārza kopšana ir svarīga.</p>",
     images: [
       {
-        url: "/images/img_12.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_12.jpg",
         description: "Kailgliemezis zālē",
         authorId: 1, // Autors: Aina Jēkabsone
       },
@@ -204,7 +216,8 @@ export const simulatedCards = [
       "<p>Celtniecības atliekas, būvgruži un nesakārtotas komposta kaudzes ir ideālas vietas, kur Spānijas kailgliemeži var vairoties un slēpties. Nekādā gadījumā nemetiet beigtos gliemežus kompostā!</p>",
     images: [
       {
-        url: "/images/img_13.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_13.jpg",
         description: "Būvgružu kaudze",
         authorId: 2, // Autors: Haralds Jēkabsons
       },
@@ -220,7 +233,8 @@ export const simulatedCards = [
       "<p>Visefektīvākā pieeja cīņā pret Spānijas kailgliemezi ir dažādu metožu (mehānisko, bioloģisko, preventīvo) apvienošana. Tikai kompleksi pasākumi dos ilgtermiņa rezultātus.</p>",
     images: [
       {
-        url: "/images/img_14.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_14.jpg",
         description: "Dažādas apkarošanas metodes",
         authorId: 3, // Autors: Ilze Mājeniece
       },
@@ -236,7 +250,8 @@ export const simulatedCards = [
       "<p>Regulāra Spānijas kailgliemežu nolasīšana ir viena no efektīvākajām metodēm. Vislabāk to darīt agri no rīta vai vakarā, kad tie ir aktīvāki. Salasītos gliemežus jāiznīcina pareizi.</p>",
     images: [
       {
-        url: "/images/img_15.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_15.jpg",
         description: "Cilvēks lasa gliemežus",
         authorId: 4, // Autors: Ieva Krotova
       },
@@ -252,7 +267,8 @@ export const simulatedCards = [
       "<p>Izveidojiet fiziskas barjeras ap dārziem, izmantojot metāla sētiņas, smiltis, pelnus, kaļķi vai olu čaumalas. Šīs barjeras apgrūtina gliemežu piekļuvi augiem.</p>",
     images: [
       {
-        url: "/images/img_16.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_16.jpg",
         description: "Barjera pret gliemežiem",
         authorId: 5, // Autors: Jānis Ozols
       },
@@ -268,7 +284,8 @@ export const simulatedCards = [
       "<p>Indijas skrējējgaļas pīles ir lielisks dabisks līdzeklis pret Spānijas kailgliemežiem. Tās aktīvi barojas ar gliemežiem un ir videi draudzīgs risinājums.</p>",
     images: [
       {
-        url: "/images/img_17.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_17.jpg",
         description: "Indijas skrējējgaļas pīles",
         authorId: 1, // Autors: Aina Jēkabsone
       },
@@ -284,7 +301,8 @@ export const simulatedCards = [
       "<p>Limacīdi uz dzelzs fosfāta bāzes ir efektīvs līdzeklis, taču tie jālieto uzmanīgi un saskaņā ar instrukcijām. Izvēlieties videi draudzīgus preparātus.</p>",
     images: [
       {
-        url: "/images/img_18.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_18.jpg",
         description: "Gliemežu granulas",
         authorId: 2, // Autors: Haralds Jēkabsons
       },
@@ -300,7 +318,8 @@ export const simulatedCards = [
       "<p>Izmantojiet alus lamatas vai citas pievilināšanas vietas (piemēram, dēļus ar barību), lai koncentrētu gliemežus vienuviet un atvieglotu to savākšanu.</p>",
     images: [
       {
-        url: "/images/img_19.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_19.jpg",
         description: "Alus lamatas gliemežiem",
         authorId: 3, // Autors: Ilze Mājeniece
       },
@@ -316,7 +335,8 @@ export const simulatedCards = [
       "<p>Iepazīstieties ar biedrības 'Pret Spānijas Kailgliemezi' statūtiem, lai saprastu mūsu darbības pamatprincipus un mērķus cīņā pret invazīvo sugu.</p>",
     images: [
       {
-        url: "/images/img_20.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_20.jpg",
         description: "Dokuments ar statūtiem",
         authorId: 4, // Autors: Ieva Krotova
       },
@@ -332,7 +352,8 @@ export const simulatedCards = [
       "<p>Regulāri rīkojam seminārus un apmācības, lai dalītos ar jaunāko informāciju par Spānijas kailgliemeža apkarošanu un nodrošinātu praktiskus padomus.</p>",
     images: [
       {
-        url: "/images/img_21.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_21.jpg",
         description: "Cilvēki seminārā",
         authorId: 1, // Autors: Aina Jēkabsone
       },
@@ -348,7 +369,8 @@ export const simulatedCards = [
       "<p>Pievienojieties mūsu kopīgajām talkām, lai kopīgi sakoptu teritorijas un samazinātu Spānijas kailgliemežu skaitu. Tava palīdzība ir svarīga!</p>",
     images: [
       {
-        url: "/images/img_22.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_22.jpg",
         description: "Talkas dalībnieki vāc gliemežus",
         authorId: 2, // Autors: Haralds Jēkabsons
       },
@@ -364,7 +386,8 @@ export const simulatedCards = [
       "<p>Ja jums ir jautājumi, ieteikumi vai vēlaties sadarboties, sazinieties ar mums, izmantojot norādīto kontaktinformāciju. Mēs esam atvērti jaunām idejām un iniciatīvām.</p>",
     images: [
       {
-        url: "/images/img_23.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_23.jpg",
         description: "Kontaktu informācija",
         authorId: 1, // Autors: Aina Jēkabsone
       },
@@ -382,7 +405,8 @@ export const simulatedCards = [
       "<p>Ja jūs ražojat vai izplatāt efektīvus pretgliemežu apkarošanas līdzekļus, mēs aicinām jūs pievienoties mūsu platformai. Sazinieties ar mums, lai uzzinātu vairāk par sadarbības iespējām!</p>",
     images: [
       {
-        url: "/images/img_24.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_24.jpg",
         description: "Tirgotājs ar produktiem",
         authorId: 7,
       },
@@ -399,7 +423,8 @@ export const simulatedCards = [
       "<p>Stādu audzētājiem ir īpaši svarīgi pievērst uzmanību Spānijas kailgliemeža profilaksei un aizsardzībai, jo tie var kļūt par galveno gliemežu izplatīšanās avotu. Ir būtiski nodrošināt, lai stādi būtu brīvi no gliemežiem un to olām pirms pārdošanas.</p>",
     images: [
       {
-        url: "/images/img_25.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_25.jpg",
         description: "Stādu audzētava",
         authorId: 4,
       },
@@ -415,7 +440,8 @@ export const simulatedCards = [
       "<p>Šeit mēs apkopojam uzticamus avotus, kur varat iegādāties dažādus produktus un risinājumus, lai efektīvi cīnītos pret Spānijas kailgliemezi savā dārzā vai saimniecībā.</p>",
     images: [
       {
-        url: "/images/img_26.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_26.jpg",
         description: "Cilvēks ar pretgliemežu līdzekli",
         authorId: 5,
       },
@@ -432,7 +458,8 @@ export const simulatedCards = [
       "<p>Mēs aicinām pašvaldības iesaistīties aktīvā gliemežu apkarošanā, piedāvājot resursus, koordinējot talkas un izglītojot iedzīvotājus. Sazinieties ar mums, lai rastu kopīgus risinājumus!</p>",
     images: [
       {
-        url: "/images/img_27.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_27.jpg",
         description: "Pašvaldības logo un dārzs",
         authorId: 6,
       },
@@ -449,7 +476,8 @@ export const simulatedCards = [
       "<p>Inese dalās savā pieredzē, kā viņa pirmo reizi pamanīja Spānijas kailgliemezi savā dārzā un kādas bija viņas sākotnējās reakcijas. Stāsts par izpratnes veidošanos un cīņas sākumu.</p>",
     images: [
       {
-        url: "/images/img_28.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_28.jpg",
         description: "Gliemezis uz zieda",
         authorId: 1,
       },
@@ -465,7 +493,8 @@ export const simulatedCards = [
       "<p>Šis stāsts ilustrē, cik svarīga ir kopienas sadarbība. Uzziniet, kā kaimiņi nolēma rīkoties kopā, organizējot talkas un daloties ar pieredzi, lai efektīvāk apkarotu Spānijas kailgliemezi.</p>",
     images: [
       {
-        url: "/images/img_29.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_29.jpg",
         description: "Kaimiņi strādā dārzā",
         authorId: 2,
       },
@@ -481,7 +510,8 @@ export const simulatedCards = [
       "<p>Jānis un Anna dalās ar saviem atklājumiem par alternatīvām metodēm, kas palīdzēja viņiem samazināt gliemežu skaitu dārzā, izmantojot dabīgus risinājumus un mazāk invazīvas pieejas.</p>",
     images: [
       {
-        url: "/images/img_30.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_30.jpg",
         description: "Dabisks gliemežu atbaidīšanas līdzeklis",
         authorId: 5,
       },
@@ -498,7 +528,8 @@ export const simulatedCards = [
       "<p>Šis plakāts satur vizuālas norādes un īsu aprakstu, kas palīdzēs atpazīt Spānijas kailgliemezi. Izdrukājiet to un izvietojiet publiskās vietās vai savā dārzā, lai informētu citus.</p>",
     images: [
       {
-        url: "/images/img_31.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_31.jpg",
         description: "Plakāta dizains",
         authorId: 7,
       },
@@ -514,7 +545,8 @@ export const simulatedCards = [
       "<p>Šī brošūra piedāvā padziļinātu ieskatu dažādās apkarošanas metodēs, to priekšrocībās un trūkumos, kā arī sniedz praktiskus padomus par to ieviešanu. Izdrukājiet un izplatiet to!</p>",
     images: [
       {
-        url: "/images/img_32.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_32.jpg",
         description: "Brošūras izkārtojums",
         authorId: 7,
       },
@@ -530,7 +562,8 @@ export const simulatedCards = [
       "<p>Ja jums nav pieejams internets vai viedtālrunis, izmantojiet šo drukājamo veidlapu, lai reģistrētu Spānijas kailgliemežu atradnes. Aizpildīto veidlapu varat iesniegt biedrībā.</p>",
     images: [
       {
-        url: "/images/img_33.jpg",
+        // JAUNS: izmanto import.meta.env.BASE_URL
+        url: import.meta.env.BASE_URL + "images/img_33.jpg",
         description: "Veidlapas dizains",
         authorId: 7,
       },

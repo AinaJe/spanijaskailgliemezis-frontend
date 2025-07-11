@@ -1,17 +1,14 @@
 /* src/components/layout/Header/Header.css */
 
 .app-header {
-    /* LABOJUMS: Visa galvene tagad ir fiksēta */
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    background-color: var(--primary-color); /* Šī krāsa paliek app-header fonam */
+    background-color: var(--primary-color);
     color: var(--white-color);
     box-shadow: 0 2px 5px var(--shadow-medium);
-    z-index: 1000; /* Nodrošinām, ka galvene ir virs visa pārējā */
-    /* Noņemam flex-shrink: 0, jo fixed elements netiek ietekmēts no flex konteinera */
-    /* flex-shrink: 0; */ /* Noņemts */
+    z-index: 1000; /* LABOJUMS: Palielinām z-index, lai nodrošinātu, ka galvene ir virs visiem elementiem */
 }
 
 /* Slēpjam šos elementus, jo tie nav daļa no fiksētās joslas */
@@ -22,22 +19,21 @@
 /* Banera josla */
 .header-banner {
     display: none; /* Noklusējums: paslēpts mobilajās ierīcēs */
-    background-color: var(--grey-900); /* Fona krāsa, ja GIFi nav caurspīdīgi */
+    background-color: var(--grey-900);
     height: 200px; /* Banera augstums */
     overflow: hidden;
-    position: relative; /* Nodrošina, ka GIFi tiek renderēti pareizi */
+    position: relative;
     width: 100%;
-    display: flex; /* Flexbox, lai izkārtotu GIFus blakus */
-    justify-content: center; /* Centrē GIFus horizontāli */
-    align-items: center; /* Centrē GIFus vertikāli */
-    gap: 10px; /* Atstarpe starp GIFiem */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
 }
 
 .header-gif {
-    max-height: 100%; /* Nodrošina, ka GIF ietilpst banera augstumā */
-    object-fit: contain; /* Pielāgo attēlu, saglabājot proporcijas */
-    width: auto; /* Pielāgo platumu atkarībā no augstuma un proporcijām */
-    /* Ja vēlaties fiksētus platumus atsevišķiem GIFiem, to var darīt .jsx failā ar inline style="width: ..." */
+    max-height: 100%;
+    object-fit: contain;
+    width: auto;
 }
 
 /* Navigācijas josla */
@@ -45,15 +41,13 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px; /* Nedaudz samazinām polsterējumu */
-    width: 100%; /* Nodrošina pilnu platumu */
+    padding: 10px 20px;
+    width: 100%;
     box-sizing: border-box;
-    background-color: var(--primary-color); /* Nodrošinām, ka joslai ir fons */
-
-    /* LABOJUMS: Noņemam sticky, jo vecāks tagad ir fixed */
-    /* position: sticky; */ /* Noņemts */
-    /* top: 0; */ /* Noņemts */
-    /* z-index: 1001; */ /* Z-index paliek, jo tas ir fiksētā vecāka elements */
+    background-color: var(--primary-color);
+    /* LABOJUMS: Nodrošinām, ka main-header-content ir virs visa, ja tam ir absolūti pozicionēti bērni */
+    position: relative; /* Nepieciešams hamburgera pogas absolūtai pozicionēšanai */
+    z-index: 1001; /* Papildu z-index pārliecībai, ka nav. josla ir virs citiem, ja vajadzētu */
 }
 
 
@@ -135,9 +129,9 @@
     cursor: pointer;
     padding: 10px;
     z-index: 1001;
-    display: flex; /* JAUNS: Pārvietots uz vispārīgo stilu */
-    align-items: center; /* JAUNS: Pārvietots uz vispārīgo stilu */
-    gap: 8px; /* JAUNS: Pārvietots uz vispārīgo stilu */
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .hamburger-label {
@@ -177,14 +171,11 @@
     /* Slēpjam desktop navigāciju un pielāgojam hamburgera pozīciju */
     .main-navigation ul {
         display: none;
-        /* Noņemam display:flex un justify-content: space-between no main-header-content,
-           lai varētu precīzi pozicionēt hamburgeri, kad navigācija ir aizvērta. */
     }
 
-    /* Pārvietojam logo uz main-header-content sākumu, lai hamburgeri varētu pozicionēt absolūti */
     .main-header-content {
         justify-content: flex-start; /* Logo kreisajā pusē */
-        position: relative; /* Nepieciešams absolūtai hamburgera pogai */
+        /* position: relative; paliek no vispārīgā stila */
     }
 
     /* Parādām mobilo navigāciju, kad tā ir atvērta */
@@ -243,15 +234,15 @@
         transform: rotate(180deg);
     }
 
-    /* JAUNS: Hamburgera pogas absolūtā pozicionēšana */
+    /* Hamburgera pogas absolūtā pozicionēšana */
     .hamburger-menu-button {
-        display: flex; /* Nodrošina, ka tā ir redzama */
-        position: absolute; /* Absolūti pozicionē attiecībā pret .main-header-content */
-        right: 20px; /* 20px no labās malas */
-        top: 50%; /* Vertikāli centrē */
-        transform: translateY(-50%); /* Precīza vertikālā centrēšana */
-        padding: 10px; /* Saglabā klikšķināmo zonu */
-        z-index: 1001; /* Nodrošina, ka ir virs citām lietām */
+        display: flex;
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        padding: 10px;
+        z-index: 1001;
     }
 }
 
@@ -263,20 +254,11 @@
 
     /* Rādām banneri tikai desktop versijā */
     .header-banner {
-        display: flex; /* Pārrakstām display: none */
+        display: flex;
     }
 
-    /* Nodrošinām, ka galvenā satura josla sākas zem banera un galvenes */
     .main-header-content {
-        /* Resetējam pozicionēšanu desktopā, ja nepieciešams, bet tagad tas ir sticky */
-        position: sticky; /* Vēlreiz norādām sticky desktopam */
-        justify-content: space-between; /* Atjaunojam space-between desktopā */
-    }
-}
-
-/* Desktop: paslēpjam tag-line un parādam banneri */
-@media (min-width: 1140px) {
-    .site-tagline {
-        display: none; /* Jau paslēpts, bet pārliecībai */
+        position: relative; /* Atjaunojam relatīvo pozīciju desktopam, jo tā vairs nav sticky */
+        justify-content: space-between;
     }
 }
