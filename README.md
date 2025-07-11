@@ -16,6 +16,7 @@ src/
 ├── components/      # Atkārtoti lietojamas UI komponentes
 │   ├── cards/       # Ar kartītēm saistītās komponentes
 │   ├── common/      # Vispārīgas, koplietojamas komponentes (modālie logi, akordeoni, paginācija)
+│   │   └── Modals/      # Modālo logu komponentes (t.sk. AdminLoginModal)
 │   ├── forms/       # Formu komponentes (pievienošanai/rediģēšanai)
 │   ├── layout/      # Izkārtojuma komponentes (Header, Footer)
 │   └── lists/       # Sarakstu attēlošanas komponentes
@@ -108,6 +109,8 @@ Projektā ir daudzfunkcionālas un atkārtoti izmantojamas komponentes, kas nodr
 
 -   **`Modal.jsx`**: Universāla modālā loga komponente.
     -   **Izmantotās klases**: `.modal-overlay`, `.modal-content`, `.modal-title`, `.modal-close-button`, `.modal-body`.
+-   **`AdminLoginModal.jsx`**: **JAUNS:** Diskrēts modālais logs administratora pieteikšanās ievadei, kas atveras, veicot dubultklikšķi uz galvenes banera. Pašlaik izmanto simulētus pieteikšanās datus.
+    -   **Izmantotās klases**: `.admin-login-form`, `.error-message` (papildus kopīgajām form-group, form-control, submit-button klasēm no `AddForm.css`).
 -   **`CardDetailModal.jsx`**: Modālais logs, kas attēlo pilnu informāciju par kartīti.
 -   **`CardDetailModalContent.jsx`**: Modālā loga satura komponente, kas attēlo kartītes detalizētu informāciju.
     -   **Izmantotās klases**: `.card-detail-modal-meta`, `.card-detail-modal-theme`, `.card-detail-modal-author`, `.card-detail-modal-summary`, `.card-detail-content-section`.
@@ -174,9 +177,10 @@ Projektā ir daudzfunkcionālas un atkārtoti izmantojamas komponentes, kas nodr
 Projekts ir izstrādāts ar responsīvu dizainu, lai nodrošinātu optimālu pieredzi dažādās ierīcēs:
 
 * **Fiksētā galvene**: Visa galvene (`.app-header`), kas ietver uzrakstu, baneri un navigācijas joslu, ir fiksēta ekrāna augšpusē, nodrošinot vieglu piekļuvi navigācijai jebkurā brīdī.
+    * **Administratora pieteikšanās:** Administratora pieteikšanās modālais logs tiek aktivizēts, veicot dubultklikšķi uz galvenes banera (zonā, kur atrodas "Brīvprātīgā kustība pret Spānijas kailgliemezi" uzraksts un GIF attēls). Pēc veiksmīgas pieteikšanās (pašlaik simulētas ar lietotājvārdu `admin` un paroli `password123`), lietotājs tiek automātiski novirzīts uz administrācijas paneli.
 * **Banera josla**:
-    * **Datorā**: Banera josla ir 200px augsta, un tajā tiek attēlots GIF attēls. Uzraksts ("Brīvprātīgā kustība pret Spānijas kailgliemezi") ir absolūti pozicionēts un centrēts virs šī GIF attēla, bez sava fona, nodrošinot vizuālu pārklāšanos.
-    * **Mobilajā ierīcē**: Banera josla ir 120px augsta un attēlo GIF attēlu kā fonu. Uzraksts ir absolūti pozicionēts un centrēts virs šī fona, saglabājot konsekventu vizuālo izkārtojumu.
+    * **Datorā**: Banera josla ir 200px augsta, un tajā tiek attēlots GIF attēls. Uzraksts ("Brīvprātīgā kustība pret Spānijas kailgliemezi") ir absolūti pozicionēts un centrēts virs šī GIF attēla, bez sava fona, nodrošinot vizuālu pārklāšanos. Banera zona ir interaktīva, ļaujot ar dubultklikšķi atvērt administratora pieteikšanās logu.
+    * **Mobilajā ierīcē**: Banera josla ir 120px augsta un attēlo GIF attēlu kā fonu. Uzraksts ir absolūti pozicionēts un centrēts virs šī fona, saglabājot konsekventu vizuālo izkārtojumu. Arī mobilajā ierīcē banera zona ir interaktīva dubultklikšķa pieteikšanās funkcionalitātei.
 * **Galvenā navigācija**:
     * **Datorā**: Galvenā navigācija tiek attēlota horizontāli zem banera.
     * **Mobilajā ierīcē**: Tiek izmantota hamburgera izvēlne, kas atver vertikālu navigācijas sarakstu. Hamburgera poga ir fiksēta labajā pusē.
