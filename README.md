@@ -10,6 +10,7 @@
 
 Projekts ir loģiski sadalīts mapēs, lai nodrošinātu moduļu veidošanu un vieglu uzturēšanu:
 
+```text
 src/
 ├── api/             # API pieprasījumu loģika
 ├── components/      # Atkārtoti lietojamas UI komponentes
