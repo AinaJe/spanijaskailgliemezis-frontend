@@ -6,5 +6,5 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   // JAUNS: pievienojiet `base` īpašību
-  base: '/spanijaskailgliemezis-frontend/', // Repozitorija nosaukums GitHub Pages
+  base: '/spanijaskailgliemezis-frontend/', // Repozitorija nosaukums GitHub Pages 1
 })
