@@ -1,4 +1,4 @@
-# Projekta Tehniskais Apraksts
+# Projekta tehniskais apraksts
 
 Šis dokuments sniedz detalizētu tehnisku pārskatu par "Spānijas kailgliemezis" frontend projektu. Tajā aprakstīta projekta arhitektūra, komponentes, izmantotās tehnoloģijas, kā arī informācija par bekendu un izvietošanas procesu.
 
