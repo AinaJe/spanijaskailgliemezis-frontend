@@ -16,17 +16,22 @@ const EditThemeForm = ({ onUpdateTheme, onClose, theme }) => {
     }
   }, [theme]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!themeName.trim() || !summary.trim() || !description.trim()) {
+    if (!themeName.trim() || !summary.trim() || !description.trim() || description.trim() === '<p></p>') {
       alert('Visi lauki ir obligāti!');
       return;
     }
-    onUpdateTheme(theme.id, { 
-      name: themeName.trim(),
-      summary: summary.trim(),
-      description: description.trim(),
-    });
+    try {
+      await onUpdateTheme(theme.id, { 
+        name: themeName.trim(),
+        summary: summary.trim(),
+        description: description.trim(),
+      });
+    } catch (error) {
+      alert(`Kļūda, atjauninot tēmu: ${error.message}`);
+      console.error('Edit Theme Error:', error);
+    }
   };
 
   if (!theme) return null;

@@ -1,35 +1,30 @@
 // src/components/layout/Header/Header.jsx
 import React, { useState } from 'react';
-import AdminLoginModal from '../../common/Modals/AdminLoginModal'; // Precīzs imports
+import AdminLoginModal from '../../common/Modals/AdminLoginModal';
 import './Header.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'; // JAUNS: Importējam iziešanas ikonu
 
-const Header = ({ themes, activeTheme, onThemeSelect, activeSection, onSectionSelect }) => {
+const Header = ({ themes, activeTheme, onThemeSelect, onSectionSelect, activeSection, isLoggedIn, onLogin, onLogout }) => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isDesktopCardsDropdownOpen, setIsDesktopCardsDropdownOpen] = useState(false);
     const [isMobileSubMenuOpen, setIsMobileSubMenuOpen] = useState(false);
-    const [isLoginModalOpen, setIsLoginModalOpen] = useState(false); // Stāvoklis pieteikšanās modālajam logam
+    const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
     
-    // Uzlabota dubultklikšķa notikumu apstrāde
-    const DCLICK_THRESHOLD = 300; // Milisekundes: Maksimālais laiks starp klikšķiem, lai to uzskatītu par dubultklikšķi
-    let clickTimeout = null; // Taimauts, lai atšķirtu vienu klikšķi no dubultklikšķa
+    const DCLICK_THRESHOLD = 300;
+    let clickTimeout = null;
 
     const handleBannerClick = () => {
-        // Notīrīt iepriekšējo taimautu, ja tas ir aktīvs
         if (clickTimeout) {
             clearTimeout(clickTimeout);
             clickTimeout = null;
-            // Šis ir otrais klikšķis pietiekami ātri, lai būtu dubultklikšķis
-            setIsLoginModalOpen(true);
+            setIsLoginModalOpen(true); // Atver modālo logu
         } else {
-            // Šis ir pirmais klikšķis. Iestatiet taimautu, lai gaidītu otru klikšķi.
             clickTimeout = setTimeout(() => {
-                clickTimeout = null; // Notīrīt taimautu, ja otrais klikšķis nenotiek laikā
+                clickTimeout = null;
             }, DCLICK_THRESHOLD);
         }
     };
-
 
     const closeMenus = () => {
         setIsMobileMenuOpen(false);
@@ -59,12 +54,14 @@ const Header = ({ themes, activeTheme, onThemeSelect, activeSection, onSectionSe
         setIsMobileSubMenuOpen(prev => !prev);
     };
 
-    // Funkcija, kas tiek izsaukta pēc veiksmīgas administratora pieteikšanās
-    const handleLoginSuccess = () => {
-        console.log('Administratora pieteikšanās veiksmīga!');
-        // Novirzīt uz 'admin' sadaļu
-        onSectionSelect('admin');
-        setIsLoginModalOpen(false); // Aizver modālo logu
+    // JAUNS: Funkcija, kas apstrādā pieteikšanos no modālā loga
+    const handleLoginSubmit = async (username, password) => {
+        const result = await onLogin(username, password);
+        if (result.success) {
+            setIsLoginModalOpen(false);
+            // activeSection tiek iestatīts App.jsx
+        }
+        return result; // Atgriežam rezultātu modālajam logam
     };
 
     const headerGifs = [
@@ -80,7 +77,6 @@ const Header = ({ themes, activeTheme, onThemeSelect, activeSection, onSectionSe
 
     return (
         <header className="app-header">
-            {/* Banera josla, tagad ar vienu klikšķa apstrādātāju */}
             <div className="header-banner" onClick={handleBannerClick}>
                 <div className="site-tagline">
                     Brīvprātīgā kustība pret Spānijas kailgliemezi
@@ -91,10 +87,8 @@ const Header = ({ themes, activeTheme, onThemeSelect, activeSection, onSectionSe
             </div>
 
             <div className="main-header-content">
-                {/* Logo / Vietnes nosaukums - izmanto `onClick` ar `onSectionSelect` */}
                 <span className="site-logo-placeholder" onClick={() => handleSectionClick('home', 1)} aria-label="Sākumlapa"><i>Arion vulgaris</i></span>
 
-                {/* Hamburgera izvēlne mobilajām ierīcēm */}
                 <button
                     className={`hamburger-menu-button ${isMobileMenuOpen ? 'open' : ''}`}
                     onClick={toggleMobileMenu}
@@ -108,7 +102,6 @@ const Header = ({ themes, activeTheme, onThemeSelect, activeSection, onSectionSe
                     </div>
                 </button>
 
-                {/* Galvenā navigācija */}
                 <nav className={`main-navigation ${isMobileMenuOpen ? 'open' : ''}`}>
                     <ul>
                         <li><button type="button" onClick={() => handleSectionClick('home', 1)} className={activeSection === 'home' ? 'active' : ''}>Sākums</button></li>
@@ -141,16 +134,28 @@ const Header = ({ themes, activeTheme, onThemeSelect, activeSection, onSectionSe
                         <li><button type="button" onClick={() => handleSectionClick('prints', 107)} className={activeSection === 'prints' ? 'active' : ''}>Izdrukām</button></li>
                         <li><button type="button" onClick={() => handleSectionClick('articles', 108)} className={activeSection === 'articles' ? 'active' : ''}>Raksti</button></li>
                         <li><button type="button" onClick={() => handleSectionClick('videos', 109)} className={activeSection === 'videos' ? 'active' : ''}>Video</button></li>
-                        <li><button type="button" onClick={() => handleSectionClick('admin', '')} className={activeSection === 'admin' ? 'active' : ''}>Pārvaldība</button></li>
+                        {isLoggedIn ? (
+                            <>
+                                <li><button type="button" onClick={() => handleSectionClick('admin', '')} className={activeSection === 'admin' ? 'active' : ''}>Pārvaldība</button></li>
+                                <li>
+                                    <button type="button" onClick={onLogout} className="logout-button">
+                                        <FontAwesomeIcon icon={faSignOutAlt} /> Iziet
+                                    </button>
+                                </li>
+                            </>
+                        ) : (
+                            // Kad nav ielogojies, netiek rādīta nekāda "Pieteikties" poga galvenajā izvēlnē.
+                            // Ieiet sistēmā var tikai ar dubultklikšķi uz banera.
+                            null 
+                        )}
                     </ul>
                 </nav>
             </div>
 
-            {/* Administratora pieteikšanās modālais logs */}
             <AdminLoginModal
                 isOpen={isLoginModalOpen}
                 onClose={() => setIsLoginModalOpen(false)}
-                onLoginSuccess={handleLoginSuccess}
+                onLoginSuccess={handleLoginSubmit} 
             />
         </header>
     );

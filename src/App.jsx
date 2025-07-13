@@ -9,17 +9,20 @@ import PageRenderer from './components/common/PageRenderer';
 import { useData } from './hooks/useData';
 import { useFilters } from './hooks/useFilters';
 import { usePagination } from './hooks/usePagination';
+import * as api from './api'; // Importējam API funkcijas priekš pieteikšanās (tikai loginAdmin)
 
 const LazyCardDetailModal = lazy(() => import('./components/common/Modals/CardDetailModal/CardDetailModal'));
 const LazyInfoModal = lazy(() => import('./components/common/Modals/InfoModal'));
 
 function App() {
-  const { authors, setAuthors, themesData, setThemesData, cards, setCards, articles, setArticles, videos, setVideos } = useData();
+  // LABOTS: Iegūstam tikai nepieciešamos datus un jaunos CRUD funkcijas no useData
+  const { authors, themesData, cards, articles, videos, addEntity, updateEntity, deleteEntity } = useData();
   
   const [selectedItem, setSelectedItem] = useState(null);
   const [modalType, setModalType] = useState(null);
   const [activeSection, setActiveSection] = useState('home');
   const [activeTheme, setActiveTheme] = useState(1);
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('adminToken')); // Autentifikācijas stāvoklis
 
   const {
     filterTheme,
@@ -77,8 +80,6 @@ function App() {
     resetArticlesPagination();
     resetVideosPagination();
     
-    // Šis ir galvenais labojums:
-    // Ja mēs jau esam 'recommendations' sadaļā un mainām tēmu, mēs NEVĒLAMIES atiestatīt tēmu uz 'all'.
     if (activeSection === 'recommendations') {
         return;
     }
@@ -115,6 +116,28 @@ function App() {
   const handleCloseModal = useCallback(() => {
     setSelectedItem(null);
     setModalType(null);
+  }, []);
+  
+  // Pieteikšanās loģika (pārvietota no Header, lai pārvaldītu isLoggedIn stāvokli centrāli)
+  const handleLogin = useCallback(async (username, password) => {
+    try {
+      const response = await api.loginAdmin({ username, password });
+      localStorage.setItem('adminToken', response.token); // Saglabā tokenu
+      setIsLoggedIn(true); // Atjaunina pieteikšanās statusu
+      setActiveSection('admin'); // Uzreiz pāriet uz administrācijas paneli
+      return { success: true };
+    } catch (error) {
+      console.error('Pieteikšanās kļūda:', error);
+      return { success: false, message: error.message || 'Pieteikšanās neizdevās.' };
+    }
+  }, []);
+
+  // Iziet no sistēmas loģika
+  const handleLogout = useCallback(() => {
+    localStorage.removeItem('adminToken'); // Izdzēš tokenu
+    setIsLoggedIn(false); // Atjaunina pieteikšanās statusu
+    setActiveSection('home'); // Pāriet uz sākumlapu
+    alert('Jūs esat izrakstījies.');
   }, []);
 
   const currentThemeDetail = useMemo(() => {
@@ -160,12 +183,23 @@ function App() {
     },
     articles: { articles: paginatedArticles, availableAuthors: authors, paginationProps: articlesPaginationProps, pageThemeDetail: currentThemeDetail, onReadMore: (item) => openModal(item, 'rakstu') },
     videos: { videos: paginatedVideos, availableAuthors: authors, paginationProps: videosPaginationProps, pageThemeDetail: currentThemeDetail, onReadMore: (item) => openModal(item, 'video') },
-    admin: { authors, themes: themesData, cards, articles, videos, setAuthors, setThemesData, setCards, setArticles, setVideos, openModal: openModal }
+    // LABOTS: Nododam jaunas CRUD funkcijas uz AdminPage, kā arī isLoggedIn statusu
+    admin: { authors, themes: themesData, cards, articles, videos, addEntity, updateEntity, deleteEntity, openModal: openModal, isLoggedIn: isLoggedIn }
   };
 
   return (
     <div className="App">
-      <Header themes={themesData} activeTheme={activeTheme} onThemeSelect={setActiveTheme} onSectionSelect={setActiveSection} activeSection={activeSection} />
+      {/* Nododam isLoggedIn, handleLogin un handleLogout uz Header */}
+      <Header
+        themes={themesData}
+        activeTheme={activeTheme}
+        onThemeSelect={setActiveTheme}
+        onSectionSelect={setActiveSection}
+        activeSection={activeSection}
+        isLoggedIn={isLoggedIn}
+        onLogin={handleLogin} // Jaunā pieteikšanās funkcija
+        onLogout={handleLogout} // Jaunā iziešanas funkcija
+      />
       <main>
           <h2 className="section-title">
             {activeSection === 'home' && 'Sākums'}

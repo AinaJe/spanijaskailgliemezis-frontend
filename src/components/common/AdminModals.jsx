@@ -10,7 +10,6 @@ import AddVideoForm from '../forms/AddVideoForm';
 const AdminModals = ({ modalsState, handlers, data }) => {
   const { themes, authors } = data;
   
-  // LABOJUMS: Pareizi pārsaucam funkcijas no 'handlers.add' objekta
   const { 
     author: onAddAuthor, 
     theme: onAddTheme, 
@@ -21,7 +20,6 @@ const AdminModals = ({ modalsState, handlers, data }) => {
   
   const { onClose } = handlers;
 
-  // Tēmas, kuras var piešķirt jaunai kartītei (izslēdzam tikai 'Visi')
   const cardAssignableThemes = themes.filter(t => t.id !== 'all');
 
   return (
@@ -36,7 +34,7 @@ const AdminModals = ({ modalsState, handlers, data }) => {
 
       <Modal isOpen={modalsState.card} onClose={() => onClose('card')} title="Pievienot kartīti">
         <CardForm
-          onAddCard={onAddCard} // Tagad šeit tiek padota pareizā funkcija
+          onAddCard={onAddCard}
           availableThemes={cardAssignableThemes}
           availableAuthors={authors}
           allowHomepageTheme={false}

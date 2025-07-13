@@ -1,5 +1,5 @@
 // src/components/forms/EditArticleForm.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; // LABOTS: import sintakse
 import './AddForm.css';
 
 const EditArticleForm = ({ onUpdate, onClose, item, availableAuthors }) => {
@@ -11,7 +11,7 @@ const EditArticleForm = ({ onUpdate, onClose, item, availableAuthors }) => {
 
   useEffect(() => {
     if (item) {
-      setDate(item.date ? item.date.split('T')[0] : ''); // Pareiza datuma formatēšana
+      setDate(item.date ? item.date.split('T')[0] : '');
       setTitle(item.title || '');
       setSummary(item.summary || '');
       setLink(item.link || '');
@@ -19,9 +19,21 @@ const EditArticleForm = ({ onUpdate, onClose, item, availableAuthors }) => {
     }
   }, [item]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onUpdate('rakstu', item.id, { date, title, summary, link, authorId });
+
+    if (!date.trim() || !title.trim() || !authorId) {
+        alert('Datums, nosaukums un autors ir obligāti!');
+        return;
+    }
+
+    try {
+      await onUpdate('article', item.id, { date, title, summary, link, authorId });
+      onClose();
+    } catch (error) {
+      alert(`Kļūda, atjauninot rakstu: ${error.message}`);
+      console.error('Edit Article Error:', error);
+    }
   };
 
   if (!item) return null;
@@ -35,6 +47,7 @@ const EditArticleForm = ({ onUpdate, onClose, item, availableAuthors }) => {
       <div className="form-group">
         <label>Autors:</label>
         <select value={authorId} onChange={(e) => setAuthorId(e.target.value)} className="form-control">
+          <option value="">-- Izvēlēties autoru --</option>
           {availableAuthors.map(author => <option key={author.id} value={author.id}>{author.name}</option>)}
         </select>
       </div>

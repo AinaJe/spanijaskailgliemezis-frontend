@@ -55,7 +55,7 @@ const ConfirmDeleteModal = ({ item, itemType, onClose, onConfirm }) => {
           <button onClick={() => onConfirm(itemType, item.id)} className="action-button" style={{ backgroundColor: 'var(--danger-color)', color: 'var(--white-color)', padding: '10px 20px', borderRadius: '5px', fontSize: '1em', fontWeight: 'bold', cursor: 'pointer', border: 'none' }}>
             Jā, dzēst
           </button>
-          <button onClick={onClose} className="action-button" style={{ backgroundColor: 'var(--grey-500)', color: 'var(--white-color)', padding: '10px 20px', borderRadius: '5px', fontSize: '1em', fontWeight: 'bold', cursor: 'pointer', border: 'none' }}>
+          <button type="button" onClick={onClose} className="action-button" style={{ backgroundColor: 'var(--grey-500)', color: 'var(--white-color)', padding: '10px 20px', borderRadius: '5px', fontSize: '1em', fontWeight: 'bold', cursor: 'pointer', border: 'none' }}>
             Atcelt
           </button>
         </div>

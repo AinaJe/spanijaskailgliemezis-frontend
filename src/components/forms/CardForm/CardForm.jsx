@@ -69,11 +69,11 @@ const CardForm = ({ onAddCard, availableThemes, availableAuthors }) => {
   const handleImageAuthorSelectChange = (index, e) => {
       const newImages = [...images];
       const selectedValue = e.target.value;
-      if (selectedValue === `new-author-${index}`) {
+      if (String(selectedValue).startsWith('new-author-')) {
           newImages[index].authorId = selectedValue;
           newImages[index].newImageAuthorNameInput = '';
       } else {
-          newImages[index].authorId = selectedValue;
+          newImages[index].authorId = parseInt(selectedValue, 10);
           newImages[index].newImageAuthorNameInput = '';
       }
       setImages(newImages);
@@ -88,69 +88,78 @@ const CardForm = ({ onAddCard, availableThemes, availableAuthors }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!theme.trim() || !title.trim() || !summary.trim() || !description.trim() || description.trim() === '<p></p>' || !cardAuthorId) {
+    if (!theme || !title.trim() || !summary.trim() || !description.trim() || description.trim() === '<p></p>' || !cardAuthorId) {
       alert('Lūdzu, aizpildiet visus obligātos laukus: Tēma, Nosaukums, Kopsavilkums, Apraksts un Autors.');
       return;
     }
 
     const imagesToSubmit = [];
     for (const img of images) {
-        if (img.url.trim() === '' && !img.file && img.description.trim() === '' && img.authorId === '') {
+        if (img.url.trim() === '' && !img.file && img.description.trim() === '' && (img.authorId === '' || img.authorId === null)) {
             continue;
         }
 
-        if (img.authorId && String(img.authorId).startsWith('new-author-') && !img.newImageAuthorNameInput.trim()) {
+        if (String(img.authorId).startsWith('new-author-') && !img.newImageAuthorNameInput.trim()) {
             alert('Lūdzu, ievadiet jauna attēla autora vārdu.');
             return;
         }
 
-        if ((img.description.trim() !== '' || img.authorId !== '') && img.url.trim() === '' && !img.file) {
-            alert('Ja ir attēla apraksts vai autors, ir jānorāda attēla URL vai jāaugšupielādē fails.');
-            return;
-        }
         if ((img.url.trim() !== '' || img.file) && img.description.trim() === '') {
             alert('Ja ir attēls (URL vai fails), ir jānorāda attēla apraksts.');
             return;
         }
-        if ((img.url.trim() !== '' || img.file) && img.authorId === '') {
+        if ((img.url.trim() !== '' || img.file) && (img.authorId === '' || img.authorId === null)) {
             alert('Ja ir attēls (URL vai fails), ir jānorādīta attēla autors.');
             return;
         }
 
-        let finalImageAuthorId = img.authorId;
-        if (img.authorId && String(img.authorId).startsWith('new-author-')) {
-            finalImageAuthorId = `new-author-${img.newImageAuthorNameInput.trim()}`;
-        }
-        
-        imagesToSubmit.push({ ...img, authorId: finalImageAuthorId });
+        imagesToSubmit.push(img);
     }
 
-    const processedImages = await Promise.all(imagesToSubmit.map(async (img) => {
-        if (img.sourceType === 'upload' && img.file) {
-            console.log(`Simulē faila augšupielādi: ${img.file.name}`);
-            const simulatedUrl = `/uploads/${img.file.name}`;
-            return { url: simulatedUrl, description: img.description, authorId: img.authorId };
-        }
-        return { url: img.url, description: img.description, authorId: img.authorId };
-    }));
+    if (imagesToSubmit.length === 0) {
+        alert('Lūdzu, pievienojiet vismaz vienu attēlu kartītei.');
+        return;
+    }
 
-    onAddCard({
-      theme,
-      title,
-      summary,
-      description,
-      images: processedImages,
-      authorId: cardAuthorId,
+    const formData = new FormData();
+    formData.append('theme', theme);
+    formData.append('title', title.trim());
+    formData.append('summary', summary.trim());
+    formData.append('description', description.trim());
+    formData.append('authorId', cardAuthorId);
+
+    imagesToSubmit.forEach((img, index) => {
+        let finalImageAuthorId = img.authorId;
+        if (String(img.authorId).startsWith('new-author-')) {
+            finalImageAuthorId = `new-author-${img.newImageAuthorNameInput.trim()}`;
+        }
+
+        if (img.sourceType === 'upload' && img.file) {
+            formData.append(`images[${index}][file]`, img.file);
+        } else {
+            formData.append(`images[${index}][url]`, img.url.trim());
+        }
+
+        formData.append(`images[${index}][description]`, img.description.trim());
+        formData.append(`images[${index}][authorId]`, finalImageAuthorId);
+        formData.append(`images[${index}][order_index]`, index);
     });
 
-    // Notīrām formas laukus
-    setTheme('');
-    setTitle('');
-    setSummary('');
-    setDescription('');
-    setCardAuthorId('');
-    setImages([{ id: Date.now(), url: '', description: '', authorId: '', newImageAuthorNameInput: '', sourceType: 'url', file: null }]);
-    setActiveTab('theme');
+    try {
+      await onAddCard(formData);
+
+      setTheme('');
+      setTitle('');
+      setSummary('');
+      setDescription('');
+      setCardAuthorId('');
+      setImages([{ id: Date.now(), url: '', description: '', authorId: '', newImageAuthorNameInput: '', sourceType: 'url', file: null }]);
+      setActiveTab('theme');
+
+    } catch (error) {
+      alert(`Kļūda, pievienojot kartīti: ${error.message}`);
+      console.error('Add Card Error:', error);
+    }
   };
 
   return (

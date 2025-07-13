@@ -1,50 +1,29 @@
 // src/components/common/Modals/AdminLoginModal.jsx
 import React, { useState } from 'react';
-import Modal from './Modal'; // Izmantojam jūsu esošo vispārīgo Modal komponenti
-import './AdminLoginModal.css'; // Šo failu izveidosim nākamajā solī
+import Modal from './Modal';
+import './AdminLoginModal.css';
 
 const AdminLoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false); // JAUNS: Ielādes stāvoklis
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(''); // Notīrīt iepriekšējās kļūdas
+    setError('');
+    setIsLoading(true); // Sākam ielādi
 
-    // Šeit pašlaik ir simulēta pieteikšanās.
-    // Kad jūsu CodeIgniter API būs gatavs, jums būs jāaizstāj šī simulācija ar reālu API izsaukumu.
-    // Piemērs:
-    // import config from '../../../config'; // Importēt API_BASE_URL
-    // try {
-    //   const response = await fetch(`${config.API_BASE_URL}/admin/login`, {
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify({ username, password }),
-    //   });
-    //   if (response.ok) {
-    //     const data = await response.json();
-    //     // Pieņemsim, ka API atgriež tokenu vai sesijas informāciju
-    //     localStorage.setItem('adminToken', data.token); // Saglabāt tokenu
-    //     onLoginSuccess();
-    //   } else {
-    //     const errorData = await response.json();
-    //     setError(errorData.message || 'Pieteikšanās neizdevās.');
-    //   }
-    // } catch (err) {
-    //   setError('Kļūda, mēģinot pieslēgties serverim.');
-    //   console.error('Login error:', err);
-    // }
+    const result = await onLoginSuccess(username, password); // Izsaucam no Header/App padoto funkciju
 
-    // SIMULĀCIJA: Veiksmīga pieteikšanās ar lietotājvārdu 'admin' un paroli 'password123'
-    if (username === 'admin' && password === 'password123') {
-      setTimeout(() => { // Simulators, lai imitētu tīkla aizkavi
-        onLoginSuccess();
-      }, 500);
-    } else {
-      setError('Nepareizs lietotājvārds vai parole.');
+    if (!result.success) {
+      setError(result.message || 'Pieteikšanās neizdevās.');
     }
+    setIsLoading(false); // Pabeidzam ielādi
+    // onLoginSuccess (no props) jau apstrādā modālā loga aizvēršanu, ja veiksmīgi.
   };
+
+  if (!isOpen) return null;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Administratora pieteikšanās">
@@ -58,7 +37,8 @@ const AdminLoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
             onChange={(e) => setUsername(e.target.value)}
             className="form-control"
             required
-            autoComplete="username" // Atvieglina pārlūka aizpildi
+            autoComplete="username"
+            disabled={isLoading} // Atspējo laukus, kamēr notiek ielāde
           />
         </div>
         <div className="form-group">
@@ -70,12 +50,15 @@ const AdminLoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
             onChange={(e) => setPassword(e.target.value)}
             className="form-control"
             required
-            autoComplete="current-password" // Atvieglina pārlūka aizpildi
+            autoComplete="current-password"
+            disabled={isLoading} // Atspējo laukus, kamēr notiek ielāde
           />
         </div>
         {error && <p className="error-message">{error}</p>}
         <div className="form-actions" style={{ justifyContent: 'center' }}>
-          <button type="submit" className="submit-button">Pieteikties</button>
+          <button type="submit" className="submit-button" disabled={isLoading}>
+            {isLoading ? 'Pieslēdzas...' : 'Pieteikties'}
+          </button>
         </div>
       </form>
     </Modal>

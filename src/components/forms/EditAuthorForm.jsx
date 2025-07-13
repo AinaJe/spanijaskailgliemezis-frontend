@@ -1,28 +1,31 @@
 // src/components/forms/EditAuthorForm.jsx
 import React, { useState, useEffect } from 'react';
-import './AddForm.css'; // Mēs varam izmantot tos pašus stilus
+import './AddForm.css';
 
 const EditAuthorForm = ({ onUpdateAuthor, onClose, author }) => {
   const [authorName, setAuthorName] = useState('');
 
-  // Iestatām sākotnējo vārdu, kad komponente tiek ielādēta
   useEffect(() => {
     if (author) {
       setAuthorName(author.name);
     }
   }, [author]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!authorName.trim()) {
       alert('Autora vārds ir obligāts!');
       return;
     }
-    // Izsaucam atjaunināšanas funkciju, padodot autora ID un jauno vārdu
-    onUpdateAuthor(author.id, { name: authorName.trim() });
+    try {
+      await onUpdateAuthor(author.id, { name: authorName.trim() });
+    } catch (error) {
+      alert(`Kļūda, atjauninot autoru: ${error.message}`);
+      console.error('Edit Author Error:', error);
+    }
   };
 
-  if (!author) return null; // Ja nav autora, neko nerādām
+  if (!author) return null;
 
   return (
     <form onSubmit={handleSubmit} className="add-form">

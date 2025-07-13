@@ -348,3 +348,43 @@
         justify-content: space-between;
     }
 }
+
+.logout-button {
+    background-color: var(--danger-color); /* Izmantojam danger-color iziešanai */
+    color: var(--white-color);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Atstarpe starp ikonu un tekstu */
+}
+
+.logout-button:hover {
+    background-color: var(--danger-hover); /* Pievienojiet --danger-hover savam index.css, ja tāda nav */
+    transform: translateY(-2px);
+}
+
+/* Pielāgojam navigācijas sarakstu, lai atbalstītu "Iziet" pogu */
+.main-navigation ul {
+    /* ... esošie stili ... */
+    align-items: center; /* Vertikāli centrē pogas */
+}
+.main-navigation li .logout-button {
+    margin-left: 10px; /* Atstarpe no iepriekšējā elementa */
+}
+/* Nodrošina, ka mobilajā izvēlnē poga ir pareizi izvietota */
+@media (max-width: 1139px) {
+    .main-navigation li .logout-button {
+        width: 100%;
+        text-align: left;
+        padding: 15px 20px;
+        border-radius: 0;
+        margin-left: 0;
+        justify-content: flex-start; /* Izlīdzināt pa kreisi mobilajā */
+    }
+}

@@ -1,48 +1,38 @@
 // src/components/forms/AddThemeForm.jsx
-import React, { useState } from 'react'; // Importējam React un useState hooku
-import RichTextEditor from '../common/RichTextEditor/RichTextEditor'; // Importējam RichTextEditor komponenti
-import './AddForm.css'; // Importējam kopējos formu stilus
+import React, { useState } from 'react';
+import RichTextEditor from '../common/RichTextEditor/RichTextEditor';
+import './AddForm.css';
 
-/**
- * Tēmas pievienošanas forma.
- * Nodrošina formu jaunas tēmas nosaukuma, kopsavilkuma un apraksta ievadei.
- * @param {object} props - Komponentes props.
- * @param {function} props.onAddTheme - Funkcija, kas tiek izsaukta, kad tēma tiek pievienota.
- * @param {function} props.onClose - Funkcija, kas tiek izsaukta, lai aizvērtu formu (piem., modālo logu).
- */
 const AddThemeForm = ({ onAddTheme, onClose }) => {
-  // Stāvokļi formas laukiem
   const [themeName, setThemeName] = useState('');
   const [summary, setSummary] = useState('');
-  const [description, setDescription] = useState(''); // Saturs no RichTextEditor
+  const [description, setDescription] = useState('');
 
-  // Funkcija, kas tiek izsaukta, iesniedzot formu
-  const handleSubmit = (e) => {
-    e.preventDefault(); // Novērš noklusējuma formas iesniegšanas uzvedību
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    // Validācija: pārbaudām, vai visi obligātie lauki ir aizpildīti
-    // RichTextEditor atgriež '<p></p>' tukša satura gadījumā, tāpēc pārbaudām arī to
     if (!themeName.trim() || !summary.trim() || !description.trim() || description.trim() === '<p></p>') {
       alert('Tēmas nosaukums, kopsavilkums un apraksts ir obligāti!');
-      return; // Pārtraucam tālāku izpildi
+      return;
     }
 
-    // Izsaucam onAddTheme funkciju ar jaunās tēmas datiem
-    onAddTheme({
-      name: themeName.trim(),
-      summary: summary.trim(),
-      description: description.trim(),
-    });
-
-    // Notīrām formas laukus pēc iesniegšanas
-    setThemeName('');
-    setSummary('');
-    setDescription('');
+    try {
+      await onAddTheme({
+        name: themeName.trim(),
+        summary: summary.trim(),
+        description: description.trim(),
+      });
+      setThemeName('');
+      setSummary('');
+      setDescription('');
+    } catch (error) {
+      alert(`Kļūda, pievienojot tēmu: ${error.message}`);
+      console.error('Add Theme Error:', error);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} className="add-form">
-      {/* Tēmas nosaukuma lauks */}
       <div className="form-group">
         <label htmlFor="themeName">Tēmas nosaukums:</label>
         <input
@@ -54,7 +44,6 @@ const AddThemeForm = ({ onAddTheme, onClose }) => {
           className="form-control"
         />
       </div>
-      {/* Tēmas kopsavilkuma lauks */}
       <div className="form-group">
         <label htmlFor="themeSummary">Kopsavilkums:</label>
         <textarea
@@ -66,19 +55,16 @@ const AddThemeForm = ({ onAddTheme, onClose }) => {
           className="form-control"
         ></textarea>
       </div>
-      {/* Tēmas apraksta lauks, izmantojot RichTextEditor */}
       <div className="form-group">
         <label htmlFor="themeDescription">Apraksts:</label>
         <RichTextEditor content={description} onContentChange={setDescription} />
       </div>
       <div className="form-actions">
-        {/* Iesniegšanas poga */}
         <button type="submit" className="submit-button">Pievienot</button>
-        {/* Atcelšanas poga, kas aizver formu */}
         <button type="button" onClick={onClose} className="cancel-button">Atcelt</button>
       </div>
     </form>
   );
 };
 
-export default AddThemeForm; // Eksportējam komponenti
+export default AddThemeForm;
